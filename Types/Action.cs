@@ -1,4 +1,6 @@
-﻿public enum ActionType
+﻿using Chess;
+
+public enum ActionType
 {
     Move,
     Capture,
@@ -9,12 +11,14 @@
 
 public class Action
 {
+    public Piece Piece { get; private set; }
     public int ActionX { get; private set; }
     public int ActionY { get; private set; }
     public ActionType ActionType { get; private set; }
 
-    public Action(int actionX, int actionY, ActionType actionType)
+    public Action(Piece piece, int actionX, int actionY, ActionType actionType)
     {
+        Piece = piece;
         ActionX = actionX;
         ActionY = actionY;
         ActionType = actionType;
@@ -22,7 +26,7 @@ public class Action
 
     public override string ToString()
     {
-        return $"{ActionType}: ({ActionX}, {ActionY})";
+        return $"{Piece} - {ActionType}: ({ActionX}, {ActionY})";
     }
 
     public override bool Equals(object? obj)

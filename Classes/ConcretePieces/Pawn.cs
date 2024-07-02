@@ -24,27 +24,27 @@ namespace Chess
             if (PositionX == startX
                 && ChessUtils.IsEmptySquare(PositionX + actionAmount, PositionY, boardState)
                 && ChessUtils.IsEmptySquare(PositionX + (actionAmount * 2), PositionY, boardState))
-                actions.Add(new Action(PositionX + (actionAmount * 2), PositionY, ActionType.PawnDoubleMove));
+                actions.Add(new Action(this, PositionX + (actionAmount * 2), PositionY, ActionType.PawnDoubleMove));
 
             // can move 1 at any point, but not capture
             if (ChessUtils.IsEmptySquare(PositionX + actionAmount, PositionY, boardState))
                 // promote if moving to the last row
-                actions.Add(new Action(PositionX + actionAmount, PositionY, (PositionX + actionAmount == lastRow) ? ActionType.PawnPromote : ActionType.Move));
+                actions.Add(new Action(this, PositionX + actionAmount, PositionY, (PositionX + actionAmount == lastRow) ? ActionType.PawnPromote : ActionType.Move));
 
             // can capture 1 diagonally
             if (ChessUtils.IsEnemy(TeamColour, PositionX + actionAmount, PositionY - 1, boardState))
                 // promote if capturing on the last row, otherwise capture
-                actions.Add(new Action(PositionX + actionAmount, PositionY - 1, (PositionX + actionAmount == lastRow) ? ActionType.PawnPromote : ActionType.Capture));
+                actions.Add(new Action(this, PositionX + actionAmount, PositionY - 1, (PositionX + actionAmount == lastRow) ? ActionType.PawnPromote : ActionType.Capture));
 
             if (ChessUtils.IsEnemy(TeamColour, PositionX + actionAmount, PositionY + 1, boardState))
-                actions.Add(new Action(PositionX + actionAmount, PositionY + 1, (PositionX + actionAmount == lastRow) ? ActionType.PawnPromote : ActionType.Capture));
+                actions.Add(new Action(this, PositionX + actionAmount, PositionY + 1, (PositionX + actionAmount == lastRow) ? ActionType.PawnPromote : ActionType.Capture));
 
             // can enpassant capture if the previous action was a PawnDoubleMove
             if (ChessUtils.EnPassant(TeamColour, PositionX + actionAmount, PositionY - 1, lastPerformedAction))
-                actions.Add(new Action(PositionX + actionAmount, PositionY - 1, ActionType.PawnEnPassant));
+                actions.Add(new Action(this, PositionX + actionAmount, PositionY - 1, ActionType.PawnEnPassant));
 
             if (ChessUtils.EnPassant(TeamColour, PositionX + actionAmount, PositionY + 1, lastPerformedAction))
-                actions.Add(new Action(PositionX + actionAmount, PositionY + 1, ActionType.PawnEnPassant));
+                actions.Add(new Action(this, PositionX + actionAmount, PositionY + 1, ActionType.PawnEnPassant));
             return actions;
         }
 

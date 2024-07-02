@@ -18,13 +18,6 @@ namespace Chess
             gameboard.DrawCurrentState();
             gameboard.SwapTurns();
             gameboard.CalculateCurrentTeamActions();
-            gameboard.SelectPiece();
-
-
-
-
-
-
         }
     }
 }

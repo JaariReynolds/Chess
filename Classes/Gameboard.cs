@@ -6,7 +6,7 @@ namespace Chess.Classes
     {
         public Piece[,] Board { get; private set; }
         public TeamColour CurrentTeam { get; private set; }
-        public Dictionary<Piece, List<Action>> CurrentTeamActions { get; private set; }
+        public  List<Action> CurrentTeamActions { get; private set; }
         public Action? LastPerformedAction { get; private set; }
 
         public Gameboard()
@@ -14,13 +14,14 @@ namespace Chess.Classes
             Board = new Piece[8, 8];
             CurrentTeam = TeamColour.White;
             //InitialiseBoardState();
-            CurrentTeamActions = new Dictionary<Piece, List<Action>>();
+            CurrentTeamActions = new List<Action>();
         }
         public void InitialiseBoardState()
         {
-            Board[1, 3] = new Pawn(TeamColour.White, 1, 3);
-            Board[0, 2] = new Pawn(TeamColour.Black, 0, 2);
-            Board[1, 5] = new Pawn(TeamColour.Black, 1, 5);
+            Board[4, 2] = new Pawn(TeamColour.Black, 4, 2);
+            Board[5, 1] = new Pawn(TeamColour.White, 5, 1);
+            Board[5, 3] = new Pawn(TeamColour.White, 5, 3);
+
 
 
 
@@ -49,65 +50,18 @@ namespace Chess.Classes
                 if (piece == null) continue;
                 if (piece.TeamColour != CurrentTeam) continue;
 
-                List<Action>? pieceActions;
                 if (piece is Pawn)
-                    pieceActions = piece.GetPotentialActions(Board, LastPerformedAction);
+                    CurrentTeamActions.AddRange(piece.GetPotentialActions(Board, LastPerformedAction));
                 else
-                    pieceActions = piece.GetPotentialActions(Board, null);
-
-                if (pieceActions.Count != 0)
-                {
-                    pieceActions = pieceActions.OrderBy(a => a.ToString()).ToList();
-                    CurrentTeamActions[piece] = pieceActions;
-                }
+                    CurrentTeamActions.AddRange(piece.GetPotentialActions(Board, null));
             }
 
-            Console.WriteLine($"Actions for {CurrentTeam}");
-            int selector = 1;
-
-            foreach (var pair in CurrentTeamActions)
-            {
-                Console.WriteLine($"{selector}. {pair.Key}: ");
-                selector++;
-                foreach (var value in pair.Value)
-                {
-                    Console.WriteLine($"    {value}");
-                }
-                Console.WriteLine();
-            }
-        }
-
-        public void SelectPiece()
-        {
-            int selected;
-            bool validSelection;
-            Console.WriteLine("Select a valid piece:");
-            do
-            {
-                validSelection = int.TryParse(Console.ReadLine(), out selected) 
-                    && selected <= CurrentTeamActions.Count 
-                    && selected >= 1;
-
-                if (!validSelection)
-                    Console.WriteLine("invalid");
-                
-            } while (!validSelection);
-
-            int counter = 1;
-            Piece selectedPiece;
-            foreach (var pair in CurrentTeamActions)
-            {
-                if (counter != selected)
-                    break;
-
-                selectedPiece = pair.Key;
-            }
+            CurrentTeamActions = CurrentTeamActions.OrderBy(a => a.ToString()).ToList();
             
-        }
-
-        public void SelectAction(int actionIndex)
-        {
-
+            //foreach (var action in CurrentTeamActions)
+            //{
+            //    Console.WriteLine(action);
+            //}
         }
 
         private void PerformAction(Piece piece, Action action)

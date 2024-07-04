@@ -2,7 +2,7 @@
 {
     public static class ChessUtils
     {
-        public static bool IsWithinBounds(int x, int y)
+        private static bool IsWithinBounds(int x, int y)
         {
             return x >= 0 && x < 8 && y >= 0 && y < 8;
         }

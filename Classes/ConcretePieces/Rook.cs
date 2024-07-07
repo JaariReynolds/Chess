@@ -22,54 +22,21 @@ namespace Chess.Classes.ConcretePieces
         public override List<Action> GetPotentialActions(Piece[,] boardState, Action? lastPerformedAction)
         {
             List<Action> actions = new List<Action>();
+            bool deadNorth = false, deadSouth = false, deadEast = false, deadWest = false;
 
-            // north squares
-            for (int y = PositionY - 1; y >= 0; y--)
+            for (int i = 1; i <= 7; i++)
             {
-                bool deadEnd = DetermineRookAction(actions, PositionX, y, boardState);
-                if (deadEnd) break;
+                if (!deadNorth)
+                    deadNorth = ChessUtils.DeterminePieceAction(this, actions, PositionX - i, PositionY, boardState); 
+                if (!deadSouth)
+                    deadSouth = ChessUtils.DeterminePieceAction(this, actions, PositionX + i, PositionY, boardState); 
+                if (!deadEast)
+                    deadEast = ChessUtils.DeterminePieceAction(this, actions, PositionX, PositionY + i, boardState); 
+                if (!deadWest)
+                    deadWest = ChessUtils.DeterminePieceAction(this, actions, PositionX, PositionY - i, boardState); 
             }
-
-            // south squares
-            for (int y = PositionY + 1; y <= 7; y++)
-            {
-                bool deadEnd = DetermineRookAction(actions, PositionX, y, boardState);
-                if (deadEnd) break;
-            }
-
-            // east squares
-            for (int x = PositionX + 1; x <= 7; x++)
-            {
-                bool deadEnd = DetermineRookAction(actions, x, PositionY, boardState);
-                if (deadEnd) break;
-            }
-
-            // west squares
-            for (int x = PositionX - 1; x >= 0; x--)
-            {
-                bool deadEnd = DetermineRookAction(actions, x, PositionY, boardState);
-                if (deadEnd) break;
-            }
-
+         
             return actions;
-        }
-
-        private bool DetermineRookAction(List<Action> actions, int x, int y, Piece[,] boardState)
-        {
-            // a rook can move horizontally or vertically until capture or until blocked by a friendly piece
-
-            bool deadEnd = true;
-            if (ChessUtils.IsEmptySquare(x, y, boardState))
-            {
-                actions.Add(new Action(this, x, y, ActionType.Move));
-                return false;
-            }
-            else if (ChessUtils.IsEnemy(TeamColour, x, y, boardState))
-            {
-                actions.Add(new Action(this, x, y, ActionType.Capture));
-            }
-
-            return deadEnd;
         }
     }
 }

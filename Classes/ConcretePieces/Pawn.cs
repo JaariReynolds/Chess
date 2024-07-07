@@ -1,6 +1,7 @@
 ﻿using Chess.Classes;
+using Chess.Types;
 
-namespace Chess
+namespace Chess.Classes.ConcretePieces
 {
     public class Pawn : Piece
     {

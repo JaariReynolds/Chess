@@ -1,4 +1,6 @@
 ﻿using Chess.Classes;
+using Chess.Classes.ConcretePieces;
+using Chess.Types;
 
 namespace Chess.Classes
 {
@@ -18,9 +20,11 @@ namespace Chess.Classes
         }
         public void InitialiseBoardState()
         {
-            Board[4, 2] = new Pawn(TeamColour.Black, 4, 2);
-            Board[5, 1] = new Pawn(TeamColour.White, 5, 1);
-            Board[5, 3] = new Pawn(TeamColour.White, 5, 3);
+            //Board[0, 0] = new Rook(TeamColour.Black, 0, 0);
+            Board[3, 3] = new Knight(TeamColour.White, 3, 3);
+            Board[4, 1] = new Pawn(TeamColour.Black, 4, 1);
+            //Board[5, 1] = new Pawn(TeamColour.White, 5, 1);
+            //Board[5, 3] = new Pawn(TeamColour.White, 5, 3); 
 
 
 
@@ -57,11 +61,11 @@ namespace Chess.Classes
             }
 
             CurrentTeamActions = CurrentTeamActions.OrderBy(a => a.ToString()).ToList();
-            
-            //foreach (var action in CurrentTeamActions)
-            //{
-            //    Console.WriteLine(action);
-            //}
+
+            foreach (var action in CurrentTeamActions)
+            {
+                Console.WriteLine(action);
+            }
         }
 
         private void PerformAction(Piece piece, Action action)
@@ -74,7 +78,10 @@ namespace Chess.Classes
                     piece.MovePiece(action.ActionX, action.ActionY);
                     break;
             }
+        }
 
+        public void SetLastPerformedAction(Action action)
+        {
             LastPerformedAction = action;
         }
 

@@ -1,4 +1,6 @@
-﻿namespace Chess.Classes
+﻿using Chess.Types;
+
+namespace Chess.Classes
 {
     public static class ChessUtils
     {

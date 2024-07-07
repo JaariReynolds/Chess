@@ -12,6 +12,7 @@ namespace Chess.Classes
         public int PositionX { get; private set; }
         public int PositionY { get; private set; }
         public TeamColour TeamColour { get; set; }
+        public int PieceValue { get; protected set; }
 
         public abstract void Draw();
         public abstract List<Action> GetPotentialActions(Piece[,] boardState, Action? lastPerformedAction);

@@ -20,6 +20,7 @@ namespace Chess.Classes.ConcretePieces
         
         public Knight(TeamColour teamColour, int x, int y) : base(teamColour, x, y)
         {
+            PieceValue = 3;
         }
 
         public override void Draw()

@@ -11,6 +11,7 @@ namespace Chess.Classes.ConcretePieces
 
         public Pawn(TeamColour teamColour, int x, int y) : base(teamColour, x, y)
         {
+            PieceValue = 1;
             startX = teamColour == TeamColour.White ? 6 : 1;
             lastRow = teamColour == TeamColour.White ? 0 : 7;
             actionAmount = teamColour == TeamColour.White ? -1 : 1;

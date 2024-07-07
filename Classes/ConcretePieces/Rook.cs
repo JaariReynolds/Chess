@@ -11,6 +11,7 @@ namespace Chess.Classes.ConcretePieces
     {
         public Rook(TeamColour teamColour, int x, int y) : base(teamColour, x, y)
         {
+            PieceValue = 5;
         }
 
         public override void Draw()

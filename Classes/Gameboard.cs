@@ -20,9 +20,9 @@ namespace Chess.Classes
         }
         public void InitialiseBoardState()
         {
-            //Board[0, 0] = new Rook(TeamColour.Black, 0, 0);
-            Board[3, 3] = new Knight(TeamColour.White, 3, 3);
-            Board[4, 1] = new Pawn(TeamColour.Black, 4, 1);
+            Board[3, 3] = new Bishop(TeamColour.White, 3, 3);
+            //Board[3, 4] = new Pawn(TeamColour.Black, 3, 4);
+           
             //Board[5, 1] = new Pawn(TeamColour.White, 5, 1);
             //Board[5, 3] = new Pawn(TeamColour.White, 5, 3); 
 

@@ -16,7 +16,7 @@ namespace Chess
             var gameboard = new Gameboard();
             gameboard.InitialiseBoardState();
             gameboard.DrawCurrentState();
-            gameboard.SwapTurns();
+            //gameboard.SwapTurns();
             gameboard.CalculateCurrentTeamActions();
         }
     }

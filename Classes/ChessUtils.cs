@@ -9,14 +9,14 @@ namespace Chess.Classes
             return x >= 0 && x < 8 && y >= 0 && y < 8;
         }
 
+        private static bool IsNotNull(int x, int y, Piece[,] boardState)
+        {
+            return IsWithinBounds(x, y) && boardState[x, y] != null;
+        }
+
         public static bool IsEmptySquare(int x, int y, Piece[,] boardState)
         {
             return IsWithinBounds(x, y) && boardState[x, y] == null;
-        }
-
-        public static bool IsNotNull(int x, int y, Piece[,] boardState)
-        {
-            return IsWithinBounds(x, y) && boardState[x, y] != null;
         }
 
         public static bool IsEnemy(TeamColour teamColour, int x, int y, Piece[,] boardState)
@@ -47,6 +47,24 @@ namespace Chess.Classes
             }
 
             return enPassant;
+        }
+
+        public static bool DeterminePieceAction(Piece piece, List<Action> actions, int x, int y, Piece[,] boardState)
+        {
+            // deadEnd used for pieces like Rook and Bishop, where their directional moves stop after an obstruction
+
+            bool deadEnd = true;
+            if (IsEmptySquare(x, y, boardState))
+            {
+                actions.Add(new Action(piece, x, y, ActionType.Move));
+                deadEnd = false;
+            }
+            else if (IsEnemy(piece.TeamColour, x, y, boardState))
+            {
+                actions.Add(new Action(piece, x, y, ActionType.Capture));
+            }
+
+            return deadEnd;
         }
 
 

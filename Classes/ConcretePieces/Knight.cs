@@ -9,13 +9,12 @@ namespace Chess.Classes.ConcretePieces
 {
     public class Knight : Piece
     {
-        // A knight can move 2 vertically and 1 horizontally, or 1 vertically and 2 horizontally
-        List<(int, int)> moveOffsets = new List<(int, int)>
+        private readonly int[,] moves = new int[,]
         {
-            (2, 1), (2, -1),
-            (-2, 1), (-2, -1),
-            (1, 2), (1, -2),
-            (-1, 2), (-1, -2)
+            { 2, 1 }, { 2, -1 },
+            { -2, 1 }, { -2, -1 },
+            { 1, 2 }, { 1, -2 },
+            { -1, 2 },{ -1, -2 }
         };
         
         public Knight(TeamColour teamColour, int x, int y) : base(teamColour, x, y)
@@ -30,14 +29,18 @@ namespace Chess.Classes.ConcretePieces
 
         public override List<Action> GetPotentialActions(Piece[,] boardState, Action? lastPerformedAction)
         {
-            List<Action> actions = new List<Action>();    
+            // A knight can move 2 vertically and 1 horizontally, or 1 vertically and 2 horizontally
+            var actions = new List<Action>();    
             
-            foreach (var move in moveOffsets)
+            for (int i = 0; i < moves.GetLength(0); i++)
             {
-                if (ChessUtils.IsEmptySquare(PositionX + move.Item1, PositionY + move.Item2, boardState))
-                    actions.Add(new Action(this, PositionX + move.Item1, PositionY + move.Item2, ActionType.Move));
-                else if (ChessUtils.IsEnemy(TeamColour, PositionX + move.Item1, PositionY + move.Item2, boardState))
-                    actions.Add(new Action(this, PositionX + move.Item1, PositionY + move.Item2, ActionType.Capture));
+                int newX = PositionX + moves[i, 0];
+                int newY = PositionY + moves[i, 1];
+
+                if (ChessUtils.IsEmptySquare(newX, newY, boardState))
+                    actions.Add(new Action(this, newX, newY, ActionType.Move));
+                else if (ChessUtils.IsEnemy(TeamColour, newX, newY, boardState))
+                    actions.Add(new Action(this, newX, newY, ActionType.Capture));
             }
 
             return actions;

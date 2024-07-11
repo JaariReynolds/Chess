@@ -51,7 +51,7 @@ namespace Chess.Classes
 
         public static bool DeterminePieceAction(Piece piece, List<Action> actions, int x, int y, Piece[,] boardState)
         {
-            // deadEnd used for pieces like Rook and Bishop, where their directional moves stop after an obstruction
+            // deadEnd used for Rook, Bishop, Queen, where their directional moves stop after an obstruction
 
             bool deadEnd = true;
             if (IsEmptySquare(x, y, boardState))

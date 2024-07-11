@@ -9,6 +9,11 @@ namespace Chess.Classes.ConcretePieces
 {
     public class Rook : Piece
     {
+        private readonly int[,] directions = new int[,]
+        {
+            {-1, 0}, {1, 0}, {0, -1}, {0, 1}, // N, S, E, W
+        };
+
         public Rook(TeamColour teamColour, int x, int y) : base(teamColour, x, y)
         {
             PieceValue = 5;
@@ -21,21 +26,20 @@ namespace Chess.Classes.ConcretePieces
 
         public override List<Action> GetPotentialActions(Piece[,] boardState, Action? lastPerformedAction)
         {
-            List<Action> actions = new List<Action>();
-            bool deadNorth = false, deadSouth = false, deadEast = false, deadWest = false;
+            // Cardinal direction movements only (i.e. N,S,E,W only)
+            var actions = new List<Action>();
 
-            for (int i = 1; i <= 7; i++)
+            for (int i = 0; i < directions.GetLength(0); i++)
             {
-                if (!deadNorth)
-                    deadNorth = ChessUtils.DeterminePieceAction(this, actions, PositionX - i, PositionY, boardState); 
-                if (!deadSouth)
-                    deadSouth = ChessUtils.DeterminePieceAction(this, actions, PositionX + i, PositionY, boardState); 
-                if (!deadEast)
-                    deadEast = ChessUtils.DeterminePieceAction(this, actions, PositionX, PositionY + i, boardState); 
-                if (!deadWest)
-                    deadWest = ChessUtils.DeterminePieceAction(this, actions, PositionX, PositionY - i, boardState); 
+                for (int distance = 1; distance <= 7; distance++)
+                {
+                    int newX = PositionX + directions[i, 0] * distance;
+                    int newY = PositionY + directions[i, 1] * distance;
+                    var deadEnd = ChessUtils.DeterminePieceAction(this, actions, newX, newY, boardState);
+                    if (deadEnd) break;
+                }
             }
-         
+
             return actions;
         }
     }

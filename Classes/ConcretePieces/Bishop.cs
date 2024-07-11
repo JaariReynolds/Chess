@@ -9,6 +9,11 @@ namespace Chess.Classes.ConcretePieces
 {
     public class Bishop : Piece
     {
+        private readonly int[,] directions = new int[,]
+        {
+            {-1, -1}, {-1, 1}, {1, -1}, {1, 1} // NW, NE, SW, SE
+        };
+
         public Bishop(TeamColour teamColour, int x, int y) : base(teamColour, x, y)
         {
             PieceValue = 3;
@@ -21,20 +26,18 @@ namespace Chess.Classes.ConcretePieces
 
         public override List<Action> GetPotentialActions(Piece[,] boardState, Action? lastPerformedAction)
         {
-            // Rook movement logic, except its diagonal 
-            List<Action> actions = new List<Action>();
-            bool deadNorthEast = false, deadNorthWest = false, deadSouthEast = false, deadSouthWest = false;
+            // Intercardinal directions only (i.e. diagonals only)
+            var actions = new List<Action>();
 
-            for (int i = 1; i <= 7; i++)
+            for (int i = 0; i < directions.GetLength(0); i++)
             {
-                if (!deadNorthWest)
-                    deadNorthWest = ChessUtils.DeterminePieceAction(this, actions, PositionX - i, PositionY - i, boardState);
-                if (!deadNorthEast)
-                    deadNorthEast = ChessUtils.DeterminePieceAction(this, actions, PositionX - i, PositionY + i, boardState);
-                if (!deadSouthWest)
-                    deadSouthWest = ChessUtils.DeterminePieceAction(this, actions, PositionX + i, PositionY - i, boardState);
-                if (!deadSouthEast)
-                    deadSouthEast = ChessUtils.DeterminePieceAction(this, actions, PositionX + i, PositionY + i, boardState);
+                for (int distance = 1; distance <= 7; distance++)
+                {
+                    int newX = PositionX + directions[i, 0] * distance;
+                    int newY = PositionY + directions[i, 1] * distance;
+                    var deadEnd = ChessUtils.DeterminePieceAction(this, actions, newX, newY, boardState);
+                    if (deadEnd) break;
+                }
             }
 
             return actions;

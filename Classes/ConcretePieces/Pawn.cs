@@ -17,10 +17,14 @@ namespace Chess.Classes.ConcretePieces
             actionAmount = teamColour == TeamColour.White ? -1 : 1;
         }
 
+        public override void Draw()
+        {
+            Console.Write(TeamColour == TeamColour.White ? " P " : " p ");
+        }
+
         public override List<Action> GetPotentialActions(Piece[,] boardState, Action? lastPerformedAction)
         {
-            // Since a Pawn can move/capture + promote on the same action, promote takes priority
-            List<Action> actions = new List<Action>();
+            var actions = new List<Action>();
 
             // can move 2 squares on the first move, if no obstruction
             if (PositionX == startX
@@ -32,6 +36,8 @@ namespace Chess.Classes.ConcretePieces
             if (ChessUtils.IsEmptySquare(PositionX + actionAmount, PositionY, boardState))
                 // promote if moving to the last row
                 actions.Add(new Action(this, PositionX + actionAmount, PositionY, (PositionX + actionAmount == lastRow) ? ActionType.PawnPromote : ActionType.Move));
+
+            // Since a Pawn can move/capture + promote on the same action, promote takes priority
 
             // can capture 1 diagonally
             if (ChessUtils.IsEnemy(TeamColour, PositionX + actionAmount, PositionY - 1, boardState))
@@ -50,9 +56,6 @@ namespace Chess.Classes.ConcretePieces
             return actions;
         }
 
-        public override void Draw()
-        {
-            Console.Write(TeamColour == TeamColour.White ? " P " : " p ");
-        }
+        
     }
 }

@@ -35,13 +35,13 @@ namespace Chess.Classes
             {
                 // White en passant can only be performed on row index 2
                 case TeamColour.White:
-                    if (x == 2 && y == lastPerformedAction.ActionY)
+                    if (x == 2 && y == lastPerformedAction.Square.Y)
                         enPassant = true;
                     break;
 
                 // Black en passant can only be performed on row index 5
                 case TeamColour.Black:
-                    if (x == 5 && y == lastPerformedAction.ActionY)
+                    if (x == 5 && y == lastPerformedAction.Square.Y)
                         enPassant = true;
                     break;
             }
@@ -66,6 +66,8 @@ namespace Chess.Classes
 
             return deadEnd;
         }
+
+
 
 
     }

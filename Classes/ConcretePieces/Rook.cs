@@ -1,9 +1,4 @@
 ﻿using Chess.Types;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Chess.Classes.ConcretePieces
 {
@@ -33,8 +28,8 @@ namespace Chess.Classes.ConcretePieces
             {
                 for (int distance = 1; distance <= 7; distance++)
                 {
-                    int newX = PositionX + directions[i, 0] * distance;
-                    int newY = PositionY + directions[i, 1] * distance;
+                    int newX = Square.X + directions[i, 0] * distance;
+                    int newY = Square.Y + directions[i, 1] * distance;
                     var deadEnd = ChessUtils.DeterminePieceAction(this, actions, newX, newY, boardState);
                     if (deadEnd) break;
                 }

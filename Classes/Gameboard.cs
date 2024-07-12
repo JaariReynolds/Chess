@@ -1,5 +1,4 @@
-﻿using Chess.Classes;
-using Chess.Classes.ConcretePieces;
+﻿using Chess.Classes.ConcretePieces;
 using Chess.Types;
 
 namespace Chess.Classes
@@ -8,7 +7,7 @@ namespace Chess.Classes
     {
         public Piece[,] Board { get; private set; }
         public TeamColour CurrentTeam { get; private set; }
-        public  List<Action> CurrentTeamActions { get; private set; }
+        public List<Action> CurrentTeamActions { get; private set; }
         public Action? LastPerformedAction { get; private set; }
 
         public Gameboard()
@@ -20,9 +19,9 @@ namespace Chess.Classes
         }
         public void InitialiseBoardState()
         {
-            Board[3, 3] = new Bishop(TeamColour.White, 3, 3);
+            Board[0, 0] = new King(TeamColour.White, 0, 0);
             //Board[3, 4] = new Pawn(TeamColour.Black, 3, 4);
-           
+
             //Board[5, 1] = new Pawn(TeamColour.White, 5, 1);
             //Board[5, 3] = new Pawn(TeamColour.White, 5, 3); 
 
@@ -73,9 +72,9 @@ namespace Chess.Classes
             switch (action.ActionType)
             {
                 case ActionType.Move:
-                    Board[action.ActionX, action.ActionY] = piece;
-                    Board[piece.PositionX, piece.PositionY] = null!;
-                    piece.MovePiece(action.ActionX, action.ActionY);
+                    Board[action.Square.X, action.Square.Y] = piece;
+                    Board[piece.Square.X, piece.Square.Y] = null!;
+                    piece.MovePiece(action.Square.X, action.Square.Y);
                     break;
             }
         }

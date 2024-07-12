@@ -13,21 +13,19 @@ public enum ActionType
 public class Action
 {
     public Piece Piece { get; private set; }
-    public int ActionX { get; private set; }
-    public int ActionY { get; private set; }
+    public Square Square { get; private set; }
     public ActionType ActionType { get; private set; }
 
     public Action(Piece piece, int actionX, int actionY, ActionType actionType)
     {
         Piece = piece;
-        ActionX = actionX;
-        ActionY = actionY;
+        Square = new Square(actionX, actionY);
         ActionType = actionType;
     }
 
     public override string ToString()
     {
-        return $"{Piece} - {ActionType}: ({ActionX}, {ActionY})";
+        return $"{Piece} - {ActionType}: {Square}";
     }
 
     public override bool Equals(object? obj)
@@ -42,8 +40,8 @@ public class Action
         unchecked // Overflow is fine, just wrap
         {
             int hash = 19;
-            hash = hash * 25 + ActionX.GetHashCode();
-            hash = hash * 25 + ActionY.GetHashCode();
+            hash = hash * 25 + Square.X.GetHashCode();
+            hash = hash * 25 + Square.Y.GetHashCode();
             hash = hash * 25 + ActionType.GetHashCode();
             return hash;
         }

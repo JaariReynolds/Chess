@@ -6,16 +6,18 @@ namespace Chess.Classes
     public class Gameboard
     {
         public Piece[,] Board { get; private set; }
-        public TeamColour CurrentTeam { get; private set; }
-        public List<Action> CurrentTeamActions { get; private set; }
+        public TeamColour CurrentTeamColour { get; private set; }
+        public List<Action> WhiteActions { get; private set; }
+        public List<Action> BlackActions { get; private set; }
         public Action? LastPerformedAction { get; private set; }
 
         public Gameboard()
         {
             Board = new Piece[8, 8];
-            CurrentTeam = TeamColour.White;
+            CurrentTeamColour = TeamColour.White;
             //InitialiseBoardState();
-            CurrentTeamActions = new List<Action>();
+            WhiteActions = new List<Action>();
+            BlackActions = new List<Action>();
         }
         public void InitialiseBoardState()
         {
@@ -42,26 +44,34 @@ namespace Chess.Classes
 
         public void SwapTurns()
         {
-            CurrentTeam = CurrentTeam == TeamColour.White ? TeamColour.Black : TeamColour.White;
+            CurrentTeamColour = CurrentTeamColour == TeamColour.White ? TeamColour.Black : TeamColour.White;
+            WhiteActions.Clear();
+            BlackActions.Clear();
         }
 
-        public void CalculateCurrentTeamActions()
+        public void CalculateTeamActions(TeamColour teamColour)
         {
-            CurrentTeamActions.Clear();
+            var actions = new List<Action>();
+
             foreach (var piece in Board)
             {
                 if (piece == null) continue;
-                if (piece.TeamColour != CurrentTeam) continue;
+                if (piece.TeamColour != teamColour) continue;
 
                 if (piece is Pawn)
-                    CurrentTeamActions.AddRange(piece.GetPotentialActions(Board, LastPerformedAction));
+                    actions.AddRange(piece.GetPotentialActions(Board, LastPerformedAction));
                 else
-                    CurrentTeamActions.AddRange(piece.GetPotentialActions(Board, null));
+                    actions.AddRange(piece.GetPotentialActions(Board, null));
             }
 
-            CurrentTeamActions = CurrentTeamActions.OrderBy(a => a.ToString()).ToList();
+            actions = actions.OrderBy(a => a.ToString()).ToList();
 
-            foreach (var action in CurrentTeamActions)
+            if (teamColour == TeamColour.White)
+                WhiteActions = actions;
+            else
+                BlackActions = actions;
+
+            foreach (var action in actions)
             {
                 Console.WriteLine(action);
             }

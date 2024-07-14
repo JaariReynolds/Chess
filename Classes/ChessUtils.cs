@@ -1,4 +1,5 @@
-﻿using Chess.Types;
+﻿using Chess.Classes.ConcretePieces;
+using Chess.Types;
 
 namespace Chess.Classes
 {
@@ -8,6 +9,7 @@ namespace Chess.Classes
         {
             return x >= 0 && x < 8 && y >= 0 && y < 8;
         }
+
 
         private static bool IsNotNull(int x, int y, Piece[,] boardState)
         {
@@ -49,6 +51,7 @@ namespace Chess.Classes
             return enPassant;
         }
 
+
         public static bool DeterminePieceAction(Piece piece, List<Action> actions, int x, int y, Piece[,] boardState)
         {
             // deadEnd used for Rook, Bishop, Queen, where their directional moves stop after an obstruction
@@ -67,8 +70,34 @@ namespace Chess.Classes
             return deadEnd;
         }
 
+        public static Piece FindKing(TeamColour teamColour, Piece[,] boardState)
+        {
+            foreach (var piece in boardState)
+                if (piece is King && piece.TeamColour == teamColour)
+                    return piece;
 
+            throw new Exception($"{teamColour} King not found");
+        }
 
+        public static bool IsKingInCheck(TeamColour teamColour, Gameboard simulatedBoard)
+        {
+            // to check if teamColour's King is in check, only the opposite team's moves need to be calculated
+            if (teamColour == TeamColour.White)
+                simulatedBoard.CalculateTeamActions(TeamColour.Black);
+            else
+                simulatedBoard.CalculateTeamActions(TeamColour.White);
 
+            var king = FindKing(teamColour, simulatedBoard.Board);
+            var enemyActions = teamColour == TeamColour.White
+                ? simulatedBoard.BlackActions
+                : simulatedBoard.WhiteActions;
+
+            // check if the King is now threatened by a capture from any of the available enemy moves
+            foreach (var action in enemyActions)
+                if (action.Square == king.Square && action.ActionType == ActionType.Capture)
+                    return true;
+
+            return false;
+        }
     }
 }

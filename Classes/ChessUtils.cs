@@ -10,7 +10,6 @@ namespace Chess.Classes
             return x >= 0 && x < 8 && y >= 0 && y < 8;
         }
 
-
         private static bool IsNotNull(int x, int y, Piece[,] boardState)
         {
             return IsWithinBounds(x, y) && boardState[x, y] != null;
@@ -50,7 +49,6 @@ namespace Chess.Classes
 
             return enPassant;
         }
-
 
         public static bool DeterminePieceAction(Piece piece, List<Action> actions, int x, int y, Piece[,] boardState)
         {
@@ -98,6 +96,30 @@ namespace Chess.Classes
                     return true;
 
             return false;
+        }
+
+        public static (int, int) CoordsFromAlgebraicNotation(string algebraicNotation)
+        {
+            if (algebraicNotation.Length != 2)
+                throw new ArgumentException("Algebraic notation must be exactly 2 characters.");
+
+            char fileChar = algebraicNotation[0];
+            char rankChar = algebraicNotation[1];
+
+            if (fileChar < 'a' || fileChar > 'h' || rankChar < '1' || rankChar > '8')
+                throw new ArgumentException($"{algebraicNotation} is not a valid square");
+
+            int column = fileChar - 'a';
+            int row = '8' - rankChar;
+            return (row, column);
+        }
+
+        // Converts array indexes to standard algebraic notation used in Chess (a8 top left, h1 bottom right)
+        public static string ToAlgebraicNotation(int x, int y)
+        {
+            char file = (char)('a' + y);
+            int rank = 8 - x;
+            return $"{file}{rank}";
         }
     }
 }

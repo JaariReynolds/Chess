@@ -14,6 +14,11 @@ namespace Chess.Classes.ConcretePieces
             PieceValue = 5;
         }
 
+        public override Piece Clone()
+        {
+            return new Rook(TeamColour, Square.X, Square.Y);
+        }
+
         public override void Draw()
         {
             Console.Write(TeamColour == TeamColour.White ? " R " : " r ");

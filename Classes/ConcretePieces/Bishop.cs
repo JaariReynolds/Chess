@@ -14,6 +14,11 @@ namespace Chess.Classes.ConcretePieces
             PieceValue = 3;
         }
 
+        public override Piece Clone()
+        {
+            return new Bishop(TeamColour, Square.X, Square.Y);
+        }
+
         public override void Draw()
         {
             Console.Write(TeamColour == TeamColour.White ? " B " : " b ");

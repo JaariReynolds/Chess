@@ -10,6 +10,7 @@ namespace Chess.Classes
 
         public abstract void Draw();
         public abstract List<Action> GetPotentialActions(Piece[,] boardState, Action? lastPerformedAction);
+        public abstract Piece Clone();
 
         public Piece(TeamColour teamColour, int x, int y)
         {

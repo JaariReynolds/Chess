@@ -16,6 +16,11 @@ namespace Chess.Classes.ConcretePieces
             actionAmount = teamColour == TeamColour.White ? -1 : 1;
         }
 
+        public override Piece Clone()
+        {
+            return new Pawn(TeamColour, Square.X, Square.Y);
+        }
+
         public override void Draw()
         {
             Console.Write(TeamColour == TeamColour.White ? " P " : " p ");

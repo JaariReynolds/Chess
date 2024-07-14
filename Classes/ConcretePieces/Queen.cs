@@ -15,6 +15,11 @@ namespace Chess.Classes.ConcretePieces
             PieceValue = 9;
         }
 
+        public override Piece Clone()
+        {
+            return new Queen(TeamColour, Square.X, Square.Y);
+        }
+
         public override void Draw()
         {
             Console.Write(TeamColour == TeamColour.White ? " Q " : " q ");

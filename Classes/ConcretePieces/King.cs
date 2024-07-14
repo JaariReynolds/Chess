@@ -15,6 +15,11 @@ namespace Chess.Classes.ConcretePieces
             PieceValue = 0; // King piece is invaluable and also does not matter 
         }
 
+        public override Piece Clone()
+        {
+            return new King(TeamColour, Square.X, Square.Y);
+        }
+
         public override void Draw()
         {
             Console.Write(TeamColour == TeamColour.White ? " K " : " k ");

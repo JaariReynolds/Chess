@@ -10,6 +10,8 @@ namespace Chess.Classes
         public List<Action> WhiteActions { get; private set; }
         public List<Action> BlackActions { get; private set; }
         public Action? LastPerformedAction { get; private set; }
+        public int WhitePoints { get; set; }
+        public int BlackPoints { get; set; }
 
         public Gameboard()
         {
@@ -21,8 +23,7 @@ namespace Chess.Classes
         }
         public void InitialiseBoardState()
         {
-            Board.SetPieceAt("a1", new Pawn(TeamColour.White, "a1"));
-            Board.SetPieceAt("a4", new Pawn(TeamColour.White, "a4"));
+            Board.SetPieceAt("a2", new Pawn(TeamColour.White, "a2"));
             Board.SetPieceAt("h1", new Knight(TeamColour.Black, "h1"));
             Board[5, 4] = new Rook(TeamColour.Black, 5, 4);
         }
@@ -80,15 +81,51 @@ namespace Chess.Classes
             else
                 BlackActions = actions;
 
-            foreach (var action in actions)
-            {
-                Console.WriteLine(action);
-            }
         }
 
-        public void SetLastPerformedAction(Action action)
+        public void ShowCurrentTeamActions()
         {
+            var actions = CurrentTeamColour == TeamColour.White ? WhiteActions : BlackActions;
+            for (int i = 0; i < actions.Count; i++)
+                Console.WriteLine($"   {i}. {actions[i]}");
+        }
+
+        public void SelectAction()
+        {
+            var actions = CurrentTeamColour == TeamColour.White ? WhiteActions : BlackActions;
+
+            int selectedAction;
+            bool validSelection;
+
+            Console.WriteLine("Select action:");
+            ShowCurrentTeamActions();
+
+            do
+                validSelection = int.TryParse(Console.ReadLine(), out selectedAction) && selectedAction < actions.Count;
+            while (!validSelection);
+
+            PerformAction(actions[selectedAction]);
+        }
+
+        public void PerformAction(Action action)
+        {
+            switch (action.ActionType)
+            {
+                case ActionType.Move:
+                case ActionType.PawnDoubleMove:
+                    this.Move(action, Board);
+                    break;
+
+                case ActionType.Capture:
+                    this.Capture(action, Board);
+                    break;
+
+                default:
+                    throw new NotImplementedException($"{action.ActionType} not yet implemented");
+            }
+
             LastPerformedAction = action;
+            SwapTurns();
         }
 
         public void DrawCurrentState()

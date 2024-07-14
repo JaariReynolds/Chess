@@ -22,6 +22,7 @@ namespace Chess.Classes
         public void InitialiseBoardState()
         {
             Board[0, 0] = new King(TeamColour.White, 0, 0);
+            Board[1, 1] = new Pawn(TeamColour.Black, 1, 1);
             //Board[3, 4] = new Pawn(TeamColour.Black, 3, 4);
 
             //Board[5, 1] = new Pawn(TeamColour.White, 5, 1);
@@ -47,6 +48,24 @@ namespace Chess.Classes
             CurrentTeamColour = CurrentTeamColour == TeamColour.White ? TeamColour.Black : TeamColour.White;
             WhiteActions.Clear();
             BlackActions.Clear();
+        }
+
+        public Gameboard Clone()
+        {
+            Gameboard cloneBoard = new Gameboard();
+
+            for (int row = 0; row < Board.GetLength(0); row++)
+            {
+                for (int col = 0; col < Board.GetLength(1); col++)
+                {
+                    if (Board[row, col] != null)
+                    {
+                        cloneBoard.Board[row, col] = Board[row, col].Clone();
+                    }
+                }
+            }
+
+            return cloneBoard;
         }
 
         public void CalculateTeamActions(TeamColour teamColour)

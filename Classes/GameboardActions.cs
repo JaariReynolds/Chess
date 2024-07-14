@@ -1,4 +1,6 @@
-﻿namespace Chess.Classes
+﻿using Chess.Types;
+
+namespace Chess.Classes
 {
     public static class GameboardActions
     {
@@ -15,11 +17,8 @@
         }
 
 
-        public static void Move(Action action, Piece[,] boardState)
+        public static void Move(this Gameboard gameboard, Action action, Piece[,] boardState)
         {
-            if (action.ActionType != ActionType.Move)
-                throw new InvalidOperationException($"'{action}' action should not be called from the Move() method.");
-
             var actionSquareNotation = action.Square.ToString();
             var originalSquareNotation = action.Piece.Square.ToString();
             var piece = action.Piece;
@@ -27,6 +26,19 @@
             boardState.SetPieceAt(actionSquareNotation, piece); // update piece position on the board
             boardState.SetPieceAt(originalSquareNotation, null); // set old square to null
             piece.MovePiece(action.Square); // actually move the piece
+        }
+
+        public static void Capture(this Gameboard gameboard, Action action, Piece[,] boardState)
+        {
+            // Capture functionally the same as a move, just with awarded points
+            Piece capturedPiece = GetPieceAt(boardState, action.Square.ToString());
+            if (capturedPiece.TeamColour == TeamColour.White)
+                gameboard.BlackPoints += capturedPiece.PieceValue;
+            else
+                gameboard.WhitePoints += capturedPiece.PieceValue;
+
+            Move(gameboard, action, boardState);
+
         }
     }
 }

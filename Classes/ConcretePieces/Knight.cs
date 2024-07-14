@@ -12,14 +12,18 @@ namespace Chess.Classes.ConcretePieces
             { -1, 2 },{ -1, -2 }
         };
 
-        public Knight(TeamColour teamColour, int x, int y) : base(teamColour, x, y)
+        public Knight(TeamColour teamColour, string algebraicNotation) : base(teamColour, algebraicNotation)
         {
             PieceValue = 3;
         }
 
+        public Knight(TeamColour teamColour, int x, int y) : this(teamColour, ChessUtils.ToAlgebraicNotation(x, y))
+        {
+        }
+
         public override Piece Clone()
         {
-            return new Knight(TeamColour, Square.X, Square.Y);
+            return new Knight(TeamColour, Square.ToString());
         }
 
         public override void Draw()

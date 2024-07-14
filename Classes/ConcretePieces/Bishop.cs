@@ -9,14 +9,18 @@ namespace Chess.Classes.ConcretePieces
             {-1, -1}, {-1, 1}, {1, -1}, {1, 1} // NW, NE, SW, SE
         };
 
-        public Bishop(TeamColour teamColour, int x, int y) : base(teamColour, x, y)
+        public Bishop(TeamColour teamColour, string algebraicNotation) : base(teamColour, algebraicNotation)
         {
             PieceValue = 3;
         }
 
+        public Bishop(TeamColour teamColour, int x, int y) : this(teamColour, ChessUtils.ToAlgebraicNotation(x, y))
+        {
+        }
+
         public override Piece Clone()
         {
-            return new Bishop(TeamColour, Square.X, Square.Y);
+            return new Bishop(TeamColour, Square.ToString());
         }
 
         public override void Draw()

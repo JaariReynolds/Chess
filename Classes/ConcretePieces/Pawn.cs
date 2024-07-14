@@ -8,7 +8,7 @@ namespace Chess.Classes.ConcretePieces
         private int lastRow;
         private int actionAmount;
 
-        public Pawn(TeamColour teamColour, int x, int y) : base(teamColour, x, y)
+        public Pawn(TeamColour teamColour, string algebraicNotation) : base(teamColour, algebraicNotation)
         {
             PieceValue = 1;
             startX = teamColour == TeamColour.White ? 6 : 1;
@@ -16,9 +16,13 @@ namespace Chess.Classes.ConcretePieces
             actionAmount = teamColour == TeamColour.White ? -1 : 1;
         }
 
+        public Pawn(TeamColour teamColour, int x, int y) : this(teamColour, ChessUtils.ToAlgebraicNotation(x, y))
+        {
+        }
+
         public override Piece Clone()
         {
-            return new Pawn(TeamColour, Square.X, Square.Y);
+            return new Pawn(TeamColour, Square.ToString());
         }
 
         public override void Draw()

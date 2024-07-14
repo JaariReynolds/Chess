@@ -10,14 +10,18 @@ namespace Chess.Classes.ConcretePieces
             {-1, -1}, {-1, 1}, {1, -1}, {1, 1} // NW, NE, SW, SE
         };
 
-        public King(TeamColour teamColour, int x, int y) : base(teamColour, x, y)
+        public King(TeamColour teamColour, string algebraicNotation) : base(teamColour, algebraicNotation)
         {
             PieceValue = 0; // King piece is invaluable and also does not matter 
         }
 
+        public King(TeamColour teamColour, int x, int y) : this(teamColour, ChessUtils.ToAlgebraicNotation(x, y))
+        {
+        }
+
         public override Piece Clone()
         {
-            return new King(TeamColour, Square.X, Square.Y);
+            return new King(TeamColour, Square.ToString());
         }
 
         public override void Draw()

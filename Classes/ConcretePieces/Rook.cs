@@ -9,14 +9,19 @@ namespace Chess.Classes.ConcretePieces
             {-1, 0}, {1, 0}, {0, -1}, {0, 1}, // N, S, E, W
         };
 
-        public Rook(TeamColour teamColour, int x, int y) : base(teamColour, x, y)
+
+        public Rook(TeamColour teamColour, string algebraicNotation) : base(teamColour, algebraicNotation)
         {
             PieceValue = 5;
         }
 
+        public Rook(TeamColour teamColour, int x, int y) : this(teamColour, ChessUtils.ToAlgebraicNotation(x, y))
+        {
+        }
+
         public override Piece Clone()
         {
-            return new Rook(TeamColour, Square.X, Square.Y);
+            return new Rook(TeamColour, Square.ToString());
         }
 
         public override void Draw()

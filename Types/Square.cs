@@ -10,6 +10,8 @@
             X = x;
             Y = y;
         }
+
+        // Converts array indexes to standard algebraic notation used in Chess (a8 top left, h1 bottom right)
         public string ToAlgebraicNotation()
         {
             char file = (char)('a' + X);
@@ -22,6 +24,9 @@
             return ToAlgebraicNotation();
         }
 
+        // Squares are considered equal if their X and Y coordinates are the same.
+        // Allows for object equality checks instead of having to do
+        // (action.Square.X == piece.Square.X && action.Square.Y == piece.Square.Y)
         public override bool Equals(object? obj)
         {
             var otherSquare = obj as Square;

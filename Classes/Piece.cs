@@ -12,15 +12,22 @@ namespace Chess.Classes
         public abstract List<Action> GetPotentialActions(Piece[,] boardState, Action? lastPerformedAction);
         public abstract Piece Clone();
 
+        public Piece(TeamColour teamColour, string algebraicNotation)
+        {
+            TeamColour = teamColour;
+            var (x, y) = ChessUtils.CoordsFromAlgebraicNotation(algebraicNotation);
+            Square = new Square(x, y);
+        }
+
         public Piece(TeamColour teamColour, int x, int y)
         {
             TeamColour = teamColour;
             Square = new Square(x, y);
-
         }
 
-        public void MovePiece(int x, int y)
+        public void MovePiece(Square square)
         {
+            var (x, y) = ChessUtils.CoordsFromAlgebraicNotation(square.ToString());
             Square.X = x;
             Square.Y = y;
         }

@@ -21,22 +21,12 @@ namespace Chess.Classes
         }
         public void InitialiseBoardState()
         {
-            Board[0, 0] = new King(TeamColour.White, 0, 0);
-            Board[1, 1] = new Pawn(TeamColour.Black, 1, 1);
-            //Board[3, 4] = new Pawn(TeamColour.Black, 3, 4);
-
-            //Board[5, 1] = new Pawn(TeamColour.White, 5, 1);
-            //Board[5, 3] = new Pawn(TeamColour.White, 5, 3); 
-
-
-
-
-            //for (int y = 0; y < Board.GetLength(0); y++)
-            //{
-            //    Board[6, y] = new Pawn(TeamColour.White, 6, y);
-            //    Board[1, y] = new Pawn(TeamColour.Black, 1, y);
-            //}
+            Board.SetPieceAt("a1", new Pawn(TeamColour.White, "a1"));
+            Board.SetPieceAt("a4", new Pawn(TeamColour.White, "a4"));
+            Board.SetPieceAt("h1", new Knight(TeamColour.Black, "h1"));
+            Board[5, 4] = new Rook(TeamColour.Black, 5, 4);
         }
+
 
         public void SetTestBoard(int x, int y, Piece piece)
         {
@@ -96,18 +86,6 @@ namespace Chess.Classes
             }
         }
 
-        private void PerformAction(Piece piece, Action action)
-        {
-            switch (action.ActionType)
-            {
-                case ActionType.Move:
-                    Board[action.Square.X, action.Square.Y] = piece;
-                    Board[piece.Square.X, piece.Square.Y] = null!;
-                    piece.MovePiece(action.Square.X, action.Square.Y);
-                    break;
-            }
-        }
-
         public void SetLastPerformedAction(Action action)
         {
             LastPerformedAction = action;
@@ -115,11 +93,11 @@ namespace Chess.Classes
 
         public void DrawCurrentState()
         {
-            Console.WriteLine("   | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |");
+            Console.WriteLine("   | a | b | c | d | e | f | g | h |");
             Console.WriteLine("   ---------------------------------");
             for (int x = 0; x < Board.GetLength(0); x++)
             {
-                Console.Write($" {x} ");
+                Console.Write($" {8 - x} ");
                 for (int y = 0; y < Board.GetLength(1); y++)
                 {
                     if (y == 0) Console.Write("|");

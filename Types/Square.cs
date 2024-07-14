@@ -1,4 +1,6 @@
-﻿namespace Chess.Types
+﻿using Chess.Classes;
+
+namespace Chess.Types
 {
     public class Square
     {
@@ -11,17 +13,9 @@
             Y = y;
         }
 
-        // Converts array indexes to standard algebraic notation used in Chess (a8 top left, h1 bottom right)
-        public string ToAlgebraicNotation()
-        {
-            char file = (char)('a' + X);
-            int rank = 8 - Y;
-            return $"{file}{rank}";
-        }
-
         public override string ToString()
         {
-            return ToAlgebraicNotation();
+            return ChessUtils.ToAlgebraicNotation(X, Y);
         }
 
         // Squares are considered equal if their X and Y coordinates are the same.

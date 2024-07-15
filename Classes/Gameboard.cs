@@ -6,12 +6,14 @@ namespace Chess.Classes
     public class Gameboard
     {
         public Piece[,] Board { get; private set; }
-        public TeamColour CurrentTeamColour { get; private set; }
+        public TeamColour CurrentTeamColour { get; set; }
         public List<Action> WhiteActions { get; private set; }
         public List<Action> BlackActions { get; private set; }
-        public Action? LastPerformedAction { get; private set; }
+        public Action? LastPerformedAction { get; set; }
         public int WhitePoints { get; set; }
         public int BlackPoints { get; set; }
+
+        public bool IgnoreKing { get; set; } // used for testing only
 
         public Gameboard()
         {
@@ -20,6 +22,25 @@ namespace Chess.Classes
             //InitialiseBoardState();
             WhiteActions = new List<Action>();
             BlackActions = new List<Action>();
+        }
+
+        /// <summary>
+        /// Create a copy of a Gameboard for simulation purposes
+        /// </summary>
+        public Gameboard(Gameboard copiedGameboard)
+        {
+            var clonedBoard = new Piece[8, 8];
+            for (int row = 0; row < copiedGameboard.Board.GetLength(0); row++)
+                for (int col = 0; col < copiedGameboard.Board.GetLength(1); col++)
+                    if (copiedGameboard.Board[row, col] != null)
+                        clonedBoard[row, col] = copiedGameboard.Board[row, col].Clone();
+
+            CurrentTeamColour = copiedGameboard.CurrentTeamColour;
+            WhitePoints = copiedGameboard.WhitePoints;
+            BlackPoints = copiedGameboard.BlackPoints;
+            WhiteActions = new List<Action>();
+            BlackActions = new List<Action>();
+            LastPerformedAction = copiedGameboard.LastPerformedAction;
         }
         public void InitialiseBoardState()
         {
@@ -41,28 +62,17 @@ namespace Chess.Classes
             BlackActions.Clear();
         }
 
-        public Gameboard Clone()
-        {
-            Gameboard cloneBoard = new Gameboard();
-
-            for (int row = 0; row < Board.GetLength(0); row++)
-            {
-                for (int col = 0; col < Board.GetLength(1); col++)
-                {
-                    if (Board[row, col] != null)
-                    {
-                        cloneBoard.Board[row, col] = Board[row, col].Clone();
-                    }
-                }
-            }
-
-            return cloneBoard;
-        }
-
         public void CalculateTeamActions(TeamColour teamColour)
         {
             var actions = new List<Action>();
+            var checkingPieces = new List<Piece>();
 
+            // determine if King is in check before calculating possible moves 
+            if (!IgnoreKing)
+                if (this.IsKingInCheck(CurrentTeamColour))
+                    checkingPieces = this.GetCheckingPieces(CurrentTeamColour);
+
+            // calculate potential moves of all pieces of the current team
             foreach (var piece in Board)
             {
                 if (piece == null) continue;
@@ -85,14 +95,14 @@ namespace Chess.Classes
 
         public void ShowCurrentTeamActions()
         {
-            var actions = CurrentTeamColour == TeamColour.White ? WhiteActions : BlackActions;
+            var actions = this.GetTeamActions();
             for (int i = 0; i < actions.Count; i++)
                 Console.WriteLine($"   {i}. {actions[i]}");
         }
 
         public void SelectAction()
         {
-            var actions = CurrentTeamColour == TeamColour.White ? WhiteActions : BlackActions;
+            var actions = this.GetTeamActions();
 
             int selectedAction;
             bool validSelection;
@@ -113,11 +123,11 @@ namespace Chess.Classes
             {
                 case ActionType.Move:
                 case ActionType.PawnDoubleMove:
-                    this.Move(action, Board);
+                    this.Move(action);
                     break;
 
                 case ActionType.Capture:
-                    this.Capture(action, Board);
+                    this.Capture(action);
                     break;
 
                 default:

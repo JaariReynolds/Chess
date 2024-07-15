@@ -1,14 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Chess.Types
+﻿namespace Chess.Types
 {
     public enum TeamColour
     {
         White,
         Black
+    }
+
+    public static class TeamColourExtensions
+    {
+        public static TeamColour GetOppositeTeam(this TeamColour teamColour)
+        {
+            return teamColour == TeamColour.White ? TeamColour.Black : TeamColour.White;
+        }
     }
 }

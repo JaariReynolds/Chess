@@ -77,27 +77,6 @@ namespace Chess.Classes
             throw new Exception($"{teamColour} King not found");
         }
 
-        public static bool IsKingInCheck(TeamColour teamColour, Gameboard simulatedBoard)
-        {
-            // to check if teamColour's King is in check, only the opposite team's moves need to be calculated
-            if (teamColour == TeamColour.White)
-                simulatedBoard.CalculateTeamActions(TeamColour.Black);
-            else
-                simulatedBoard.CalculateTeamActions(TeamColour.White);
-
-            var king = FindKing(teamColour, simulatedBoard.Board);
-            var enemyActions = teamColour == TeamColour.White
-                ? simulatedBoard.BlackActions
-                : simulatedBoard.WhiteActions;
-
-            // check if the King is now threatened by a capture from any of the available enemy moves
-            foreach (var action in enemyActions)
-                if (action.Square == king.Square && action.ActionType == ActionType.Capture)
-                    return true;
-
-            return false;
-        }
-
         public static (int, int) CoordsFromAlgebraicNotation(string algebraicNotation)
         {
             if (algebraicNotation.Length != 2)

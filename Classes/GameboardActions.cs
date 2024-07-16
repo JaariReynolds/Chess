@@ -16,23 +16,11 @@ namespace Chess.Classes
             boardState[x, y] = piece; // passing a null piece is legal, will just mean setting that coord to empty
         }
 
-        public static List<Action> GetTeamActions(this Gameboard gameboard)
-        {
-            return gameboard.CurrentTeamColour == TeamColour.White ? gameboard.WhiteActions : gameboard.BlackActions;
-        }
-
         public static bool IsKingInCheck(this Gameboard gameboard, TeamColour teamColour)
         {
             // to check if teamColour's King is in check, only the opposite team's moves need to be calculated
-            if (teamColour == TeamColour.White)
-                gameboard.CalculateTeamActions(TeamColour.Black);
-            else
-                gameboard.CalculateTeamActions(TeamColour.White);
-
+            var enemyActions = gameboard.CalculateTeamActions(teamColour.GetOppositeTeam());
             var king = ChessUtils.FindKing(teamColour, gameboard.Board);
-            var enemyActions = teamColour == TeamColour.White
-                ? gameboard.BlackActions
-                : gameboard.WhiteActions;
 
             // check if the King is now threatened by a capture from any of the available enemy moves
             foreach (var action in enemyActions)
@@ -42,16 +30,13 @@ namespace Chess.Classes
             return false;
         }
 
-        public static List<Piece> GetCheckingPieces(this Gameboard simulatedBoard, TeamColour checkedTeamColour)
+        public static List<Piece> GetCheckingPieces(this Gameboard gameboard, TeamColour checkedTeamColour)
         {
             var checkingPieces = new List<Piece>();
-            var king = ChessUtils.FindKing(checkedTeamColour, simulatedBoard.Board);
-            var enemyColour = checkedTeamColour.GetOppositeTeam();
+            var enemyActions = gameboard.CalculateTeamActions(checkedTeamColour.GetOppositeTeam());
+            var king = ChessUtils.FindKing(checkedTeamColour, gameboard.Board);
 
-            simulatedBoard.CalculateTeamActions(enemyColour);
-            var enemyActions = enemyColour == TeamColour.White
-                ? simulatedBoard.WhiteActions
-                : simulatedBoard.BlackActions;
+            // JUST COMBINE ISKINGINCHECK AND GETCHECKINGPIECES AS THEYRE DOING VERY SIMILAR ACTIONS AND WASTING RECALCULATION TIME
 
             foreach (var action in enemyActions)
             {

@@ -7,12 +7,10 @@ namespace Chess.Classes
     {
         public Piece[,] Board { get; private set; }
         public TeamColour CurrentTeamColour { get; set; }
-        public List<Action> WhiteActions { get; private set; }
-        public List<Action> BlackActions { get; private set; }
+
         public Action? LastPerformedAction { get; set; }
         public int WhitePoints { get; set; }
         public int BlackPoints { get; set; }
-
         public bool IgnoreKing { get; set; } // used for testing only
 
         public Gameboard()
@@ -20,8 +18,6 @@ namespace Chess.Classes
             Board = new Piece[8, 8];
             CurrentTeamColour = TeamColour.White;
             //InitialiseBoardState();
-            WhiteActions = new List<Action>();
-            BlackActions = new List<Action>();
         }
 
         /// <summary>
@@ -38,17 +34,15 @@ namespace Chess.Classes
             CurrentTeamColour = copiedGameboard.CurrentTeamColour;
             WhitePoints = copiedGameboard.WhitePoints;
             BlackPoints = copiedGameboard.BlackPoints;
-            WhiteActions = new List<Action>();
-            BlackActions = new List<Action>();
             LastPerformedAction = copiedGameboard.LastPerformedAction;
         }
+
         public void InitialiseBoardState()
         {
             Board.SetPieceAt("a2", new Pawn(TeamColour.White, "a2"));
             Board.SetPieceAt("h1", new Knight(TeamColour.Black, "h1"));
             Board[5, 4] = new Rook(TeamColour.Black, 5, 4);
         }
-
 
         public void SetTestBoard(int x, int y, Piece piece)
         {
@@ -57,12 +51,11 @@ namespace Chess.Classes
 
         public void SwapTurns()
         {
-            CurrentTeamColour = CurrentTeamColour == TeamColour.White ? TeamColour.Black : TeamColour.White;
-            WhiteActions.Clear();
-            BlackActions.Clear();
+            CurrentTeamColour = CurrentTeamColour.GetOppositeTeam();
+            Console.WriteLine("current team colour is " + CurrentTeamColour);
         }
 
-        public void CalculateTeamActions(TeamColour teamColour)
+        public List<Action> CalculateTeamActions(TeamColour teamColour)
         {
             var actions = new List<Action>();
             var checkingPieces = new List<Piece>();
@@ -86,35 +79,28 @@ namespace Chess.Classes
 
             actions = actions.OrderBy(a => a.ToString()).ToList();
 
-            if (teamColour == TeamColour.White)
-                WhiteActions = actions;
-            else
-                BlackActions = actions;
-
+            return actions;
         }
 
-        public void ShowCurrentTeamActions()
+        public void ShowActions(List<Action> actions)
         {
-            var actions = this.GetTeamActions();
             for (int i = 0; i < actions.Count; i++)
                 Console.WriteLine($"   {i}. {actions[i]}");
         }
 
-        public void SelectAction()
+        public Action SelectAction(List<Action> actions)
         {
-            var actions = this.GetTeamActions();
-
-            int selectedAction;
+            int selectedActionIndex;
             bool validSelection;
 
             Console.WriteLine("Select action:");
-            ShowCurrentTeamActions();
+            ShowActions(actions);
 
             do
-                validSelection = int.TryParse(Console.ReadLine(), out selectedAction) && selectedAction < actions.Count;
+                validSelection = int.TryParse(Console.ReadLine(), out selectedActionIndex) && selectedActionIndex < actions.Count;
             while (!validSelection);
 
-            PerformAction(actions[selectedAction]);
+            return actions[selectedActionIndex];
         }
 
         public void PerformAction(Action action)

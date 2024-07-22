@@ -28,7 +28,7 @@ namespace Chess.Classes.ConcretePieces
 
         public override void Draw()
         {
-            Console.Write(TeamColour == TeamColour.White ? " K " : " k ");
+            Console.Write(TeamColour == TeamColour.White ? " N " : " n ");
         }
 
         public override List<Action> GetPotentialActions(Piece[,] boardState, Action? lastPerformedAction)

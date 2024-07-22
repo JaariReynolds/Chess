@@ -68,13 +68,13 @@ namespace Chess.Classes
             return deadEnd;
         }
 
-        public static Piece FindKing(TeamColour teamColour, Piece[,] boardState)
+        public static Piece? FindKing(TeamColour teamColour, Piece[,] boardState)
         {
             foreach (var piece in boardState)
                 if (piece is King && piece.TeamColour == teamColour)
                     return piece;
 
-            throw new Exception($"{teamColour} King not found");
+            return null;
         }
 
         public static (int, int) CoordsFromAlgebraicNotation(string algebraicNotation)

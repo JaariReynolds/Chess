@@ -6,9 +6,9 @@ namespace Chess.Classes
     public class Gameboard
     {
         public Piece[,] Board { get; private set; }
-        public TeamColour CurrentTeamColour { get; set; }
+        public TeamColour CurrentTeamColour { get; private set; }
 
-        public Action? LastPerformedAction { get; set; }
+        public Action? LastPerformedAction { get; private set; }
         public int WhitePoints { get; set; }
         public int BlackPoints { get; set; }
         public bool IgnoreKing { get; set; } // used for testing only
@@ -25,11 +25,11 @@ namespace Chess.Classes
         /// </summary>
         public Gameboard(Gameboard copiedGameboard)
         {
-            var clonedBoard = new Piece[8, 8];
+            Board = new Piece[8, 8];
             for (int row = 0; row < copiedGameboard.Board.GetLength(0); row++)
                 for (int col = 0; col < copiedGameboard.Board.GetLength(1); col++)
                     if (copiedGameboard.Board[row, col] != null)
-                        clonedBoard[row, col] = copiedGameboard.Board[row, col].Clone();
+                        Board[row, col] = copiedGameboard.Board[row, col].Clone();
 
             CurrentTeamColour = copiedGameboard.CurrentTeamColour;
             WhitePoints = copiedGameboard.WhitePoints;
@@ -42,6 +42,33 @@ namespace Chess.Classes
             Board.SetPieceAt("a2", new Pawn(TeamColour.White, "a2"));
             Board.SetPieceAt("h1", new Knight(TeamColour.Black, "h1"));
             Board[5, 4] = new Rook(TeamColour.Black, 5, 4);
+        }
+
+        public void InitialiseStandardBoardState()
+        {
+            Board.SetPieceAt("a8", new Rook(TeamColour.Black, "a8"));
+            Board.SetPieceAt("b8", new Knight(TeamColour.Black, "b8"));
+            Board.SetPieceAt("c8", new Bishop(TeamColour.Black, "c8"));
+            Board.SetPieceAt("d8", new Queen(TeamColour.Black, "d8"));
+            Board.SetPieceAt("e8", new King(TeamColour.Black, "e8"));
+            Board.SetPieceAt("f8", new Bishop(TeamColour.Black, "f8"));
+            Board.SetPieceAt("g8", new Knight(TeamColour.Black, "g8"));
+            Board.SetPieceAt("h8", new Rook(TeamColour.Black, "h8"));
+
+            for (int col = 0; col < Board.GetLength(1); col++)
+            {
+                Board[1, col] = new Pawn(TeamColour.Black, 1, col);
+                Board[6, col] = new Pawn(TeamColour.White, 6, col);
+            }
+
+            Board.SetPieceAt("a1", new Rook(TeamColour.White, "a1"));
+            Board.SetPieceAt("b1", new Knight(TeamColour.White, "b1"));
+            Board.SetPieceAt("c1", new Bishop(TeamColour.White, "c1"));
+            Board.SetPieceAt("d1", new Queen(TeamColour.White, "d1"));
+            Board.SetPieceAt("e1", new King(TeamColour.White, "e1"));
+            Board.SetPieceAt("f1", new Bishop(TeamColour.White, "f1"));
+            Board.SetPieceAt("g1", new Knight(TeamColour.White, "g1"));
+            Board.SetPieceAt("h1", new Rook(TeamColour.White, "h1"));
         }
 
         public void SetTestBoard(int x, int y, Piece piece)

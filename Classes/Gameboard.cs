@@ -57,32 +57,16 @@ namespace Chess.Classes
 
         public List<Action> CalculateTeamActions(TeamColour teamColour)
         {
-            var actions = new List<Action>();
-            var checkingPieces = new List<Piece>();
 
-            // determine if King is in check before calculating possible moves 
-            if (!IgnoreKing)
-                if (this.IsKingInCheck(CurrentTeamColour))
-                    checkingPieces = this.GetCheckingPieces(CurrentTeamColour);
+            var actions = this.GetAllPossibleActions(teamColour);
+            var checkingPieces = this.GetCheckingPieces(teamColour);
 
-            // calculate potential moves of all pieces of the current team
-            foreach (var piece in Board)
-            {
-                if (piece == null) continue;
-                if (piece.TeamColour != teamColour) continue;
 
-                if (piece is Pawn)
-                    actions.AddRange(piece.GetPotentialActions(Board, LastPerformedAction));
-                else
-                    actions.AddRange(piece.GetPotentialActions(Board, null));
-            }
-
-            actions = actions.OrderBy(a => a.ToString()).ToList();
 
             return actions;
         }
 
-        public void ShowActions(List<Action> actions)
+        public static void ShowActions(List<Action> actions)
         {
             for (int i = 0; i < actions.Count; i++)
                 Console.WriteLine($"   {i}. {actions[i]}");

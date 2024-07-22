@@ -1,4 +1,5 @@
-﻿using Chess.Types;
+﻿using Chess.Classes.ConcretePieces;
+using Chess.Types;
 
 namespace Chess.Classes
 {
@@ -16,30 +17,23 @@ namespace Chess.Classes
             boardState[x, y] = piece; // passing a null piece is legal, will just mean setting that coord to empty
         }
 
-        public static bool IsKingInCheck(this Gameboard gameboard, TeamColour teamColour)
-        {
-            // to check if teamColour's King is in check, only the opposite team's moves need to be calculated
-            var enemyActions = gameboard.CalculateTeamActions(teamColour.GetOppositeTeam());
-            var king = ChessUtils.FindKing(teamColour, gameboard.Board);
 
-            // check if the King is now threatened by a capture from any of the available enemy moves
-            foreach (var action in enemyActions)
-                if (action.Square == king.Square && action.ActionType == ActionType.Capture)
-                    return true;
-
-            return false;
-        }
-
+        /// <summary>
+        /// Returns a list of pieces on the provided Gameboard that are currently checking the checkedTeamColour King
+        /// </summary>
         public static List<Piece> GetCheckingPieces(this Gameboard gameboard, TeamColour checkedTeamColour)
         {
             var checkingPieces = new List<Piece>();
-            var enemyActions = gameboard.CalculateTeamActions(checkedTeamColour.GetOppositeTeam());
             var king = ChessUtils.FindKing(checkedTeamColour, gameboard.Board);
+            var enemyActions = gameboard.GetAllPossibleActions(checkedTeamColour.GetOppositeTeam());
 
-            // JUST COMBINE ISKINGINCHECK AND GETCHECKINGPIECES AS THEYRE DOING VERY SIMILAR ACTIONS AND WASTING RECALCULATION TIME
+            // this should only happen in test situations where a King isn't placed on the board 
+            if (king is null)
+                return checkingPieces;
 
             foreach (var action in enemyActions)
             {
+                // skip actions by pieces that have already been determined to check the King
                 if (checkingPieces.Contains(action.Piece))
                     continue;
 
@@ -49,6 +43,27 @@ namespace Chess.Classes
             }
 
             return checkingPieces;
+        }
+
+        /// <summary>
+        /// Returns a list of all possible Actions that pieces of the provided TeamColour can perform, WITHOUT considering a checked King
+        /// </summary>
+        public static List<Action> GetAllPossibleActions(this Gameboard gameboard, TeamColour teamColour)
+        {
+            var actions = new List<Action>();
+
+            foreach (var piece in gameboard.Board)
+            {
+                if (piece == null) continue;
+                if (piece.TeamColour != teamColour) continue;
+
+                if (piece is Pawn)
+                    actions.AddRange(piece.GetPotentialActions(gameboard.Board, gameboard.LastPerformedAction));
+                else
+                    actions.AddRange(piece.GetPotentialActions(gameboard.Board, null));
+            }
+
+            return actions;
         }
 
         public static void Move(this Gameboard gameboard, Action action)

@@ -1,5 +1,4 @@
-﻿using Chess.Classes.ConcretePieces;
-using Chess.Types;
+﻿using Chess.Types;
 
 namespace Chess.Classes
 {
@@ -66,15 +65,6 @@ namespace Chess.Classes
             }
 
             return deadEnd;
-        }
-
-        public static Piece? FindKing(TeamColour teamColour, Piece[,] boardState)
-        {
-            foreach (var piece in boardState)
-                if (piece is King && piece.TeamColour == teamColour)
-                    return piece;
-
-            return null;
         }
 
         public static (int, int) CoordsFromAlgebraicNotation(string algebraicNotation)

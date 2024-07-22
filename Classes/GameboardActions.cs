@@ -17,6 +17,14 @@ namespace Chess.Classes
             boardState[x, y] = piece; // passing a null piece is legal, will just mean setting that coord to empty
         }
 
+        public static Piece? FindKing(this Gameboard gameboard, TeamColour teamColour)
+        {
+            foreach (var piece in gameboard.Board)
+                if (piece is King && piece.TeamColour == teamColour)
+                    return piece;
+
+            return null;
+        }
 
         /// <summary>
         /// Returns a list of pieces on the provided Gameboard that are currently checking the checkedTeamColour King
@@ -24,7 +32,7 @@ namespace Chess.Classes
         public static List<Piece> GetCheckingPieces(this Gameboard gameboard, TeamColour checkedTeamColour)
         {
             var checkingPieces = new List<Piece>();
-            var king = ChessUtils.FindKing(checkedTeamColour, gameboard.Board);
+            var king = gameboard.FindKing(checkedTeamColour);
             var enemyActions = gameboard.GetAllPossibleActions(checkedTeamColour.GetOppositeTeam());
 
             // this should only happen in test situations where a King isn't placed on the board 

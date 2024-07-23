@@ -11,10 +11,15 @@ namespace Chess.Classes
             return boardState[x, y];
         }
 
-        public static void SetPieceAt(this Piece[,] boardState, string algebraicNotation, Piece? piece)
+        public static void ClearSquare(this Piece[,] boardState, string algebraicNotation)
         {
             var (x, y) = ChessUtils.CoordsFromAlgebraicNotation(algebraicNotation);
-            boardState[x, y] = piece; // passing a null piece is legal, will just mean setting that coord to empty
+            boardState[x, y] = null!; // passing a null piece is legal, will just mean setting that coord to empty
+        }
+
+        public static void SetSquare(this Piece[,] boardState, Piece piece)
+        {
+            boardState[piece.Square.X, piece.Square.Y] = piece;
         }
 
         public static Piece? FindKing(this Gameboard gameboard, TeamColour teamColour)
@@ -54,7 +59,7 @@ namespace Chess.Classes
         }
 
         /// <summary>
-        /// Returns a list of all possible Actions that pieces of the provided TeamColour can perform, WITHOUT considering a checked King
+        /// Returns a list of all possible Actions that pieces of the provided TeamColour can perform, including Actions that leave the King in a checked position
         /// </summary>
         public static List<Action> GetAllPossibleActions(this Gameboard gameboard, TeamColour teamColour)
         {
@@ -66,7 +71,7 @@ namespace Chess.Classes
                 if (piece.TeamColour != teamColour) continue;
 
                 if (piece is Pawn)
-                    actions.AddRange(piece.GetPotentialActions(gameboard.Board, gameboard.LastPerformedAction));
+                    actions.AddRange(piece.GetPotentialActions(gameboard.Board, gameboard.PreviousActions.Count > 0 ? gameboard.PreviousActions[^1] : null));
                 else
                     actions.AddRange(piece.GetPotentialActions(gameboard.Board, null));
             }
@@ -74,15 +79,40 @@ namespace Chess.Classes
             return actions;
         }
 
+        /// <summary>
+        /// Returns a list of legal actions that do not leave the King in a checked position
+        /// </summary>
+        public static List<Action> GetLegalActions(this Gameboard gameboard, List<Action> possibleActions)
+        {
+            // legal actions are ones that do not leave the King in a checked position
+            var legalActions = new List<Action>();
+
+            if (possibleActions.Count == 0)
+                return legalActions;
+
+            // foreach possible action, simulate performing the action and recalculate the enemy actions to see if checkingPieces == 0
+            foreach (var action in possibleActions)
+            {
+                var simulatedBoard = new Gameboard(gameboard);
+                var simulatedAction = new Action(action);
+                simulatedBoard.PerformAction(simulatedAction);
+
+                // if no checking pieces after the simulated action, means it counts as a legal action
+                if (GetCheckingPieces(simulatedBoard, action.Piece.TeamColour).Count == 0)
+                    legalActions.Add(action);
+            }
+
+            return legalActions;
+        }
+
         public static void Move(this Gameboard gameboard, Action action)
         {
-            var actionSquareNotation = action.Square.ToString();
             var originalSquareNotation = action.Piece.Square.ToString();
             var piece = action.Piece;
 
-            gameboard.Board.SetPieceAt(actionSquareNotation, piece); // update piece position on the board
-            gameboard.Board.SetPieceAt(originalSquareNotation, null); // set old square to null
             piece.MovePiece(action.Square); // actually move the piece
+            gameboard.Board.SetSquare(piece); // update piece position on the board
+            gameboard.Board.ClearSquare(originalSquareNotation); // set old square to null
         }
 
         public static void Capture(this Gameboard gameboard, Action action)

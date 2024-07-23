@@ -13,6 +13,12 @@ namespace Chess.Types
             Y = y;
         }
 
+        public Square(Square existingSquare)
+        {
+            X = existingSquare.X;
+            Y = existingSquare.Y;
+        }
+
         public override string ToString()
         {
             return ChessUtils.ToAlgebraicNotation(X, Y);

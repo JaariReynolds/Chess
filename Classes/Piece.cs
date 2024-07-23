@@ -25,6 +25,13 @@ namespace Chess.Classes
             Square = new Square(x, y);
         }
 
+        public Piece(Piece existingPiece)
+        {
+            Square = new Square(existingPiece.Square);
+            TeamColour = existingPiece.TeamColour;
+            PieceValue = existingPiece.PieceValue;
+        }
+
         public void MovePiece(Square square)
         {
             var (x, y) = ChessUtils.CoordsFromAlgebraicNotation(square.ToString());

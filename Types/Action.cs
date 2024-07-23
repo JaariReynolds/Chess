@@ -23,6 +23,13 @@ public class Action
         ActionType = actionType;
     }
 
+    public Action(Action existingAction)
+    {
+        Piece = existingAction.Piece.Clone();
+        Square = existingAction.Square;
+        ActionType = existingAction.ActionType;
+    }
+
     public override string ToString()
     {
         return $"{Piece} - {ActionType}: {Square}";

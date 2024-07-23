@@ -7,8 +7,7 @@ namespace Chess.Classes
     {
         public Piece[,] Board { get; private set; }
         public TeamColour CurrentTeamColour { get; private set; }
-
-        public Action? LastPerformedAction { get; private set; }
+        public List<Action> PreviousActions { get; private set; }
         public int WhitePoints { get; set; }
         public int BlackPoints { get; set; }
         public bool IgnoreKing { get; set; } // used for testing only
@@ -16,59 +15,66 @@ namespace Chess.Classes
         public Gameboard()
         {
             Board = new Piece[8, 8];
+            PreviousActions = new List<Action>();
             CurrentTeamColour = TeamColour.White;
-            //InitialiseBoardState();
+            //InitialiseStandardBoardState();
         }
 
         /// <summary>
         /// Create a copy of a Gameboard for simulation purposes
         /// </summary>
-        public Gameboard(Gameboard copiedGameboard)
+        public Gameboard(Gameboard existingGameboard)
         {
             Board = new Piece[8, 8];
-            for (int row = 0; row < copiedGameboard.Board.GetLength(0); row++)
-                for (int col = 0; col < copiedGameboard.Board.GetLength(1); col++)
-                    if (copiedGameboard.Board[row, col] != null)
-                        Board[row, col] = copiedGameboard.Board[row, col].Clone();
+            for (int row = 0; row < existingGameboard.Board.GetLength(0); row++)
+                for (int col = 0; col < existingGameboard.Board.GetLength(1); col++)
+                    if (existingGameboard.Board[row, col] != null)
+                        Board[row, col] = existingGameboard.Board[row, col].Clone();
 
-            CurrentTeamColour = copiedGameboard.CurrentTeamColour;
-            WhitePoints = copiedGameboard.WhitePoints;
-            BlackPoints = copiedGameboard.BlackPoints;
-            LastPerformedAction = copiedGameboard.LastPerformedAction;
+            CurrentTeamColour = existingGameboard.CurrentTeamColour;
+            WhitePoints = existingGameboard.WhitePoints;
+            BlackPoints = existingGameboard.BlackPoints;
+            PreviousActions = existingGameboard.PreviousActions;
         }
 
         public void InitialiseBoardState()
         {
-            Board.SetPieceAt("a2", new Pawn(TeamColour.White, "a2"));
-            Board.SetPieceAt("h1", new Knight(TeamColour.Black, "h1"));
-            Board[5, 4] = new Rook(TeamColour.Black, 5, 4);
+            Board.SetSquare(new King(TeamColour.Black, "h8"));
+            Board.SetSquare(new Bishop(TeamColour.Black, "a2"));
+            Board.SetSquare(new Rook(TeamColour.Black, "f1"));
+
+
+            Board.SetSquare(new King(TeamColour.White, "e6"));
+            Board.SetSquare(new Rook(TeamColour.White, "c6"));
+            Board.SetSquare(new Pawn(TeamColour.White, "d7"));
+            Board.SetSquare(new Knight(TeamColour.White, "b4"));
         }
 
         public void InitialiseStandardBoardState()
         {
-            Board.SetPieceAt("a8", new Rook(TeamColour.Black, "a8"));
-            Board.SetPieceAt("b8", new Knight(TeamColour.Black, "b8"));
-            Board.SetPieceAt("c8", new Bishop(TeamColour.Black, "c8"));
-            Board.SetPieceAt("d8", new Queen(TeamColour.Black, "d8"));
-            Board.SetPieceAt("e8", new King(TeamColour.Black, "e8"));
-            Board.SetPieceAt("f8", new Bishop(TeamColour.Black, "f8"));
-            Board.SetPieceAt("g8", new Knight(TeamColour.Black, "g8"));
-            Board.SetPieceAt("h8", new Rook(TeamColour.Black, "h8"));
+            Board.SetSquare(new Rook(TeamColour.Black, "a8"));
+            Board.SetSquare(new Knight(TeamColour.Black, "b8"));
+            Board.SetSquare(new Bishop(TeamColour.Black, "c8"));
+            Board.SetSquare(new Queen(TeamColour.Black, "d8"));
+            Board.SetSquare(new King(TeamColour.Black, "e8"));
+            Board.SetSquare(new Bishop(TeamColour.Black, "f8"));
+            Board.SetSquare(new Knight(TeamColour.Black, "g8"));
+            Board.SetSquare(new Rook(TeamColour.Black, "h8"));
 
             for (int col = 0; col < Board.GetLength(1); col++)
             {
-                Board[1, col] = new Pawn(TeamColour.Black, 1, col);
-                Board[6, col] = new Pawn(TeamColour.White, 6, col);
+                Board.SetSquare(new Pawn(TeamColour.Black, 1, col));
+                Board.SetSquare(new Pawn(TeamColour.White, 6, col));
             }
 
-            Board.SetPieceAt("a1", new Rook(TeamColour.White, "a1"));
-            Board.SetPieceAt("b1", new Knight(TeamColour.White, "b1"));
-            Board.SetPieceAt("c1", new Bishop(TeamColour.White, "c1"));
-            Board.SetPieceAt("d1", new Queen(TeamColour.White, "d1"));
-            Board.SetPieceAt("e1", new King(TeamColour.White, "e1"));
-            Board.SetPieceAt("f1", new Bishop(TeamColour.White, "f1"));
-            Board.SetPieceAt("g1", new Knight(TeamColour.White, "g1"));
-            Board.SetPieceAt("h1", new Rook(TeamColour.White, "h1"));
+            Board.SetSquare(new Rook(TeamColour.White, "a1"));
+            Board.SetSquare(new Knight(TeamColour.White, "b1"));
+            Board.SetSquare(new Bishop(TeamColour.White, "c1"));
+            Board.SetSquare(new Queen(TeamColour.White, "d1"));
+            Board.SetSquare(new King(TeamColour.White, "e1"));
+            Board.SetSquare(new Bishop(TeamColour.White, "f1"));
+            Board.SetSquare(new Knight(TeamColour.White, "g1"));
+            Board.SetSquare(new Rook(TeamColour.White, "h1"));
         }
 
         public void SetTestBoard(int x, int y, Piece piece)
@@ -79,18 +85,13 @@ namespace Chess.Classes
         public void SwapTurns()
         {
             CurrentTeamColour = CurrentTeamColour.GetOppositeTeam();
-            Console.WriteLine("current team colour is " + CurrentTeamColour);
         }
 
         public List<Action> CalculateTeamActions(TeamColour teamColour)
         {
-
-            var actions = this.GetAllPossibleActions(teamColour);
-            var checkingPieces = this.GetCheckingPieces(teamColour);
-
-
-
-            return actions;
+            var possibleActions = this.GetAllPossibleActions(teamColour);
+            var legalActions = this.GetLegalActions(possibleActions);
+            return legalActions.OrderBy(a => a.ToString()).ToList();
         }
 
         public static void ShowActions(List<Action> actions)
@@ -131,7 +132,7 @@ namespace Chess.Classes
                     throw new NotImplementedException($"{action.ActionType} not yet implemented");
             }
 
-            LastPerformedAction = action;
+            PreviousActions.Add(action);
             SwapTurns();
         }
 

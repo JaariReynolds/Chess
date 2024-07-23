@@ -9,13 +9,11 @@ namespace Chess
         {
             var gameboard = new Gameboard();
             gameboard.InitialiseBoardState();
-            gameboard.IgnoreKing = true;
 
             while (true)
             {
                 gameboard.DrawCurrentState();
-                var teamColour = gameboard.CurrentTeamColour;
-                var actions = gameboard.CalculateTeamActions(teamColour);
+                var actions = gameboard.CalculateTeamActions(gameboard.CurrentTeamColour);
                 var selectedAction = gameboard.SelectAction(actions);
                 gameboard.PerformAction(selectedAction);
 

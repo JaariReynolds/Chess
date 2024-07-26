@@ -5,9 +5,12 @@ public enum ActionType
 {
     Move,
     Capture,
-    PawnPromote,
     PawnDoubleMove,
     PawnEnPassant,
+    PawnPromoteKnight,
+    PawnPromoteBishop,
+    PawnPromoteRook,
+    PawnPromoteQueen
 }
 
 public class Action

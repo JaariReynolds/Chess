@@ -39,15 +39,8 @@ namespace Chess.Classes
 
         public void InitialiseBoardState()
         {
-            Board.SetSquare(new King(TeamColour.Black, "h8"));
-            Board.SetSquare(new Bishop(TeamColour.Black, "a2"));
-            Board.SetSquare(new Rook(TeamColour.Black, "f1"));
-
-
-            Board.SetSquare(new King(TeamColour.White, "e6"));
-            Board.SetSquare(new Rook(TeamColour.White, "c6"));
-            Board.SetSquare(new Pawn(TeamColour.White, "d7"));
-            Board.SetSquare(new Knight(TeamColour.White, "b4"));
+            Board.SetSquare(new Pawn(TeamColour.White, "a5"));
+            Board.SetSquare(new Pawn(TeamColour.Black, "c4"));
         }
 
         public void InitialiseStandardBoardState()
@@ -126,6 +119,13 @@ namespace Chess.Classes
 
                 case ActionType.Capture:
                     this.Capture(action);
+                    break;
+
+                case ActionType.PawnPromoteKnight:
+                case ActionType.PawnPromoteBishop:
+                case ActionType.PawnPromoteRook:
+                case ActionType.PawnPromoteQueen:
+                    this.Promote(action);
                     break;
 
                 default:

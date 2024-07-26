@@ -126,5 +126,29 @@ namespace Chess.Classes
 
             Move(gameboard, action);
         }
+
+        public static void Promote(this Gameboard gameboard, Action action)
+        {
+            // create a new piece at the promoted square
+            switch (action.ActionType)
+            {
+                case ActionType.PawnPromoteKnight:
+                    gameboard.Board.SetSquare(new Knight(action.Piece.TeamColour, action.Square.ToString()));
+                    break;
+                case ActionType.PawnPromoteBishop:
+                    gameboard.Board.SetSquare(new Bishop(action.Piece.TeamColour, action.Square.ToString()));
+                    break;
+                case ActionType.PawnPromoteRook:
+                    gameboard.Board.SetSquare(new Rook(action.Piece.TeamColour, action.Square.ToString()));
+                    break;
+                case ActionType.PawnPromoteQueen:
+                    gameboard.Board.SetSquare(new Queen(action.Piece.TeamColour, action.Square.ToString()));
+                    break;
+                default:
+                    throw new ArgumentException($"Promote method should not be called with a the non-promotion action: {action.ActionType}");
+            }
+
+            gameboard.Board.ClearSquare(action.Piece.Square.ToString()); // clear the original square of the pawn 
+        }
     }
 }

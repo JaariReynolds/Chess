@@ -17,6 +17,9 @@ namespace Chess.Classes
             boardState[x, y] = null!; // passing a null piece is legal, will just mean setting that coord to empty
         }
 
+        /// <summary>
+        /// Place the provided piece on the board according to the Piece's current Square coordinates.
+        /// </summary>
         public static void SetSquare(this Piece[,] boardState, Piece piece)
         {
             boardState[piece.Square.X, piece.Square.Y] = piece;
@@ -32,7 +35,7 @@ namespace Chess.Classes
         }
 
         /// <summary>
-        /// Returns a list of pieces on the provided Gameboard that are currently checking the checkedTeamColour King
+        /// Returns a list of pieces on the provided Gameboard that are currently checking the checkedTeamColour King.
         /// </summary>
         public static List<Piece> GetCheckingPieces(this Gameboard gameboard, TeamColour checkedTeamColour)
         {
@@ -59,7 +62,7 @@ namespace Chess.Classes
         }
 
         /// <summary>
-        /// Returns a list of all possible Actions that pieces of the provided TeamColour can perform, including Actions that leave the King in a checked position
+        /// Returns a list of all possible Actions that pieces of the provided TeamColour can perform, including Actions that leave the King in a checked position.
         /// </summary>
         public static List<Action> GetAllPossibleActions(this Gameboard gameboard, TeamColour teamColour)
         {
@@ -80,7 +83,7 @@ namespace Chess.Classes
         }
 
         /// <summary>
-        /// Returns a list of legal actions that do not leave the King in a checked position
+        /// Returns a list of legal actions that do not leave the King in a checked position.
         /// </summary>
         public static List<Action> GetLegalActions(this Gameboard gameboard, List<Action> possibleActions)
         {

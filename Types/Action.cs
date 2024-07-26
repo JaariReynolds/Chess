@@ -26,6 +26,14 @@ public class Action
         ActionType = actionType;
     }
 
+    public Action(Piece piece, string algebraicNotation, ActionType actionType)
+    {
+        Piece = piece;
+        var (x, y) = ChessUtils.CoordsFromAlgebraicNotation(algebraicNotation);
+        Square = new Square(x, y);
+        ActionType = actionType;
+    }
+
     public Action(Action existingAction)
     {
         Piece = existingAction.Piece.Clone();

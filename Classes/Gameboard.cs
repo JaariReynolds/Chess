@@ -37,10 +37,10 @@ namespace Chess.Classes
             PreviousActions = existingGameboard.PreviousActions;
         }
 
-        public void InitialiseBoardState()
+        public void InitialiseTestBoardState()
         {
-            Board.SetSquare(new Pawn(TeamColour.White, "a5"));
-            Board.SetSquare(new Pawn(TeamColour.Black, "c4"));
+            Board.SetSquare(new Pawn(TeamColour.White, "d2"));
+            Board.SetSquare(new Pawn(TeamColour.Black, "e4"));
         }
 
         public void InitialiseStandardBoardState()
@@ -78,6 +78,11 @@ namespace Chess.Classes
         public void SwapTurns()
         {
             CurrentTeamColour = CurrentTeamColour.GetOppositeTeam();
+        }
+
+        public void AddActionToHistory(Action action)
+        {
+            PreviousActions.Add(action);
         }
 
         public List<Action> CalculateTeamActions(TeamColour teamColour)
@@ -128,11 +133,14 @@ namespace Chess.Classes
                     this.Promote(action);
                     break;
 
+                case ActionType.PawnEnPassant:
+                    this.EnPassant(action);
+                    break;
+
                 default:
                     throw new NotImplementedException($"{action.ActionType} not yet implemented");
             }
 
-            PreviousActions.Add(action);
             SwapTurns();
         }
 

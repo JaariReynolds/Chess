@@ -153,5 +153,22 @@ namespace Chess.Classes
 
             gameboard.Board.ClearSquare(action.Piece.Square.ToString()); // clear the original square of the pawn 
         }
+
+        public static void EnPassant(this Gameboard gameboard, Action action)
+        {
+            // "capture" the Pawn that double moved (i.e. the piece that performed the last action)
+            var pawnPieceAction = gameboard.PreviousActions[^1];
+
+            gameboard.Board.ClearSquare(pawnPieceAction.Square.ToString()); // remove the pawn that double moved 
+
+            // award points (1) of capture to the current team
+            if (action.Piece.TeamColour == TeamColour.White)
+                gameboard.WhitePoints += pawnPieceAction.Piece.PieceValue;
+            else
+                gameboard.BlackPoints += pawnPieceAction.Piece.PieceValue;
+
+            // move capturing piece to standard capture square (1 diagonal)
+            Move(gameboard, action);
+        }
     }
 }

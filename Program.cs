@@ -8,13 +8,14 @@ namespace Chess
         static void Main(string[] args)
         {
             var gameboard = new Gameboard();
-            gameboard.InitialiseBoardState();
+            gameboard.InitialiseTestBoardState();
 
             while (true)
             {
                 gameboard.DrawCurrentState();
                 var actions = gameboard.CalculateTeamActions(gameboard.CurrentTeamColour);
                 var selectedAction = gameboard.SelectAction(actions);
+                gameboard.AddActionToHistory(new Action(selectedAction));
                 gameboard.PerformAction(selectedAction);
 
                 Console.WriteLine($"White points: {gameboard.WhitePoints}");

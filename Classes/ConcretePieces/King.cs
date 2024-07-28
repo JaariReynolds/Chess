@@ -61,11 +61,11 @@ namespace Chess.Classes.ConcretePieces
         public bool CanKingsideCastle(Piece[,] boardState, Action? lastPerformedAction)
         {
             // 1. King cannot have moved
-            if (HasMoved) return false;
+            if (HasMoved || Square.ToString() != $"e{rank}") return false;
 
             // 1. Rook cannot have moved
             var whiteRook = boardState.GetPieceAt($"h{rank}");
-            if (whiteRook == null || whiteRook!.HasMoved) return false;
+            if (whiteRook == null || whiteRook!.HasMoved || whiteRook.Square.ToString() != $"h{rank}") return false;
 
             // 2. Empty squares between King and Rook (f1/8, g1/8)
             if (boardState.GetPieceAt($"f{rank}") != null ||
@@ -101,9 +101,10 @@ namespace Chess.Classes.ConcretePieces
                 boardState.GetPieceAt($"d{rank}") != null)
                 return false;
 
-            // 3/4. opposing team cannot be attacking squares b1/8 (empty), c1/8 (empty), d1/8 (empty), e1/8 (king)
+            // 3/4. opposing team cannot be attacking c1/8 (empty), d1/8 (empty), e1/8 (king)
+            // opposing team CAN be attacking b1/8, as only the rook passes through this square. castling legality does not care about the rook being under threat
             var enemyActions = boardState.GetAllPossibleActions(TeamColour.GetOppositeTeam(), lastPerformedAction);
-            string[] safeSquares = { $"b{rank}", $"c{rank}", $"d{rank}", $"e{rank}" };
+            string[] safeSquares = { $"c{rank}", $"d{rank}", $"e{rank}" };
 
             foreach (var action in enemyActions)
                 if (safeSquares.Contains(action.Square.ToString()))

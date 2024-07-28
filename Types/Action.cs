@@ -10,7 +10,10 @@ public enum ActionType
     PawnPromoteKnight,
     PawnPromoteBishop,
     PawnPromoteRook,
-    PawnPromoteQueen
+    PawnPromoteQueen,
+    KingsideCastle,
+    QueensideCastle,
+
 }
 
 public class Action

@@ -39,8 +39,10 @@ namespace Chess.Classes
 
         public void InitialiseTestBoardState()
         {
-            Board.SetSquare(new Pawn(TeamColour.White, "d2"));
-            Board.SetSquare(new Pawn(TeamColour.Black, "e4"));
+            Board.SetSquare(new King(TeamColour.White, "e1"));
+            Board.SetSquare(new Rook(TeamColour.White, "h1"));
+            Board.SetSquare(new Rook(TeamColour.White, "a1"));
+            Board.SetSquare(new Pawn(TeamColour.Black, "d7"));
         }
 
         public void InitialiseStandardBoardState()
@@ -87,7 +89,8 @@ namespace Chess.Classes
 
         public List<Action> CalculateTeamActions(TeamColour teamColour)
         {
-            var possibleActions = this.GetAllPossibleActions(teamColour);
+            var lastPerformedAction = PreviousActions.Count == 0 ? null : PreviousActions[^1];
+            var possibleActions = Board.GetAllPossibleActions(teamColour, lastPerformedAction);
             var legalActions = this.GetLegalActions(possibleActions);
             return legalActions.OrderBy(a => a.ToString()).ToList();
         }
@@ -137,10 +140,19 @@ namespace Chess.Classes
                     this.EnPassant(action);
                     break;
 
+                case ActionType.KingsideCastle:
+                    this.KingsideCastle(action);
+                    break;
+
+                case ActionType.QueensideCastle:
+                    this.QueensideCastle(action);
+                    break;
+
                 default:
                     throw new NotImplementedException($"{action.ActionType} not yet implemented");
             }
 
+            action.Piece.HasMoved = true;
             SwapTurns();
         }
 

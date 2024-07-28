@@ -5,12 +5,19 @@ namespace Chess.Classes
 {
     public static class GameboardActions
     {
-        public static Piece GetPieceAt(this Piece[,] boardState, string algebraicNotation)
+        /// <summary>
+        /// Returns a Piece if found, otherwise returns null.
+        /// </summary>
+
+        public static Piece? GetPieceAt(this Piece[,] boardState, string algebraicNotation)
         {
             var (x, y) = ChessUtils.CoordsFromAlgebraicNotation(algebraicNotation);
             return boardState[x, y];
         }
 
+        /// <summary>
+        /// Sets the provided square to null.
+        /// </summary>
         public static void ClearSquare(this Piece[,] boardState, string algebraicNotation)
         {
             var (x, y) = ChessUtils.CoordsFromAlgebraicNotation(algebraicNotation);
@@ -25,9 +32,9 @@ namespace Chess.Classes
             boardState[piece.Square.X, piece.Square.Y] = piece;
         }
 
-        public static Piece? FindKing(this Gameboard gameboard, TeamColour teamColour)
+        public static Piece? FindKing(this Piece[,] boardState, TeamColour teamColour)
         {
-            foreach (var piece in gameboard.Board)
+            foreach (var piece in boardState)
                 if (piece is King && piece.TeamColour == teamColour)
                     return piece;
 
@@ -35,13 +42,13 @@ namespace Chess.Classes
         }
 
         /// <summary>
-        /// Returns a list of pieces on the provided Gameboard that are currently checking the checkedTeamColour King.
+        /// Returns a list of pieces on the provided board that are currently checking the checkedTeamColour King.
         /// </summary>
-        public static List<Piece> GetCheckingPieces(this Gameboard gameboard, TeamColour checkedTeamColour)
+        public static List<Piece> GetCheckingPieces(this Piece[,] boardState, TeamColour checkedTeamColour, Action? previousAction)
         {
             var checkingPieces = new List<Piece>();
-            var king = gameboard.FindKing(checkedTeamColour);
-            var enemyActions = gameboard.GetAllPossibleActions(checkedTeamColour.GetOppositeTeam());
+            var king = boardState.FindKing(checkedTeamColour);
+            var enemyActions = boardState.GetAllPossibleActions(checkedTeamColour.GetOppositeTeam(), previousAction);
 
             // this should only happen in test situations where a King isn't placed on the board 
             if (king is null)
@@ -64,19 +71,16 @@ namespace Chess.Classes
         /// <summary>
         /// Returns a list of all possible Actions that pieces of the provided TeamColour can perform, including Actions that leave the King in a checked position.
         /// </summary>
-        public static List<Action> GetAllPossibleActions(this Gameboard gameboard, TeamColour teamColour)
+        public static List<Action> GetAllPossibleActions(this Piece[,] boardState, TeamColour teamColour, Action? previousAction)
         {
             var actions = new List<Action>();
 
-            foreach (var piece in gameboard.Board)
+            foreach (var piece in boardState)
             {
                 if (piece == null) continue;
                 if (piece.TeamColour != teamColour) continue;
 
-                if (piece is Pawn)
-                    actions.AddRange(piece.GetPotentialActions(gameboard.Board, gameboard.PreviousActions.Count > 0 ? gameboard.PreviousActions[^1] : null));
-                else
-                    actions.AddRange(piece.GetPotentialActions(gameboard.Board, null));
+                actions.AddRange(piece.GetPotentialActions(boardState, previousAction));
             }
 
             return actions;
@@ -89,6 +93,7 @@ namespace Chess.Classes
         {
             // legal actions are ones that do not leave the King in a checked position
             var legalActions = new List<Action>();
+            var previousAction = gameboard.PreviousActions.Count == 0 ? null : gameboard.PreviousActions[^1];
 
             if (possibleActions.Count == 0)
                 return legalActions;
@@ -101,7 +106,7 @@ namespace Chess.Classes
                 simulatedBoard.PerformAction(simulatedAction);
 
                 // if no checking pieces after the simulated action, means it counts as a legal action
-                if (GetCheckingPieces(simulatedBoard, action.Piece.TeamColour).Count == 0)
+                if (GetCheckingPieces(simulatedBoard.Board, action.Piece.TeamColour, previousAction).Count == 0)
                     legalActions.Add(action);
             }
 
@@ -121,8 +126,8 @@ namespace Chess.Classes
         public static void Capture(this Gameboard gameboard, Action action)
         {
             // Capture functionally the same as a move, just with awarded points
-            Piece capturedPiece = GetPieceAt(gameboard.Board, action.Square.ToString());
-            if (capturedPiece.TeamColour == TeamColour.White)
+            var capturedPiece = GetPieceAt(gameboard.Board, action.Square.ToString());
+            if (capturedPiece!.TeamColour == TeamColour.White)
                 gameboard.BlackPoints += capturedPiece.PieceValue;
             else
                 gameboard.WhitePoints += capturedPiece.PieceValue;
@@ -169,6 +174,34 @@ namespace Chess.Classes
 
             // move capturing piece to standard capture square (1 diagonal)
             Move(gameboard, action);
+        }
+
+        public static void KingsideCastle(this Gameboard gameboard, Action action)
+        {
+            // King moves to g1/8, Rook moves to f1/8
+            var rank = action.Piece.TeamColour == TeamColour.White ? "1" : "8";
+            var kingsideRook = GetPieceAt(gameboard.Board, $"h{rank}");
+
+            gameboard.Move(new Action(action.Piece, $"g{rank}", ActionType.Move));
+            gameboard.Move(new Action(kingsideRook!, $"f{rank}", ActionType.Move));
+
+            // Castles are the only actions where more than 1 piece is moved.
+            // Update rook.HasMoved here as it won't happen in Gameboard.PerformAction()
+            kingsideRook!.HasMoved = true;
+        }
+
+        public static void QueensideCastle(this Gameboard gameboard, Action action)
+        {
+            // King moves to c1/8, Rook moves to d1/8
+            var rank = action.Piece.TeamColour == TeamColour.White ? "1" : "8";
+            var queensideRook = GetPieceAt(gameboard.Board, $"a{rank}");
+
+            gameboard.Move(new Action(action.Piece, $"c{rank}", ActionType.Move));
+            gameboard.Move(new Action(queensideRook!, $"d{rank}", ActionType.Move));
+
+            // Castles are the only actions where more than 1 piece is moved.
+            // Update rook.HasMoved here as it won't happen in Gameboard.PerformAction()
+            queensideRook!.HasMoved = true;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Chess.Classes;
+using Chess.Types;
 
 namespace Chess
 {
@@ -12,15 +13,19 @@ namespace Chess
 
             while (true)
             {
-                gameboard.DrawCurrentState();
                 var actions = gameboard.CalculateTeamActions(gameboard.CurrentTeamColour);
+
+                if (actions.Count == 0) break;
+
+                gameboard.DrawCurrentState();
                 var selectedAction = gameboard.SelectAction(actions);
                 gameboard.AddActionToHistory(new Action(selectedAction));
                 gameboard.PerformAction(selectedAction);
-
-                Console.WriteLine($"White points: {gameboard.WhitePoints}");
-                Console.WriteLine($"Black points: {gameboard.BlackPoints}");
             }
+
+            Console.WriteLine($"{gameboard.CurrentTeamColour.GetOppositeTeam()} wins!");
+            Console.WriteLine($"White points: {gameboard.WhitePoints}");
+            Console.WriteLine($"Black points: {gameboard.BlackPoints}");
         }
     }
 }

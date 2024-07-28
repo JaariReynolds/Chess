@@ -7,7 +7,7 @@ namespace Chess.Classes
         public Square Square { get; set; }
         public TeamColour TeamColour { get; set; }
         public int PieceValue { get; protected set; }
-
+        public bool HasMoved { get; set; }
         public abstract void Draw();
         public abstract List<Action> GetPotentialActions(Piece[,] boardState, Action? lastPerformedAction);
         public abstract Piece Clone();
@@ -17,6 +17,7 @@ namespace Chess.Classes
             TeamColour = teamColour;
             var (x, y) = ChessUtils.CoordsFromAlgebraicNotation(algebraicNotation);
             Square = new Square(x, y);
+            HasMoved = false;
         }
 
         public Piece(TeamColour teamColour, int x, int y)

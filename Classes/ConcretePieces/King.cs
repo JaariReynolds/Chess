@@ -41,7 +41,72 @@ namespace Chess.Classes.ConcretePieces
                 ChessUtils.DeterminePieceAction(this, actions, newX, newY, boardState);
             }
 
+            // Castling requires
+            // 1. Neither the king nor the rook has previously moved
+            // 2. There are no pieces between the king and the rook
+            // 3. The king is not currently in check
+            // 4. The king does not pass through or finish on a square that is attacked by an enemy piece
+            DetermineKingsideCastle(actions, boardState, lastPerformedAction);
+            DetermineQueensideCastle(actions, boardState, lastPerformedAction);
+
             return actions;
+        }
+
+        public void DetermineKingsideCastle(List<Action> actions, Piece[,] boardState, Action? lastPerformedAction)
+        {
+            // 1. King cannot have moved
+            if (HasMoved) return;
+
+            var rank = TeamColour == TeamColour.White ? "1" : "8";
+
+            // 1. Rook cannot have moved
+            var whiteRook = boardState.GetPieceAt($"h{rank}");
+            if (whiteRook == null || whiteRook!.HasMoved) return;
+
+            // 2. Empty squares between King and Rook (f1/8, g1/8)
+            if (boardState.GetPieceAt($"f{rank}") != null ||
+                boardState.GetPieceAt($"g{rank}") != null)
+                return;
+
+            // 3/4. opposing team cannot be attacking squares e1/8 (king), f1/8 (empty), g1/8 (empty)
+            var enemyActions = boardState.GetAllPossibleActions(TeamColour.GetOppositeTeam(), lastPerformedAction);
+            string[] safeSquares = { $"e{rank}", $"f{rank}", $"g{rank}" };
+
+            foreach (var action in enemyActions)
+                if (safeSquares.Contains(action.Square.ToString()))
+                    return;
+
+            // guards passed, can castle
+            actions.Add(new Action(this, $"g{rank}", ActionType.KingsideCastle));
+        }
+
+        public void DetermineQueensideCastle(List<Action> actions, Piece[,] boardState, Action? lastPerformedAction)
+        {
+            // 1. King cannot have moved
+            if (HasMoved) return;
+
+            var rank = TeamColour == TeamColour.White ? "1" : "8";
+
+            // 1. Rook cannot have moved
+            var whiteRook = boardState.GetPieceAt($"a{rank}");
+            if (whiteRook == null || whiteRook!.HasMoved) return;
+
+            // 2. Empty squares between King and Rook (b1/8, c1/8, d1/8)
+            if (boardState.GetPieceAt($"b{rank}") != null ||
+                boardState.GetPieceAt($"c{rank}") != null ||
+                boardState.GetPieceAt($"d{rank}") != null)
+                return;
+
+            // 3/4. opposing team cannot be attacking squares b1/8 (empty), c1/8 (empty), d1/8 (empty), e1/8 (king)
+            var enemyActions = boardState.GetAllPossibleActions(TeamColour.GetOppositeTeam(), lastPerformedAction);
+            string[] safeSquares = { $"b{rank}", $"c{rank}", $"d{rank}", $"e{rank}" };
+
+            foreach (var action in enemyActions)
+                if (safeSquares.Contains(action.Square.ToString()))
+                    return;
+
+            // guards passed, can castle
+            actions.Add(new Action(this, $"c{rank}", ActionType.QueensideCastle));
         }
     }
 }

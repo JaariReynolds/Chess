@@ -30,7 +30,7 @@ namespace Chess.Classes.ConcretePieces
             Console.Write(TeamColour == TeamColour.White ? " P " : " p ");
         }
 
-        public override List<Action> GetPotentialActions(Piece[,] boardState, Action? lastPerformedAction)
+        public override List<Action> GetPotentialActions(Piece[][] boardState, Action? lastPerformedAction)
         {
             var actions = new List<Action>();
 

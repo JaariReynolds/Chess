@@ -9,7 +9,7 @@ namespace Chess.Classes
         public int PieceValue { get; protected set; }
         public bool HasMoved { get; set; }
         public abstract void Draw();
-        public abstract List<Action> GetPotentialActions(Piece[,] boardState, Action? lastPerformedAction);
+        public abstract List<Action> GetPotentialActions(Piece[][] boardState, Action? lastPerformedAction);
         public abstract Piece Clone();
 
         public Piece(TeamColour teamColour, string algebraicNotation)

@@ -32,7 +32,7 @@ namespace Chess.Classes.ConcretePieces
             Console.Write(TeamColour == TeamColour.White ? " K " : " k ");
         }
 
-        public override List<Action> GetPotentialActions(Piece[,] boardState, Action? lastPerformedAction)
+        public override List<Action> GetPotentialActions(Piece[][] boardState, Action? lastPerformedAction)
         {
             // 8 surrounding squares 
             var actions = new List<Action>();
@@ -58,7 +58,7 @@ namespace Chess.Classes.ConcretePieces
             return actions;
         }
 
-        public bool CanKingsideCastle(Piece[,] boardState, Action? lastPerformedAction)
+        public bool CanKingsideCastle(Piece[][] boardState, Action? lastPerformedAction)
         {
             // 1. King cannot have moved
             if (HasMoved || Square.ToString() != $"e{rank}") return false;
@@ -84,7 +84,7 @@ namespace Chess.Classes.ConcretePieces
             return true;
         }
 
-        public bool CanQueensideCastle(Piece[,] boardState, Action? lastPerformedAction)
+        public bool CanQueensideCastle(Piece[][] boardState, Action? lastPerformedAction)
         {
             // 1. King cannot have moved
             if (HasMoved) return false;

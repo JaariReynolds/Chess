@@ -1,11 +1,12 @@
 ﻿using Chess.Classes.ConcretePieces;
 using Chess.Types;
+using System.Text.Json;
 
 namespace Chess.Classes
 {
     public class Gameboard
     {
-        public Piece[,] Board { get; private set; }
+        public Piece[][] Board { get; private set; }
         public TeamColour CurrentTeamColour { get; private set; }
         public List<Action> PreviousActions { get; private set; }
         public int WhitePoints { get; set; }
@@ -14,7 +15,7 @@ namespace Chess.Classes
 
         public Gameboard()
         {
-            Board = new Piece[8, 8];
+            Board = ChessUtils.InitialiseBoard();
             PreviousActions = new List<Action>();
             CurrentTeamColour = TeamColour.White;
             //InitialiseStandardBoardState();
@@ -25,11 +26,11 @@ namespace Chess.Classes
         /// </summary>
         public Gameboard(Gameboard existingGameboard)
         {
-            Board = new Piece[8, 8];
-            for (int row = 0; row < existingGameboard.Board.GetLength(0); row++)
-                for (int col = 0; col < existingGameboard.Board.GetLength(1); col++)
-                    if (existingGameboard.Board[row, col] != null)
-                        Board[row, col] = existingGameboard.Board[row, col].Clone();
+            Board = ChessUtils.InitialiseBoard();
+            for (int row = 0; row < 8; row++)
+                for (int col = 0; col < 8; col++)
+                    if (existingGameboard.Board[row][col] != null)
+                        Board[row][col] = existingGameboard.Board[row][col].Clone();
 
             CurrentTeamColour = existingGameboard.CurrentTeamColour;
             WhitePoints = existingGameboard.WhitePoints;
@@ -37,12 +38,17 @@ namespace Chess.Classes
             PreviousActions = existingGameboard.PreviousActions;
         }
 
+        public string ToJson()
+        {
+            return JsonSerializer.Serialize(this);
+        }
+
         public void InitialiseTestBoardState()
         {
             Board.SetSquare(new King(TeamColour.White, "e1"));
             Board.SetSquare(new Rook(TeamColour.White, "h1"));
-            Board.SetSquare(new Rook(TeamColour.White, "a1"));
-            Board.SetSquare(new Pawn(TeamColour.Black, "d7"));
+            Board.SetSquare(new Bishop(TeamColour.Black, "b4"));
+
         }
 
         public void InitialiseStandardBoardState()
@@ -74,7 +80,7 @@ namespace Chess.Classes
 
         public void SetTestBoard(int x, int y, Piece piece)
         {
-            Board[x, y] = piece;
+            Board[x][y] = piece;
         }
 
         public void SwapTurns()
@@ -160,19 +166,19 @@ namespace Chess.Classes
         {
             Console.WriteLine("   | a | b | c | d | e | f | g | h |");
             Console.WriteLine("   ---------------------------------");
-            for (int x = 0; x < Board.GetLength(0); x++)
+            for (int i = 0; i < Board.Length; i++)
             {
-                Console.Write($" {8 - x} ");
-                for (int y = 0; y < Board.GetLength(1); y++)
+                Console.Write($" {8 - i} ");
+                for (int j = 0; j < Board[i].Length; j++)
                 {
-                    if (y == 0) Console.Write("|");
-                    if (Board[x, y] == null)
+                    if (j == 0) Console.Write("|");
+                    if (Board[i][j] == null)
                     {
                         Console.Write("   |");
                     }
                     else
                     {
-                        Board[x, y].Draw();
+                        Board[i][j].Draw();
                         Console.Write("|");
                     }
                 }

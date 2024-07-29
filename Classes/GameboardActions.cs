@@ -9,34 +9,40 @@ namespace Chess.Classes
         /// Returns a Piece if found, otherwise returns null.
         /// </summary>
 
-        public static Piece? GetPieceAt(this Piece[,] boardState, string algebraicNotation)
+        public static Piece? GetPieceAt(this Piece[][] boardState, string algebraicNotation)
         {
             var (x, y) = ChessUtils.CoordsFromAlgebraicNotation(algebraicNotation);
-            return boardState[x, y];
+            return boardState[x][y];
         }
 
         /// <summary>
         /// Sets the provided square to null.
         /// </summary>
-        public static void ClearSquare(this Piece[,] boardState, string algebraicNotation)
+        public static void ClearSquare(this Piece[][] boardState, string algebraicNotation)
         {
             var (x, y) = ChessUtils.CoordsFromAlgebraicNotation(algebraicNotation);
-            boardState[x, y] = null!; // passing a null piece is legal, will just mean setting that coord to empty
+            boardState[x][y] = null!; // passing a null piece is legal, will just mean setting that coord to empty
         }
 
         /// <summary>
         /// Place the provided piece on the board according to the Piece's current Square coordinates.
         /// </summary>
-        public static void SetSquare(this Piece[,] boardState, Piece piece)
+        public static void SetSquare(this Piece[][] boardState, Piece piece)
         {
-            boardState[piece.Square.X, piece.Square.Y] = piece;
+            boardState[piece.Square.X][piece.Square.Y] = piece;
         }
 
-        public static Piece? FindKing(this Piece[,] boardState, TeamColour teamColour)
+        public static Piece? FindKing(this Piece[][] boardState, TeamColour teamColour)
         {
-            foreach (var piece in boardState)
-                if (piece is King && piece.TeamColour == teamColour)
-                    return piece;
+            for (int i = 0; i < boardState.Length; i++)
+            {
+                for (int j = 0; j < boardState[i].Length; j++)
+                {
+                    var piece = boardState[i][j];
+                    if (piece is King && piece.TeamColour == teamColour)
+                        return piece;
+                }
+            }
 
             return null;
         }
@@ -44,7 +50,7 @@ namespace Chess.Classes
         /// <summary>
         /// Returns a list of pieces on the provided board that are currently checking the checkedTeamColour King.
         /// </summary>
-        public static List<Piece> GetCheckingPieces(this Piece[,] boardState, TeamColour checkedTeamColour, Action? previousAction)
+        public static List<Piece> GetCheckingPieces(this Piece[][] boardState, TeamColour checkedTeamColour, Action? previousAction)
         {
             var checkingPieces = new List<Piece>();
             var king = boardState.FindKing(checkedTeamColour);
@@ -71,16 +77,20 @@ namespace Chess.Classes
         /// <summary>
         /// Returns a list of all possible Actions that pieces of the provided TeamColour can perform, including Actions that leave the King in a checked position.
         /// </summary>
-        public static List<Action> GetAllPossibleActions(this Piece[,] boardState, TeamColour teamColour, Action? previousAction)
+        public static List<Action> GetAllPossibleActions(this Piece[][] boardState, TeamColour teamColour, Action? previousAction)
         {
             var actions = new List<Action>();
 
-            foreach (var piece in boardState)
+            for (int i = 0; i < boardState.Length; i++)
             {
-                if (piece == null) continue;
-                if (piece.TeamColour != teamColour) continue;
+                for (int j = 0; j < boardState[i].Length; j++)
+                {
+                    var piece = boardState[i][j];
+                    if (piece == null) continue;
+                    if (piece.TeamColour != teamColour) continue;
 
-                actions.AddRange(piece.GetPotentialActions(boardState, previousAction));
+                    actions.AddRange(piece.GetPotentialActions(boardState, previousAction));
+                }
             }
 
             return actions;

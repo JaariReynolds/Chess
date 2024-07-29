@@ -28,7 +28,7 @@ namespace Chess.Classes.ConcretePieces
             Console.Write(TeamColour == TeamColour.White ? " B " : " b ");
         }
 
-        public override List<Action> GetPotentialActions(Piece[,] boardState, Action? lastPerformedAction)
+        public override List<Action> GetPotentialActions(Piece[][] boardState, Action? lastPerformedAction)
         {
             // Intercardinal directions only (i.e. diagonals only)
             var actions = new List<Action>();

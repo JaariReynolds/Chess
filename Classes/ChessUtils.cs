@@ -9,19 +9,19 @@ namespace Chess.Classes
             return x >= 0 && x < 8 && y >= 0 && y < 8;
         }
 
-        private static bool IsNotNull(int x, int y, Piece[,] boardState)
+        private static bool IsNotNull(int x, int y, Piece[][] boardState)
         {
-            return IsWithinBounds(x, y) && boardState[x, y] != null;
+            return IsWithinBounds(x, y) && boardState[x][y] != null;
         }
 
-        public static bool IsEmptySquare(int x, int y, Piece[,] boardState)
+        public static bool IsEmptySquare(int x, int y, Piece[][] boardState)
         {
-            return IsWithinBounds(x, y) && boardState[x, y] == null;
+            return IsWithinBounds(x, y) && boardState[x][y] == null;
         }
 
-        public static bool IsEnemy(TeamColour teamColour, int x, int y, Piece[,] boardState)
+        public static bool IsEnemy(TeamColour teamColour, int x, int y, Piece[][] boardState)
         {
-            return IsNotNull(x, y, boardState) && boardState[x, y].TeamColour != teamColour;
+            return IsNotNull(x, y, boardState) && boardState[x][y].TeamColour != teamColour;
         }
 
         public static bool EnPassant(TeamColour currentTeamColour, int x, int y, Action? lastPerformedAction)
@@ -49,7 +49,7 @@ namespace Chess.Classes
             return enPassant;
         }
 
-        public static bool DeterminePieceAction(Piece piece, List<Action> actions, int x, int y, Piece[,] boardState)
+        public static bool DeterminePieceAction(Piece piece, List<Action> actions, int x, int y, Piece[][] boardState)
         {
             // deadEnd used for Rook, Bishop, Queen, where their directional moves stop after an obstruction
 
@@ -89,6 +89,16 @@ namespace Chess.Classes
             char file = (char)('a' + y);
             int rank = 8 - x;
             return $"{file}{rank}";
+        }
+
+        public static Piece[][] InitialiseBoard()
+        {
+            var board = new Piece[8][];
+
+            for (int i = 0; i < 8; i++)
+                board[i] = new Piece[8];
+
+            return board;
         }
     }
 }

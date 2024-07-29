@@ -31,7 +31,7 @@ namespace Chess.Classes.ConcretePieces
             Console.Write(TeamColour == TeamColour.White ? " N " : " n ");
         }
 
-        public override List<Action> GetPotentialActions(Piece[,] boardState, Action? lastPerformedAction)
+        public override List<Action> GetPotentialActions(Piece[][] boardState, Action? lastPerformedAction)
         {
             // A knight can move 2 vertically and 1 horizontally, or 1 vertically and 2 horizontally
             var actions = new List<Action>();

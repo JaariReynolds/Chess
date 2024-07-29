@@ -14,7 +14,7 @@ namespace Chess.Classes.ConcretePieces
             PieceValue = 3;
         }
 
-        public Bishop(TeamColour teamColour, int x, int y) : this(teamColour, ChessUtils.ToAlgebraicNotation(x, y))
+        public Bishop(TeamColour teamColour, int x, int y) : this(teamColour, ChessUtils.ToAlgebraicNotation(new Square(x, y)))
         {
         }
 
@@ -39,7 +39,7 @@ namespace Chess.Classes.ConcretePieces
                 {
                     int newX = Square.X + directions[i, 0] * distance;
                     int newY = Square.Y + directions[i, 1] * distance;
-                    var deadEnd = ChessUtils.DeterminePieceAction(this, actions, newX, newY, boardState);
+                    var deadEnd = ChessUtils.DeterminePieceAction(this, actions, new Square(newX, newY), boardState);
                     if (deadEnd) break;
                 }
             }

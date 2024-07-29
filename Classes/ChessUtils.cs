@@ -4,27 +4,27 @@ namespace Chess.Classes
 {
     public static class ChessUtils
     {
-        private static bool IsWithinBounds(int x, int y)
+        private static bool IsWithinBounds(Square square)
         {
-            return x >= 0 && x < 8 && y >= 0 && y < 8;
+            return square.X >= 0 && square.X < 8 && square.Y >= 0 && square.Y < 8;
         }
 
-        private static bool IsNotNull(int x, int y, Piece[][] boardState)
+        private static bool IsNotNull(Square square, Piece[][] boardState)
         {
-            return IsWithinBounds(x, y) && boardState[x][y] != null;
+            return IsWithinBounds(square) && boardState[square.X][square.Y] != null;
         }
 
-        public static bool IsEmptySquare(int x, int y, Piece[][] boardState)
+        public static bool IsEmptySquare(Square square, Piece[][] boardState)
         {
-            return IsWithinBounds(x, y) && boardState[x][y] == null;
+            return IsWithinBounds(square) && boardState[square.X][square.Y] == null;
         }
 
-        public static bool IsEnemy(TeamColour teamColour, int x, int y, Piece[][] boardState)
+        public static bool IsEnemy(TeamColour teamColour, Square square, Piece[][] boardState)
         {
-            return IsNotNull(x, y, boardState) && boardState[x][y].TeamColour != teamColour;
+            return IsNotNull(square, boardState) && boardState[square.X][square.Y].TeamColour != teamColour;
         }
 
-        public static bool EnPassant(TeamColour currentTeamColour, int x, int y, Action? lastPerformedAction)
+        public static bool EnPassant(TeamColour currentTeamColour, Square square, Action? lastPerformedAction)
         {
             if (lastPerformedAction == null || lastPerformedAction.ActionType != ActionType.PawnDoubleMove)
                 return false;
@@ -35,13 +35,13 @@ namespace Chess.Classes
             {
                 // White en passant can only be performed on row index 2
                 case TeamColour.White:
-                    if (x == 2 && y == lastPerformedAction.Square.Y)
+                    if (square.X == 2 && square.Y == lastPerformedAction.Square.Y)
                         enPassant = true;
                     break;
 
                 // Black en passant can only be performed on row index 5
                 case TeamColour.Black:
-                    if (x == 5 && y == lastPerformedAction.Square.Y)
+                    if (square.X == 5 && square.Y == lastPerformedAction.Square.Y)
                         enPassant = true;
                     break;
             }
@@ -49,19 +49,19 @@ namespace Chess.Classes
             return enPassant;
         }
 
-        public static bool DeterminePieceAction(Piece piece, List<Action> actions, int x, int y, Piece[][] boardState)
+        public static bool DeterminePieceAction(Piece piece, List<Action> actions, Square square, Piece[][] boardState)
         {
             // deadEnd used for Rook, Bishop, Queen, where their directional moves stop after an obstruction
 
             bool deadEnd = true;
-            if (IsEmptySquare(x, y, boardState))
+            if (IsEmptySquare(square, boardState))
             {
-                actions.Add(new Action(piece, x, y, ActionType.Move));
+                actions.Add(new Action(piece, square.X, square.Y, ActionType.Move));
                 deadEnd = false;
             }
-            else if (IsEnemy(piece.TeamColour, x, y, boardState))
+            else if (IsEnemy(piece.TeamColour, square, boardState))
             {
-                actions.Add(new Action(piece, x, y, ActionType.Capture));
+                actions.Add(new Action(piece, square.X, square.Y, ActionType.Capture));
             }
 
             return deadEnd;
@@ -84,10 +84,10 @@ namespace Chess.Classes
         }
 
         // Converts array indexes to standard algebraic notation used in Chess (a8 top left, h1 bottom right)
-        public static string ToAlgebraicNotation(int x, int y)
+        public static string ToAlgebraicNotation(Square square)
         {
-            char file = (char)('a' + y);
-            int rank = 8 - x;
+            char file = (char)('a' + square.Y);
+            int rank = 8 - square.X;
             return $"{file}{rank}";
         }
 

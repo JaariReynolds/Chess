@@ -21,7 +21,7 @@ namespace Chess.Types
 
         public override string ToString()
         {
-            return ChessUtils.ToAlgebraicNotation(X, Y);
+            return ChessUtils.ToAlgebraicNotation(this);
         }
 
         // Squares are considered equal if their X and Y coordinates are the same.
@@ -30,7 +30,7 @@ namespace Chess.Types
         public override bool Equals(object? obj)
         {
             var otherSquare = obj as Square;
-            if (otherSquare == null) return false;
+            if (otherSquare is null) return false;
             return X == otherSquare.X && Y == otherSquare.Y;
         }
 

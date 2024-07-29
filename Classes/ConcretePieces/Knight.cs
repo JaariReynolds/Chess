@@ -17,7 +17,7 @@ namespace Chess.Classes.ConcretePieces
             PieceValue = 3;
         }
 
-        public Knight(TeamColour teamColour, int x, int y) : this(teamColour, ChessUtils.ToAlgebraicNotation(x, y))
+        public Knight(TeamColour teamColour, int x, int y) : this(teamColour, ChessUtils.ToAlgebraicNotation(new Square(x, y)))
         {
         }
 
@@ -40,10 +40,11 @@ namespace Chess.Classes.ConcretePieces
             {
                 int newX = Square.X + moves[i, 0];
                 int newY = Square.Y + moves[i, 1];
+                Square square = new Square(newX, newY);
 
-                if (ChessUtils.IsEmptySquare(newX, newY, boardState))
+                if (ChessUtils.IsEmptySquare(square, boardState))
                     actions.Add(new Action(this, newX, newY, ActionType.Move));
-                else if (ChessUtils.IsEnemy(TeamColour, newX, newY, boardState))
+                else if (ChessUtils.IsEnemy(TeamColour, square, boardState))
                     actions.Add(new Action(this, newX, newY, ActionType.Capture));
             }
 

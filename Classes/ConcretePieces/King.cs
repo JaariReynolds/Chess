@@ -18,7 +18,7 @@ namespace Chess.Classes.ConcretePieces
             rank = TeamColour == TeamColour.White ? "1" : "8";
         }
 
-        public King(TeamColour teamColour, int x, int y) : this(teamColour, ChessUtils.ToAlgebraicNotation(x, y))
+        public King(TeamColour teamColour, int x, int y) : this(teamColour, ChessUtils.ToAlgebraicNotation(new Square(x, y)))
         {
         }
 
@@ -41,7 +41,7 @@ namespace Chess.Classes.ConcretePieces
             {
                 int newX = Square.X + moves[i, 0];
                 int newY = Square.Y + moves[i, 1];
-                ChessUtils.DeterminePieceAction(this, actions, newX, newY, boardState);
+                ChessUtils.DeterminePieceAction(this, actions, new Square(newX, newY), boardState);
             }
 
             // Castling requires

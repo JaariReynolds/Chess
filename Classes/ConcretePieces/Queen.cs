@@ -10,7 +10,7 @@ namespace Chess.Classes.ConcretePieces
             {-1, -1}, {-1, 1}, {1, -1}, {1, 1} // NW, NE, SW, SE
         };
 
-        public Queen(TeamColour teamColour, string algebraicNotation) : base(teamColour, algebraicNotation, "Knight", 9)
+        public Queen(TeamColour teamColour, string algebraicNotation) : base(teamColour, algebraicNotation, "Queen", 9)
         {
         }
 

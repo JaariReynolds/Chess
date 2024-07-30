@@ -56,12 +56,12 @@ namespace Chess.Classes
             bool deadEnd = true;
             if (IsEmptySquare(square, boardState))
             {
-                actions.Add(new Action(piece, square.X, square.Y, ActionType.Move));
+                actions.Add(new Action(piece, square, ActionType.Move));
                 deadEnd = false;
             }
             else if (IsEnemy(piece.TeamColour, square, boardState))
             {
-                actions.Add(new Action(piece, square.X, square.Y, ActionType.Capture));
+                actions.Add(new Action(piece, square, ActionType.Capture));
             }
 
             return deadEnd;

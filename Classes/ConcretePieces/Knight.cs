@@ -43,9 +43,9 @@ namespace Chess.Classes.ConcretePieces
                 Square square = new Square(newX, newY);
 
                 if (ChessUtils.IsEmptySquare(square, boardState))
-                    actions.Add(new Action(this, newX, newY, ActionType.Move));
+                    actions.Add(new Action(this, square, ActionType.Move));
                 else if (ChessUtils.IsEnemy(TeamColour, square, boardState))
-                    actions.Add(new Action(this, newX, newY, ActionType.Capture));
+                    actions.Add(new Action(this, square, ActionType.Capture));
             }
 
             return actions;

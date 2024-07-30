@@ -22,10 +22,10 @@ public class Action
     public Square Square { get; private set; }
     public ActionType ActionType { get; private set; }
 
-    public Action(Piece piece, int actionX, int actionY, ActionType actionType)
+    public Action(Piece piece, Square square, ActionType actionType)
     {
         Piece = piece;
-        Square = new Square(actionX, actionY);
+        Square = square;
         ActionType = actionType;
     }
 

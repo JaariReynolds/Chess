@@ -34,51 +34,53 @@ namespace Chess.Classes.ConcretePieces
         {
             var actions = new List<Action>();
 
-            // can move 2 squares on the first move, if no obstruction
-            if (Square.X == startX
-                && ChessUtils.IsEmptySquare(new Square(Square.X + actionAmount, Square.Y), boardState)
-                && ChessUtils.IsEmptySquare(new Square(Square.X + (actionAmount * 2), Square.Y), boardState))
-                actions.Add(new Action(this, Square.X + (actionAmount * 2), Square.Y, ActionType.PawnDoubleMove));
+            var oneSquareForward = new Square(Square.X + actionAmount, Square.Y);
+            var twoSquaresForward = new Square(Square.X + (actionAmount * 2), Square.Y);
+            var diagonalLeft = new Square(Square.X + actionAmount, Square.Y - 1);
+            var diagonalRight = new Square(Square.X + actionAmount, Square.Y + 1);
 
             // can move 1 at any point, but not capture
-            if (ChessUtils.IsEmptySquare(new Square(Square.X + actionAmount, Square.Y), boardState))
-                // promote if moving to the last row
-                if (Square.X + actionAmount == lastRow)
-                    AddPromoteActions(actions, Square.X + actionAmount, Square.Y);
+            if (ChessUtils.IsEmptySquare(oneSquareForward, boardState))
+                if (Square.X + actionAmount == lastRow) // promote if moving to the last row
+                    AddPromoteActions(actions, oneSquareForward);
                 else
-                    actions.Add(new Action(this, Square.X + actionAmount, Square.Y, ActionType.Move));
+                    actions.Add(new Action(this, oneSquareForward, ActionType.Move));
+
+            // can move 2 squares on the first move, if no obstruction
+            if (Square.X == startX && ChessUtils.IsEmptySquare(oneSquareForward, boardState) && ChessUtils.IsEmptySquare(twoSquaresForward, boardState))
+                actions.Add(new Action(this, twoSquaresForward, ActionType.PawnDoubleMove));
 
             // Since a Pawn can move/capture + promote on the same action, promote takes priority
 
-            // can capture 1 diagonally
-            if (ChessUtils.IsEnemy(TeamColour, new Square(Square.X + actionAmount, Square.Y - 1), boardState))
-                // promote if capturing on the last row, otherwise capture
+            // can capture 1 diagonally left
+            if (ChessUtils.IsEnemy(TeamColour, diagonalLeft, boardState))
                 if (Square.X + actionAmount == lastRow)
-                    AddPromoteActions(actions, Square.X + actionAmount, Square.Y - 1);
+                    AddPromoteActions(actions, diagonalLeft);
                 else
-                    actions.Add(new Action(this, Square.X + actionAmount, Square.Y - 1, ActionType.Capture));
+                    actions.Add(new Action(this, diagonalLeft, ActionType.Capture));
 
-            if (ChessUtils.IsEnemy(TeamColour, new Square(Square.X + actionAmount, Square.Y + 1), boardState))
-                if (Square.X + actionAmount == lastRow)
-                    AddPromoteActions(actions, Square.X + actionAmount, Square.Y + 1);
+            // can capture 1 diagonally right
+            if (ChessUtils.IsEnemy(TeamColour, diagonalRight, boardState))
+                if (Square.X + actionAmount == lastRow) // promote if capturing on the last row, otherwise capture
+                    AddPromoteActions(actions, diagonalRight);
                 else
-                    actions.Add(new Action(this, Square.X + actionAmount, Square.Y + 1, ActionType.Capture));
+                    actions.Add(new Action(this, diagonalRight, ActionType.Capture));
 
             // can enpassant capture if the previous action was a PawnDoubleMove
-            if (ChessUtils.EnPassant(TeamColour, new Square(Square.X + actionAmount, Square.Y - 1), lastPerformedAction))
-                actions.Add(new Action(this, Square.X + actionAmount, Square.Y - 1, ActionType.PawnEnPassant));
+            if (ChessUtils.EnPassant(TeamColour, diagonalLeft, lastPerformedAction))
+                actions.Add(new Action(this, diagonalLeft, ActionType.PawnEnPassant));
 
-            if (ChessUtils.EnPassant(TeamColour, new Square(Square.X + actionAmount, Square.Y + 1), lastPerformedAction))
-                actions.Add(new Action(this, Square.X + actionAmount, Square.Y + 1, ActionType.PawnEnPassant));
+            if (ChessUtils.EnPassant(TeamColour, diagonalRight, lastPerformedAction))
+                actions.Add(new Action(this, diagonalRight, ActionType.PawnEnPassant));
             return actions;
         }
 
-        public void AddPromoteActions(List<Action> actions, int actionX, int actionY)
+        public void AddPromoteActions(List<Action> actions, Square square)
         {
-            actions.Add(new Action(this, actionX, actionY, ActionType.PawnPromoteKnight));
-            actions.Add(new Action(this, actionX, actionY, ActionType.PawnPromoteBishop));
-            actions.Add(new Action(this, actionX, actionY, ActionType.PawnPromoteRook));
-            actions.Add(new Action(this, actionX, actionY, ActionType.PawnPromoteQueen));
+            actions.Add(new Action(this, square, ActionType.PawnPromoteKnight));
+            actions.Add(new Action(this, square, ActionType.PawnPromoteBishop));
+            actions.Add(new Action(this, square, ActionType.PawnPromoteRook));
+            actions.Add(new Action(this, square, ActionType.PawnPromoteQueen));
         }
     }
 }

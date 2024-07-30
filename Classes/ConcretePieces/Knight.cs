@@ -16,10 +16,6 @@ namespace Chess.Classes.ConcretePieces
         {
         }
 
-        public Knight(TeamColour teamColour, int x, int y) : this(teamColour, ChessUtils.ToAlgebraicNotation(new Square(x, y)))
-        {
-        }
-
         public override Piece Clone()
         {
             return new Knight(TeamColour, Square.ToString());

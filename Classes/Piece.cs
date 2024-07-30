@@ -13,7 +13,6 @@ namespace Chess.Classes
         public abstract List<Action> GetPotentialActions(Piece[][] boardState, Action? lastPerformedAction);
         public abstract Piece Clone();
 
-
         public Piece(TeamColour teamColour, string algebraicNotation, string name, int pieceValue)
         {
             Name = name;
@@ -22,20 +21,6 @@ namespace Chess.Classes
             Square = new Square(x, y);
             HasMoved = false;
             PieceValue = pieceValue;
-        }
-
-        public Piece(TeamColour teamColour, int x, int y)
-        {
-            TeamColour = teamColour;
-            Square = new Square(x, y);
-        }
-
-        public Piece(Piece existingPiece)
-        {
-            Square = new Square(existingPiece.Square);
-            TeamColour = existingPiece.TeamColour;
-            PieceValue = existingPiece.PieceValue;
-            Name = existingPiece.Name;
         }
 
         public void MovePiece(Square square)

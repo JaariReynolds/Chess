@@ -17,10 +17,6 @@ namespace Chess.Classes.ConcretePieces
             rank = teamColour == TeamColour.White ? "1" : "8";
         }
 
-        public King(TeamColour teamColour, int x, int y) : this(teamColour, ChessUtils.ToAlgebraicNotation(new Square(x, y)))
-        {
-        }
-
         public override Piece Clone()
         {
             return new King(TeamColour, Square.ToString());

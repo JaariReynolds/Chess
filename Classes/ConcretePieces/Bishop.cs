@@ -13,10 +13,6 @@ namespace Chess.Classes.ConcretePieces
         {
         }
 
-        public Bishop(TeamColour teamColour, int x, int y) : this(teamColour, ChessUtils.ToAlgebraicNotation(new Square(x, y)))
-        {
-        }
-
         public override Piece Clone()
         {
             return new Bishop(TeamColour, Square.ToString());

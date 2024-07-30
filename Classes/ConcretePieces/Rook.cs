@@ -14,10 +14,6 @@ namespace Chess.Classes.ConcretePieces
         {
         }
 
-        public Rook(TeamColour teamColour, int x, int y) : this(teamColour, ChessUtils.ToAlgebraicNotation(new Square(x, y)))
-        {
-        }
-
         public override Piece Clone()
         {
             return new Rook(TeamColour, Square.ToString());

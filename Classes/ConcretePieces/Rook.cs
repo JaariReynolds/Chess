@@ -10,9 +10,8 @@ namespace Chess.Classes.ConcretePieces
         };
 
 
-        public Rook(TeamColour teamColour, string algebraicNotation) : base(teamColour, algebraicNotation)
+        public Rook(TeamColour teamColour, string algebraicNotation) : base(teamColour, algebraicNotation, "Rook", 5)
         {
-            PieceValue = 5;
         }
 
         public Rook(TeamColour teamColour, int x, int y) : this(teamColour, ChessUtils.ToAlgebraicNotation(new Square(x, y)))

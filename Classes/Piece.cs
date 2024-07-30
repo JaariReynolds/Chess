@@ -4,6 +4,7 @@ namespace Chess.Classes
 {
     public abstract class Piece
     {
+        public string Name { get; protected set; }
         public Square Square { get; set; }
         public TeamColour TeamColour { get; set; }
         public int PieceValue { get; protected set; }
@@ -12,12 +13,15 @@ namespace Chess.Classes
         public abstract List<Action> GetPotentialActions(Piece[][] boardState, Action? lastPerformedAction);
         public abstract Piece Clone();
 
-        public Piece(TeamColour teamColour, string algebraicNotation)
+
+        public Piece(TeamColour teamColour, string algebraicNotation, string name, int pieceValue)
         {
+            Name = name;
             TeamColour = teamColour;
             var (x, y) = ChessUtils.CoordsFromAlgebraicNotation(algebraicNotation);
             Square = new Square(x, y);
             HasMoved = false;
+            PieceValue = pieceValue;
         }
 
         public Piece(TeamColour teamColour, int x, int y)
@@ -31,6 +35,7 @@ namespace Chess.Classes
             Square = new Square(existingPiece.Square);
             TeamColour = existingPiece.TeamColour;
             PieceValue = existingPiece.PieceValue;
+            Name = existingPiece.Name;
         }
 
         public void MovePiece(Square square)

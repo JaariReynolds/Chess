@@ -8,9 +8,8 @@ namespace Chess.Classes.ConcretePieces
         private int lastRow;
         private int actionAmount;
 
-        public Pawn(TeamColour teamColour, string algebraicNotation) : base(teamColour, algebraicNotation)
+        public Pawn(TeamColour teamColour, string algebraicNotation) : base(teamColour, algebraicNotation, "Pawn", 1)
         {
-            PieceValue = 1;
             startX = teamColour == TeamColour.White ? 6 : 1;
             lastRow = teamColour == TeamColour.White ? 0 : 7;
             actionAmount = teamColour == TeamColour.White ? -1 : 1;

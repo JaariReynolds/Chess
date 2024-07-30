@@ -12,9 +12,8 @@ namespace Chess.Classes.ConcretePieces
             { -1, 2 },{ -1, -2 }
         };
 
-        public Knight(TeamColour teamColour, string algebraicNotation) : base(teamColour, algebraicNotation)
+        public Knight(TeamColour teamColour, string algebraicNotation) : base(teamColour, algebraicNotation, "Knight", 3)
         {
-            PieceValue = 3;
         }
 
         public Knight(TeamColour teamColour, int x, int y) : this(teamColour, ChessUtils.ToAlgebraicNotation(new Square(x, y)))

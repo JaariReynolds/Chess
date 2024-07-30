@@ -12,10 +12,9 @@ namespace Chess.Classes.ConcretePieces
 
         private string rank;
 
-        public King(TeamColour teamColour, string algebraicNotation) : base(teamColour, algebraicNotation)
+        public King(TeamColour teamColour, string algebraicNotation) : base(teamColour, algebraicNotation, "King", 0)
         {
-            PieceValue = 0; // King piece is invaluable and also does not matter 
-            rank = TeamColour == TeamColour.White ? "1" : "8";
+            rank = teamColour == TeamColour.White ? "1" : "8";
         }
 
         public King(TeamColour teamColour, int x, int y) : this(teamColour, ChessUtils.ToAlgebraicNotation(new Square(x, y)))

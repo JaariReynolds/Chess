@@ -9,9 +9,8 @@ namespace Chess.Classes.ConcretePieces
             {-1, -1}, {-1, 1}, {1, -1}, {1, 1} // NW, NE, SW, SE
         };
 
-        public Bishop(TeamColour teamColour, string algebraicNotation) : base(teamColour, algebraicNotation)
+        public Bishop(TeamColour teamColour, string algebraicNotation) : base(teamColour, algebraicNotation, "Bishop", 3)
         {
-            PieceValue = 3;
         }
 
         public Bishop(TeamColour teamColour, int x, int y) : this(teamColour, ChessUtils.ToAlgebraicNotation(new Square(x, y)))

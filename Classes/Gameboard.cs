@@ -11,7 +11,6 @@ namespace Chess.Classes
         public List<Action> PreviousActions { get; private set; }
         public int WhitePoints { get; set; }
         public int BlackPoints { get; set; }
-        public bool IgnoreKing { get; set; } // used for testing only
 
         public Gameboard()
         {
@@ -62,7 +61,7 @@ namespace Chess.Classes
             Board.SetSquare(new Knight(TeamColour.Black, "g8"));
             Board.SetSquare(new Rook(TeamColour.Black, "h8"));
 
-            for (int col = 0; col < Board.GetLength(1); col++)
+            for (int col = 0; col < 8; col++)
             {
                 Board.SetSquare(new Pawn(TeamColour.Black, 1, col));
                 Board.SetSquare(new Pawn(TeamColour.White, 6, col));

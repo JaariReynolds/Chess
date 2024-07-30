@@ -78,11 +78,6 @@ namespace Chess.Classes
             Board.SetSquare(new Rook(TeamColour.White, "h1"));
         }
 
-        public void SetTestBoard(int x, int y, Piece piece)
-        {
-            Board[x][y] = piece;
-        }
-
         public void SwapTurns()
         {
             CurrentTeamColour = CurrentTeamColour.GetOppositeTeam();

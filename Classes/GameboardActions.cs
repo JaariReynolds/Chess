@@ -34,9 +34,9 @@ namespace Chess.Classes
 
         public static Piece? FindKing(this Piece[][] boardState, TeamColour teamColour)
         {
-            for (int i = 0; i < boardState.Length; i++)
+            for (int i = 0; i < 8; i++)
             {
-                for (int j = 0; j < boardState[i].Length; j++)
+                for (int j = 0; j < 8; j++)
                 {
                     var piece = boardState[i][j];
                     if (piece is King && piece.TeamColour == teamColour)
@@ -81,9 +81,9 @@ namespace Chess.Classes
         {
             var actions = new List<Action>();
 
-            for (int i = 0; i < boardState.Length; i++)
+            for (int i = 0; i < 8; i++)
             {
-                for (int j = 0; j < boardState[i].Length; j++)
+                for (int j = 0; j < 8; j++)
                 {
                     var piece = boardState[i][j];
                     if (piece == null) continue;

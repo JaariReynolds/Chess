@@ -49,7 +49,7 @@ namespace Chess.Types
             return HashCode.Combine(X, Y);
         }
 
-        public static bool operator ==(Square left, Square right)
+        public static bool operator ==(Square? left, Square? right)
         {
             if (ReferenceEquals(left, right))
                 return true;
@@ -59,7 +59,7 @@ namespace Chess.Types
             return left.Equals(right);
         }
 
-        public static bool operator !=(Square left, Square right)
+        public static bool operator !=(Square? left, Square? right)
         {
             return !(left == right);
         }

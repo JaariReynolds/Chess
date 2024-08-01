@@ -8,6 +8,8 @@ namespace Chess.Classes.ConcretePieces
         private int lastRow;
         private int actionAmount;
 
+        internal Pawn() : base() { }
+
         public Pawn(TeamColour teamColour, string algebraicNotation) : base(teamColour, algebraicNotation, "Pawn", 1)
         {
             startX = teamColour == TeamColour.White ? 6 : 1;

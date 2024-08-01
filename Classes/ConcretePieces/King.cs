@@ -12,6 +12,8 @@ namespace Chess.Classes.ConcretePieces
 
         private string rank;
 
+        internal King() : base() { }
+
         public King(TeamColour teamColour, string algebraicNotation) : base(teamColour, algebraicNotation, "King", 0)
         {
             rank = teamColour == TeamColour.White ? "1" : "8";
@@ -36,6 +38,10 @@ namespace Chess.Classes.ConcretePieces
             {
                 int newX = Square.X + moves[i, 0];
                 int newY = Square.Y + moves[i, 1];
+
+                if (!ChessUtils.IsWithinBounds(newX, newY))
+                    continue;
+
                 ChessUtils.DeterminePieceAction(this, actions, new Square(newX, newY), boardState);
             }
 

@@ -9,8 +9,18 @@ namespace Chess.Types
 
         public Square(int x, int y)
         {
+            if (!ChessUtils.IsWithinBounds(x, y))
+                throw new ArgumentException($"coordinates ({x},{y}) is not a valid chess square");
+
             X = x;
             Y = y;
+        }
+
+        // Deserialization only, properties will be overwritten
+        public Square()
+        {
+            X = 0;
+            Y = 0;
         }
 
         public Square(Square existingSquare)

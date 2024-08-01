@@ -9,6 +9,7 @@ namespace Chess.Classes.ConcretePieces
             {-1, 0}, {1, 0}, {0, -1}, {0, 1}, // N, S, E, W
         };
 
+        internal Rook() : base() { }
 
         public Rook(TeamColour teamColour, string algebraicNotation) : base(teamColour, algebraicNotation, "Rook", 5)
         {
@@ -35,6 +36,10 @@ namespace Chess.Classes.ConcretePieces
                 {
                     int newX = Square.X + directions[i, 0] * distance;
                     int newY = Square.Y + directions[i, 1] * distance;
+
+                    if (!ChessUtils.IsWithinBounds(newX, newY))
+                        continue;
+
                     var deadEnd = ChessUtils.DeterminePieceAction(this, actions, new Square(newX, newY), boardState);
                     if (deadEnd) break;
                 }

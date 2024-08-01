@@ -1,4 +1,5 @@
 ﻿using Chess.Classes;
+using Chess.Classes.ConcretePieces;
 using Chess.Types;
 
 public enum ActionType
@@ -18,9 +19,17 @@ public enum ActionType
 
 public class Action
 {
-    public Piece Piece { get; private set; }
-    public Square Square { get; private set; }
-    public ActionType ActionType { get; private set; }
+    public Piece Piece { get; set; }
+    public Square Square { get; set; }
+    public ActionType ActionType { get; set; }
+
+    // Deserialization only, properties will be overwritten
+    public Action()
+    {
+        Piece = new Pawn();
+        Square = new Square();
+        ActionType = ActionType.Move;
+    }
 
     public Action(Piece piece, Square square, ActionType actionType)
     {

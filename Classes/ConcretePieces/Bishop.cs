@@ -9,6 +9,7 @@ namespace Chess.Classes.ConcretePieces
             {-1, -1}, {-1, 1}, {1, -1}, {1, 1} // NW, NE, SW, SE
         };
 
+        internal Bishop() : base() { }
         public Bishop(TeamColour teamColour, string algebraicNotation) : base(teamColour, algebraicNotation, "Bishop", 3)
         {
         }
@@ -34,6 +35,10 @@ namespace Chess.Classes.ConcretePieces
                 {
                     int newX = Square.X + directions[i, 0] * distance;
                     int newY = Square.Y + directions[i, 1] * distance;
+
+                    if (!ChessUtils.IsWithinBounds(newX, newY))
+                        continue;
+
                     var deadEnd = ChessUtils.DeterminePieceAction(this, actions, new Square(newX, newY), boardState);
                     if (deadEnd) break;
                 }

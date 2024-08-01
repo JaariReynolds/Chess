@@ -4,10 +4,10 @@ namespace Chess.Classes
 {
     public abstract class Piece
     {
-        public string Name { get; protected set; }
+        public string Name { get; set; }
         public Square Square { get; set; }
         public TeamColour TeamColour { get; set; }
-        public int PieceValue { get; protected set; }
+        public int PieceValue { get; set; }
         public bool HasMoved { get; set; }
         public abstract void Draw();
         public abstract List<Action> GetPotentialActions(Piece[][] boardState, Action? lastPerformedAction);
@@ -21,6 +21,25 @@ namespace Chess.Classes
             Square = new Square(x, y);
             HasMoved = false;
             PieceValue = pieceValue;
+        }
+
+        // Deserialization only, properties will be overwritten
+        public Piece()
+        {
+            Name = "";
+            TeamColour = TeamColour.White;
+            Square = new Square(0, 0);
+            HasMoved = false;
+            PieceValue = -1;
+        }
+
+        public Piece(string name, Square square, TeamColour teamColour, int pieceValue, bool hasMoved)
+        {
+            Name = name;
+            Square = square;
+            TeamColour = teamColour;
+            PieceValue = pieceValue;
+            HasMoved = hasMoved;
         }
 
         public void MovePiece(Square square)

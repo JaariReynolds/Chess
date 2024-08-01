@@ -1,14 +1,13 @@
 ﻿using Chess.Classes.ConcretePieces;
 using Chess.Types;
-using System.Text.Json;
 
 namespace Chess.Classes
 {
     public class Gameboard
     {
-        public Piece[][] Board { get; private set; }
-        public TeamColour CurrentTeamColour { get; private set; }
-        public List<Action> PreviousActions { get; private set; }
+        public Piece[][] Board { get; set; }
+        public TeamColour CurrentTeamColour { get; set; }
+        public List<Action> PreviousActions { get; set; }
         public int WhitePoints { get; set; }
         public int BlackPoints { get; set; }
 
@@ -35,11 +34,6 @@ namespace Chess.Classes
             WhitePoints = existingGameboard.WhitePoints;
             BlackPoints = existingGameboard.BlackPoints;
             PreviousActions = existingGameboard.PreviousActions;
-        }
-
-        public string ToJson()
-        {
-            return JsonSerializer.Serialize(this);
         }
 
         public void InitialiseTestBoardState()
@@ -118,6 +112,8 @@ namespace Chess.Classes
 
         public void PerformAction(Action action)
         {
+            var originalAction = new Action(action);
+
             switch (action.ActionType)
             {
                 case ActionType.Move:
@@ -153,6 +149,7 @@ namespace Chess.Classes
             }
 
             action.Piece.HasMoved = true;
+            AddActionToHistory(originalAction);
             SwapTurns();
         }
 

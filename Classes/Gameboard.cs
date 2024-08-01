@@ -10,6 +10,8 @@ namespace Chess.Classes
         public List<Action> PreviousActions { get; set; }
         public int WhitePoints { get; set; }
         public int BlackPoints { get; set; }
+        public CheckStatus CheckedTeamColour { get; set; } = CheckStatus.None;
+        public CheckStatus CheckmateTeamColour { get; set; } = CheckStatus.None;
 
         public Gameboard()
         {
@@ -86,6 +88,11 @@ namespace Chess.Classes
             var lastPerformedAction = PreviousActions.Count == 0 ? null : PreviousActions[^1];
             var possibleActions = Board.GetAllPossibleActions(teamColour, lastPerformedAction);
             var legalActions = this.GetLegalActions(possibleActions);
+            var parsedCheckColour = (CheckStatus)Enum.Parse(typeof(CheckStatus), teamColour.ToString());
+
+            CheckedTeamColour = legalActions.Count < possibleActions.Count ? parsedCheckColour : CheckStatus.None;
+            CheckmateTeamColour = legalActions.Count == 0 ? parsedCheckColour : CheckStatus.None;
+
             return legalActions.OrderBy(a => a.ToString()).ToList();
         }
 

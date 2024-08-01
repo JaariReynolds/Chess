@@ -4,12 +4,17 @@ namespace Chess.Classes
 {
     public static class ChessUtils
     {
-        private static bool IsWithinBounds(Square square)
+        public static bool IsWithinBounds(Square square)
         {
             return square.X >= 0 && square.X < 8 && square.Y >= 0 && square.Y < 8;
         }
 
-        private static bool IsNotNull(Square square, Piece[][] boardState)
+        public static bool IsWithinBounds(int x, int y)
+        {
+            return x >= 0 && x < 8 && y >= 0 && y < 8;
+        }
+
+        public static bool IsNotNull(Square square, Piece[][] boardState)
         {
             return IsWithinBounds(square) && boardState[square.X][square.Y] != null;
         }

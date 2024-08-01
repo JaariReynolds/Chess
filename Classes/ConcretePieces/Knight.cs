@@ -37,6 +37,10 @@ namespace Chess.Classes.ConcretePieces
             {
                 int newX = Square.X + moves[i, 0];
                 int newY = Square.Y + moves[i, 1];
+
+                if (!ChessUtils.IsWithinBounds(newX, newY))
+                    continue;
+
                 Square square = new Square(newX, newY);
 
                 if (ChessUtils.IsEmptySquare(square, boardState))

@@ -152,6 +152,11 @@ namespace Chess.Classes
             var originalSquareNotation = action.Piece.Square.ToString();
             var piece = action.Piece;
 
+            var desiredMoveSquare = gameboard.Board.GetPieceAt(action.Square.ToString());
+
+            if (desiredMoveSquare != null)
+                throw new ArgumentException($"Unable to move to square {action.Square} as it contains a piece. A Move is only valid when moving to an empty square.");
+
             piece.MovePiece(action.Square); // actually move the piece
             gameboard.Board.SetSquare(piece); // update piece position on the board
             gameboard.Board.ClearSquare(originalSquareNotation); // set old square to null
@@ -160,8 +165,18 @@ namespace Chess.Classes
         public static void Capture(this Gameboard gameboard, Action action)
         {
             // Capture functionally the same as a move, just with awarded points
-            var capturedPiece = GetPieceAt(gameboard.Board, action.Square.ToString());
-            if (capturedPiece!.TeamColour == TeamColour.White)
+            var capturedPiece = gameboard.Board.GetPieceAt(action.Square.ToString());
+
+            if (capturedPiece == null)
+                throw new NullReferenceException($"Unable to capture piece at {action.Square} as it does not contain a Piece.");
+
+            if (capturedPiece.TeamColour == gameboard.CurrentTeamColour)
+                throw new ArgumentException($"Unable to capture piece at {action.Square} as it is the same TeamColour as the capturing team.");
+
+            // clear/remove the square of the captured piece, as a Move is only valid on empty squares
+            gameboard.Board.ClearSquare(capturedPiece.Square.ToString());
+
+            if (capturedPiece.TeamColour == TeamColour.White)
                 gameboard.BlackPoints += capturedPiece.PieceValue;
             else
                 gameboard.WhitePoints += capturedPiece.PieceValue;
@@ -187,7 +202,7 @@ namespace Chess.Classes
                     gameboard.Board.SetSquare(new Queen(action.Piece.TeamColour, action.Square.ToString()));
                     break;
                 default:
-                    throw new ArgumentException($"Promote method should not be called with a the non-promotion action: {action.ActionType}");
+                    throw new ArgumentException($"Promote method should not be called with a the non-promotion action: {action.ActionType}.");
             }
 
             gameboard.Board.ClearSquare(action.Piece.Square.ToString()); // clear the original square of the pawn 

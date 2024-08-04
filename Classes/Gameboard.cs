@@ -6,6 +6,7 @@ namespace Chess.Classes
     public class Gameboard
     {
         public Piece[][] Board { get; set; }
+
         public TeamColour CurrentTeamColour { get; set; }
         public List<Action> PreviousActions { get; set; }
         public int WhitePoints { get; set; }
@@ -86,11 +87,13 @@ namespace Chess.Classes
         public List<Action> CalculateTeamActions(TeamColour teamColour)
         {
             var lastPerformedAction = PreviousActions.Count == 0 ? null : PreviousActions[^1];
-            var possibleActions = Board.GetAllPossibleActions(teamColour, lastPerformedAction);
-            var legalActions = this.GetLegalActions(possibleActions);
             var parsedCheckColour = (CheckStatus)Enum.Parse(typeof(CheckStatus), teamColour.ToString());
 
-            CheckedTeamColour = legalActions.Count < possibleActions.Count ? parsedCheckColour : CheckStatus.None;
+            var isKingInCheck = Board.IsKingInCheck(teamColour, lastPerformedAction);
+            var possibleActions = Board.GetAllPossibleActions(teamColour, lastPerformedAction);
+            var legalActions = this.GetLegalActions(possibleActions);
+
+            CheckedTeamColour = isKingInCheck ? parsedCheckColour : CheckStatus.None;
             CheckmateTeamColour = legalActions.Count == 0 ? parsedCheckColour : CheckStatus.None;
 
             return legalActions.OrderBy(a => a.ToString()).ToList();
@@ -119,7 +122,7 @@ namespace Chess.Classes
 
         public void PerformAction(Action action)
         {
-            var originalAction = new Action(action);
+            var originalAction = new Action(action); // copy of action to store the original Square of the piece 
 
             switch (action.ActionType)
             {
@@ -157,6 +160,9 @@ namespace Chess.Classes
 
             action.Piece.HasMoved = true;
             AddActionToHistory(originalAction);
+
+            CheckedTeamColour = CheckStatus.None; // set to None as it will be recalculated on the opposing team's moves
+
             SwapTurns();
         }
 

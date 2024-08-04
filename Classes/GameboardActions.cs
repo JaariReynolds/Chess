@@ -47,6 +47,29 @@ namespace Chess.Classes
             return null;
         }
 
+        public static bool IsKingInCheck(this Piece[][] boardState, TeamColour teamColour, Action? previousAction)
+        {
+            var king = boardState.FindKing(teamColour);
+
+            // this should only happen in test situations where a King isn't placed on the board 
+            if (king is null)
+                return false;
+
+            var isKingUnderAttack = boardState.IsSquareUnderAttack(king.Square, teamColour.GetOppositeTeam(), previousAction);
+            return isKingUnderAttack;
+        }
+
+        public static bool IsSquareUnderAttack(this Piece[][] boardState, Square square, TeamColour opponentTeamColour, Action? previousAction)
+        {
+            var opponentActions = boardState.GetAllPossibleActions(opponentTeamColour, previousAction);
+
+            foreach (var action in opponentActions)
+                if (action.Square == square && action.ActionType == ActionType.Capture)
+                    return true;
+
+            return false;
+        }
+
         /// <summary>
         /// Returns a list of pieces on the provided board that are currently checking the checkedTeamColour King.
         /// </summary>
@@ -97,7 +120,8 @@ namespace Chess.Classes
         }
 
         /// <summary>
-        /// Returns a list of legal actions that do not leave the King in a checked position.
+        /// Returns a list of legal actions that do not leave the King in a checked position. 
+        /// Requires the whole gameboard object in order to simulate performing potential actions.
         /// </summary>
         public static List<Action> GetLegalActions(this Gameboard gameboard, List<Action> possibleActions)
         {

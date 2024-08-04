@@ -135,6 +135,7 @@ namespace Chess.Classes
                     this.Capture(action);
                     break;
 
+                // NEED TO HAVE A WORKAROUND SOMEHOW FOR A PAWN PROMOTE THAT HAPPENED FROM A CAPTURE - CURRENTLY NOT ACCOUNTED FOR  
                 case ActionType.PawnPromoteKnight:
                 case ActionType.PawnPromoteBishop:
                 case ActionType.PawnPromoteRook:

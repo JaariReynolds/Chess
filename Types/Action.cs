@@ -14,7 +14,6 @@ public enum ActionType
     PawnPromoteQueen,
     KingsideCastle,
     QueensideCastle,
-
 }
 
 public class Action
@@ -22,6 +21,7 @@ public class Action
     public Piece Piece { get; set; }
     public Square Square { get; set; }
     public ActionType ActionType { get; set; }
+    public int? PromoteCapturePoints { get; set; } = 0; // to only be used on Pawn promote + capture actions
 
     // Deserialization only, properties will be overwritten
     public Action()
@@ -29,28 +29,36 @@ public class Action
         Piece = new Pawn();
         Square = new Square();
         ActionType = ActionType.Move;
+        PromoteCapturePoints = 0;
     }
 
-    public Action(Piece piece, Square square, ActionType actionType)
+    public Action(Piece piece, Square square, ActionType actionType, int? promoteCapturePoints)
     {
         Piece = piece;
         Square = square;
         ActionType = actionType;
+        PromoteCapturePoints = promoteCapturePoints ?? 0;
     }
 
-    public Action(Piece piece, string algebraicNotation, ActionType actionType)
+    public Action(Piece piece, string algebraicNotation, ActionType actionType, int? promoteCapturePoints)
     {
         Piece = piece;
         var (x, y) = ChessUtils.CoordsFromAlgebraicNotation(algebraicNotation);
         Square = new Square(x, y);
         ActionType = actionType;
+        PromoteCapturePoints = promoteCapturePoints ?? 0;
     }
+
+    public Action(Piece piece, Square square, ActionType actionType) : this(piece, square, actionType, null) { }
+
+    public Action(Piece piece, string algebraicNotation, ActionType actionType) : this(piece, algebraicNotation, actionType, null) { }
 
     public Action(Action existingAction)
     {
         Piece = existingAction.Piece.Clone();
         Square = existingAction.Square;
         ActionType = existingAction.ActionType;
+        PromoteCapturePoints = existingAction.PromoteCapturePoints ?? 0;
     }
 
     public override string ToString()

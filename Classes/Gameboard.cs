@@ -122,6 +122,9 @@ namespace Chess.Classes
 
         public void PerformAction(Action action)
         {
+            if (action.Piece.TeamColour != CurrentTeamColour)
+                throw new ArgumentException("Unable to perform the provided action as it is not currently their turn.");
+
             var originalAction = new Action(action); // copy of action to store the original Square of the piece 
 
             switch (action.ActionType)

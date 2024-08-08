@@ -184,11 +184,24 @@ namespace Chess.Classes
             else
                 gameboard.WhitePoints += capturedPiece.PieceValue;
 
-            Move(gameboard, action);
+            gameboard.Move(action);
         }
 
         public static void Promote(this Gameboard gameboard, Action action)
         {
+            // if capturing and promoting on the same action, perform capture first (i.e. receive points, move piece)
+            if (action.PromoteCapturePoints > 0)
+            {
+                var captureAction = new Action(action.Piece, action.Square, ActionType.Capture);
+                gameboard.Capture(captureAction);
+            }
+            // othrewise, just move piece
+            else
+            {
+                var moveAction = new Action(action.Piece, action.Square, ActionType.Move);
+                gameboard.Move(moveAction);
+            }
+
             // create a new piece at the promoted square
             switch (action.ActionType)
             {
@@ -207,8 +220,6 @@ namespace Chess.Classes
                 default:
                     throw new ArgumentException($"Promote method should not be called with a the non-promotion action: {action.ActionType}.");
             }
-
-            gameboard.Board.ClearSquare(action.Piece.Square.ToString()); // clear the original square of the pawn 
         }
 
         public static void EnPassant(this Gameboard gameboard, Action action)

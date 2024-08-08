@@ -10,16 +10,16 @@ namespace Chess.Classes.ConcretePieces
 
         internal Pawn() : base() { }
 
-        public Pawn(TeamColour teamColour, string algebraicNotation) : base(teamColour, algebraicNotation, "Pawn", 1)
+        public Pawn(TeamColour teamColour, string algebraicNotation, bool hasMoved) : base(teamColour, algebraicNotation, hasMoved, "Pawn", 1)
         {
             startX = teamColour == TeamColour.White ? 6 : 1;
             lastRow = teamColour == TeamColour.White ? 0 : 7;
             actionAmount = teamColour == TeamColour.White ? -1 : 1;
         }
 
-        public Pawn(TeamColour teamColour, int x, int y) : this(teamColour, ChessUtils.ToAlgebraicNotation(new Square(x, y)))
-        {
-        }
+        public Pawn(TeamColour teamColour, string algebraicNotation) : this(teamColour, algebraicNotation, false) { }
+
+        public Pawn(TeamColour teamColour, int x, int y) : this(teamColour, ChessUtils.ToAlgebraicNotation(new Square(x, y))) { }
 
         public override Piece Clone()
         {

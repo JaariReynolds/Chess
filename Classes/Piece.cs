@@ -13,15 +13,17 @@ namespace Chess.Classes
         public abstract List<Action> GetPotentialActions(Piece[][] boardState, Action? lastPerformedAction);
         public abstract Piece Clone();
 
-        public Piece(TeamColour teamColour, string algebraicNotation, string name, int pieceValue)
+        public Piece(TeamColour teamColour, string algebraicNotation, bool hasMoved, string name, int pieceValue)
         {
             Name = name;
             TeamColour = teamColour;
             var (x, y) = ChessUtils.CoordsFromAlgebraicNotation(algebraicNotation);
             Square = new Square(x, y);
-            HasMoved = false;
+            HasMoved = hasMoved;
             PieceValue = pieceValue;
         }
+
+
 
         // Deserialization only, properties will be overwritten
         public Piece()
@@ -32,6 +34,8 @@ namespace Chess.Classes
             HasMoved = false;
             PieceValue = -1;
         }
+
+
 
         public Piece(string name, Square square, TeamColour teamColour, int pieceValue, bool hasMoved)
         {

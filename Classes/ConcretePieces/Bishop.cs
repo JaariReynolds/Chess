@@ -9,10 +9,8 @@ namespace Chess.Classes.ConcretePieces
             {-1, -1}, {-1, 1}, {1, -1}, {1, 1} // NW, NE, SW, SE
         };
 
-        internal Bishop() : base() { }
-        public Bishop(TeamColour teamColour, string algebraicNotation) : base(teamColour, algebraicNotation, "Bishop", 3)
-        {
-        }
+        public Bishop(TeamColour teamColour, string algebraicNotation, bool hasMoved) : base(teamColour, algebraicNotation, hasMoved, "Bishop", 3) { }
+        public Bishop(TeamColour teamColour, string algebraicNotation) : this(teamColour, algebraicNotation, false) { }
 
         public override Piece Clone()
         {

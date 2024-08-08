@@ -9,11 +9,9 @@ namespace Chess.Classes.ConcretePieces
             {-1, 0}, {1, 0}, {0, -1}, {0, 1}, // N, S, E, W
         };
 
-        internal Rook() : base() { }
+        public Rook(TeamColour teamColour, string algebraicNotation, bool hasMoved) : base(teamColour, algebraicNotation, hasMoved, "Rook", 5) { }
 
-        public Rook(TeamColour teamColour, string algebraicNotation) : base(teamColour, algebraicNotation, "Rook", 5)
-        {
-        }
+        public Rook(TeamColour teamColour, string algebraicNotation) : this(teamColour, algebraicNotation, false) { }
 
         public override Piece Clone()
         {

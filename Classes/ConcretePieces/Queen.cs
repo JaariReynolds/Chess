@@ -10,11 +10,9 @@ namespace Chess.Classes.ConcretePieces
             {-1, -1}, {-1, 1}, {1, -1}, {1, 1} // NW, NE, SW, SE
         };
 
-        internal Queen() : base() { }
+        public Queen(TeamColour teamColour, string algebraicNotation, bool hasMoved) : base(teamColour, algebraicNotation, hasMoved, "Queen", 9) { }
 
-        public Queen(TeamColour teamColour, string algebraicNotation) : base(teamColour, algebraicNotation, "Queen", 9)
-        {
-        }
+        public Queen(TeamColour teamColour, string algebraicNotation) : this(teamColour, algebraicNotation, false) { }
 
         public override Piece Clone()
         {

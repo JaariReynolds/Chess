@@ -12,12 +12,11 @@ namespace Chess.Classes.ConcretePieces
 
         private string rank;
 
-        internal King() : base() { }
-
-        public King(TeamColour teamColour, string algebraicNotation) : base(teamColour, algebraicNotation, "King", 0)
+        public King(TeamColour teamColour, string algebraicNotation, bool hasMoved) : base(teamColour, algebraicNotation, hasMoved, "King", 0)
         {
             rank = teamColour == TeamColour.White ? "1" : "8";
         }
+        public King(TeamColour teamColour, string algebraicNotation) : this(teamColour, algebraicNotation, false) { }
 
         public override Piece Clone()
         {

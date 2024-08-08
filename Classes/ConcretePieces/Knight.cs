@@ -12,9 +12,9 @@ namespace Chess.Classes.ConcretePieces
             { -1, 2 },{ -1, -2 }
         };
 
-        internal Knight() : base() { }
+        public Knight(TeamColour teamColour, string algebraicNotation) : this(teamColour, algebraicNotation, false) { }
 
-        public Knight(TeamColour teamColour, string algebraicNotation) : base(teamColour, algebraicNotation, "Knight", 3)
+        public Knight(TeamColour teamColour, string algebraicNotation, bool hasMoved) : base(teamColour, algebraicNotation, hasMoved, "Knight", 3)
         {
         }
 

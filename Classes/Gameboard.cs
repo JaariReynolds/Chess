@@ -84,7 +84,7 @@ namespace Chess.Classes
             PreviousActions.Add(action);
         }
 
-        public List<Action> CalculateTeamActions(TeamColour teamColour)
+        public Dictionary<Piece, List<Action>> CalculateTeamActions(TeamColour teamColour)
         {
             var lastPerformedAction = PreviousActions.Count == 0 ? null : PreviousActions[^1];
             var parsedCheckColour = (CheckStatus)Enum.Parse(typeof(CheckStatus), teamColour.ToString());
@@ -96,28 +96,7 @@ namespace Chess.Classes
             CheckedTeamColour = isKingInCheck ? parsedCheckColour : CheckStatus.None;
             CheckmateTeamColour = legalActions.Count == 0 ? parsedCheckColour : CheckStatus.None;
 
-            return legalActions.OrderBy(a => a.ToString()).ToList();
-        }
-
-        public static void ShowActions(List<Action> actions)
-        {
-            for (int i = 0; i < actions.Count; i++)
-                Console.WriteLine($"   {i}. {actions[i]}");
-        }
-
-        public Action SelectAction(List<Action> actions)
-        {
-            int selectedActionIndex;
-            bool validSelection;
-
-            Console.WriteLine("Select action:");
-            ShowActions(actions);
-
-            do
-                validSelection = int.TryParse(Console.ReadLine(), out selectedActionIndex) && selectedActionIndex < actions.Count;
-            while (!validSelection);
-
-            return actions[selectedActionIndex];
+            return legalActions;
         }
 
         public void PerformAction(Action action)
@@ -138,7 +117,6 @@ namespace Chess.Classes
                     this.Capture(action);
                     break;
 
-                // NEED TO HAVE A WORKAROUND SOMEHOW FOR A PAWN PROMOTE THAT HAPPENED FROM A CAPTURE - CURRENTLY NOT ACCOUNTED FOR  
                 case ActionType.PawnPromoteKnight:
                 case ActionType.PawnPromoteBishop:
                 case ActionType.PawnPromoteRook:
@@ -170,6 +148,39 @@ namespace Chess.Classes
             SwapTurns();
         }
 
+        // console use only
+        public static void ShowActions(Dictionary<Piece, List<Action>> actions)
+        {
+            var index = 0;
+            foreach (var kvp in actions)
+            {
+                foreach (var action in kvp.Value)
+                {
+                    Console.WriteLine($"   {index}. {action}");
+                    index++;
+                }
+            }
+        }
+
+        // console use only
+        public Action SelectAction(Dictionary<Piece, List<Action>> actions)
+        {
+            int selectedActionIndex;
+            bool validSelection;
+
+            Console.WriteLine("Select action:");
+            ShowActions(actions);
+
+            var listedActions = actions.SelectMany(kvp => kvp.Value).ToList();
+
+            do
+                validSelection = int.TryParse(Console.ReadLine(), out selectedActionIndex) && selectedActionIndex < listedActions.Count;
+            while (!validSelection);
+
+            return actions.SelectMany(kvp => kvp.Value).ElementAt(selectedActionIndex);
+        }
+
+        // console use only
         public void DrawCurrentState()
         {
             Console.WriteLine("   | a | b | c | d | e | f | g | h |");

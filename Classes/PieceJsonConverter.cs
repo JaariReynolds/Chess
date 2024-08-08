@@ -23,25 +23,22 @@ namespace Chess.Classes
             var root = jsonDoc.RootElement;
 
             string name = root.GetProperty("Name").GetString();
+            TeamColour teamColour = Enum.Parse<TeamColour>(root.GetProperty("TeamColour").GetString());
+            bool hasMoved = root.GetProperty("HasMoved").GetBoolean();
+            Square square = JsonSerializer.Deserialize<Square>(root.GetProperty("Square").GetRawText(), options);
 
             Console.WriteLine($"Deserializing piece: {name}");
 
             Piece piece = name switch
             {
-                "Pawn" => new Pawn(),
-                "Knight" => new Knight(),
-                "Bishop" => new Bishop(),
-                "Rook" => new Rook(),
-                "King" => new King(),
-                "Queen" => new Queen(),
+                "Pawn" => new Pawn(teamColour, square.ToString(), hasMoved),
+                "Knight" => new Knight(teamColour, square.ToString(), hasMoved),
+                "Bishop" => new Bishop(teamColour, square.ToString(), hasMoved),
+                "Rook" => new Rook(teamColour, square.ToString(), hasMoved),
+                "King" => new King(teamColour, square.ToString(), hasMoved),
+                "Queen" => new Queen(teamColour, square.ToString(), hasMoved),
                 _ => throw new NotSupportedException($"Piece type {name} is not supported.")
             };
-
-            piece.Name = name;
-            piece.TeamColour = Enum.Parse<TeamColour>(root.GetProperty("TeamColour").GetString());
-            piece.HasMoved = root.GetProperty("HasMoved").GetBoolean();
-            piece.Square = JsonSerializer.Deserialize<Square>(root.GetProperty("Square").GetRawText(), options);
-            piece.PieceValue = root.GetProperty("PieceValue").GetInt16();
 
             return piece;
         }

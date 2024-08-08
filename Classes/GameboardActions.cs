@@ -123,10 +123,10 @@ namespace Chess.Classes
         /// Returns a list of legal actions that do not leave the King in a checked position. 
         /// Requires the whole gameboard object in order to simulate performing potential actions.
         /// </summary>
-        public static List<Action> GetLegalActions(this Gameboard gameboard, List<Action> possibleActions)
+        public static Dictionary<Piece, List<Action>> GetLegalActions(this Gameboard gameboard, List<Action> possibleActions)
         {
             // legal actions are ones that do not leave the King in a checked position
-            var legalActions = new List<Action>();
+            var legalActions = new Dictionary<Piece, List<Action>>();
             var previousAction = gameboard.PreviousActions.Count == 0 ? null : gameboard.PreviousActions[^1];
 
             if (possibleActions.Count == 0)
@@ -141,7 +141,10 @@ namespace Chess.Classes
 
                 // if no checking pieces after the simulated action, means it counts as a legal action
                 if (GetCheckingPieces(simulatedBoard.Board, action.Piece.TeamColour, previousAction).Count == 0)
-                    legalActions.Add(action);
+                    if (legalActions.ContainsKey(action.Piece))
+                        legalActions[action.Piece].Add(action);
+                    else
+                        legalActions[action.Piece] = new List<Action> { action };
             }
 
             return legalActions;

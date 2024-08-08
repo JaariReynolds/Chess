@@ -19,7 +19,6 @@ namespace Chess.Classes
             Board = ChessUtils.InitialiseBoard();
             PreviousActions = new List<Action>();
             CurrentTeamColour = TeamColour.White;
-            //InitialiseStandardBoardState();
         }
 
         /// <summary>
@@ -36,7 +35,7 @@ namespace Chess.Classes
             CurrentTeamColour = existingGameboard.CurrentTeamColour;
             WhitePoints = existingGameboard.WhitePoints;
             BlackPoints = existingGameboard.BlackPoints;
-            PreviousActions = existingGameboard.PreviousActions;
+            PreviousActions = new List<Action>(existingGameboard.PreviousActions);
         }
 
         public void InitialiseTestBoardState()

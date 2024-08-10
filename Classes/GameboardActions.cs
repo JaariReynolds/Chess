@@ -206,16 +206,16 @@ namespace Chess.Classes
             switch (action.ActionType)
             {
                 case ActionType.PawnPromoteKnight:
-                    gameboard.Board.SetSquare(new Knight(action.Piece.TeamColour, action.Square.ToString()));
+                    gameboard.Board.SetSquare(new Knight(action.Piece.TeamColour, action.Square.ToString(), true));
                     break;
                 case ActionType.PawnPromoteBishop:
-                    gameboard.Board.SetSquare(new Bishop(action.Piece.TeamColour, action.Square.ToString()));
+                    gameboard.Board.SetSquare(new Bishop(action.Piece.TeamColour, action.Square.ToString(), true));
                     break;
                 case ActionType.PawnPromoteRook:
-                    gameboard.Board.SetSquare(new Rook(action.Piece.TeamColour, action.Square.ToString()));
+                    gameboard.Board.SetSquare(new Rook(action.Piece.TeamColour, action.Square.ToString(), true));
                     break;
                 case ActionType.PawnPromoteQueen:
-                    gameboard.Board.SetSquare(new Queen(action.Piece.TeamColour, action.Square.ToString()));
+                    gameboard.Board.SetSquare(new Queen(action.Piece.TeamColour, action.Square.ToString(), true));
                     break;
                 default:
                     throw new ArgumentException($"Promote method should not be called with a the non-promotion action: {action.ActionType}.");

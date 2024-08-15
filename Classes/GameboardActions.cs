@@ -61,7 +61,7 @@ namespace Chess.Classes
 
         public static bool IsSquareUnderAttack(this Piece[][] boardState, Square square, TeamColour opponentTeamColour, Action? previousAction)
         {
-            var opponentActions = boardState.GetAllPossibleActions(opponentTeamColour, previousAction);
+            var opponentActions = boardState.GetAllPossibleActions(opponentTeamColour, previousAction, true);
 
             foreach (var action in opponentActions)
                 if (action.Square == square && action.ActionType == ActionType.Capture)
@@ -77,7 +77,7 @@ namespace Chess.Classes
         {
             var checkingPieces = new List<Piece>();
             var king = boardState.FindKing(checkedTeamColour);
-            var enemyActions = boardState.GetAllPossibleActions(checkedTeamColour.GetOppositeTeam(), previousAction);
+            var enemyActions = boardState.GetAllPossibleActions(checkedTeamColour.GetOppositeTeam(), previousAction, true);
 
             // this should only happen in test situations where a King isn't placed on the board 
             if (king is null)
@@ -100,7 +100,7 @@ namespace Chess.Classes
         /// <summary>
         /// Returns a list of all possible Actions that pieces of the provided TeamColour can perform, including Actions that leave the King in a checked position.
         /// </summary>
-        public static List<Action> GetAllPossibleActions(this Piece[][] boardState, TeamColour teamColour, Action? previousAction)
+        public static List<Action> GetAllPossibleActions(this Piece[][] boardState, TeamColour teamColour, Action? previousAction, bool includeCastles)
         {
             var actions = new List<Action>();
 
@@ -112,7 +112,7 @@ namespace Chess.Classes
                     if (piece == null) continue;
                     if (piece.TeamColour != teamColour) continue;
 
-                    actions.AddRange(piece.GetPotentialActions(boardState, previousAction));
+                    actions.AddRange(piece.GetPotentialActions(boardState, previousAction, includeCastles));
                 }
             }
 

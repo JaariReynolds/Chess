@@ -10,7 +10,14 @@ namespace Chess.Classes
         public int PieceValue { get; set; }
         public bool HasMoved { get; set; }
         public abstract void Draw();
-        public abstract List<Action> GetPotentialActions(Piece[][] boardState, Action? lastPerformedAction);
+
+        /// <summary>
+        /// Return a list of actions available for the provided piece.
+        /// </summary>
+        /// <param name="lastPerformedAction">Only relevant for Pawn en passant.</param>
+        /// <param name="includeCastles">Only relevant to exclude castles when calling this method from a King's castle method.</param>
+        public abstract List<Action> GetPotentialActions(Piece[][] boardState, Action? lastPerformedAction, bool includeCastles);
+
         public abstract Piece Clone();
 
         public Piece(TeamColour teamColour, string algebraicNotation, bool hasMoved, string name, int pieceValue)

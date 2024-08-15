@@ -28,7 +28,7 @@ namespace Chess.Classes.ConcretePieces
             Console.Write(TeamColour == TeamColour.White ? " K " : " k ");
         }
 
-        public override List<Action> GetPotentialActions(Piece[][] boardState, Action? lastPerformedAction)
+        public override List<Action> GetPotentialActions(Piece[][] boardState, Action? lastPerformedAction, bool includeCastles)
         {
             // 8 surrounding squares 
             var actions = new List<Action>();
@@ -49,11 +49,14 @@ namespace Chess.Classes.ConcretePieces
             // 2. There are no pieces between the king and the rook
             // 3. The king is not currently in check
             // 4. The king does not pass through or finish on a square that is attacked by an enemy piece
-            if (CanKingsideCastle(boardState, lastPerformedAction))
-                actions.Add(new Action(this, $"g{rank}", ActionType.KingsideCastle));
+            if (includeCastles)
+            {
+                if (CanKingsideCastle(boardState, lastPerformedAction))
+                    actions.Add(new Action(this, $"g{rank}", ActionType.KingsideCastle));
 
-            if (CanQueensideCastle(boardState, lastPerformedAction))
-                actions.Add(new Action(this, $"c{rank}", ActionType.QueensideCastle));
+                if (CanQueensideCastle(boardState, lastPerformedAction))
+                    actions.Add(new Action(this, $"c{rank}", ActionType.QueensideCastle));
+            }
 
             return actions;
         }
@@ -73,7 +76,7 @@ namespace Chess.Classes.ConcretePieces
                 return false;
 
             // 3/4. opposing team cannot be attacking squares e1/8 (king), f1/8 (empty), g1/8 (empty)
-            var enemyActions = boardState.GetAllPossibleActions(TeamColour.GetOppositeTeam(), lastPerformedAction);
+            var enemyActions = boardState.GetAllPossibleActions(TeamColour.GetOppositeTeam(), lastPerformedAction, false);
             string[] safeSquares = { $"e{rank}", $"f{rank}", $"g{rank}" };
 
             foreach (var action in enemyActions)
@@ -89,8 +92,6 @@ namespace Chess.Classes.ConcretePieces
             // 1. King cannot have moved
             if (HasMoved) return false;
 
-            var rank = TeamColour == TeamColour.White ? "1" : "8";
-
             // 1. Rook cannot have moved
             var whiteRook = boardState.GetPieceAt($"a{rank}");
             if (whiteRook == null || whiteRook!.HasMoved) return false;
@@ -103,7 +104,7 @@ namespace Chess.Classes.ConcretePieces
 
             // 3/4. opposing team cannot be attacking c1/8 (empty), d1/8 (empty), e1/8 (king)
             // opposing team CAN be attacking b1/8, as only the rook passes through this square. castling legality does not care about the rook being under threat
-            var enemyActions = boardState.GetAllPossibleActions(TeamColour.GetOppositeTeam(), lastPerformedAction);
+            var enemyActions = boardState.GetAllPossibleActions(TeamColour.GetOppositeTeam(), lastPerformedAction, false);
             string[] safeSquares = { $"c{rank}", $"d{rank}", $"e{rank}" };
 
             foreach (var action in enemyActions)

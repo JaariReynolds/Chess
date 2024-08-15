@@ -23,7 +23,9 @@ namespace Chess.Classes.ConcretePieces
             Console.Write(TeamColour == TeamColour.White ? " R " : " r ");
         }
 
-        public override List<Action> GetPotentialActions(Piece[][] boardState, Action? lastPerformedAction)
+
+
+        public override List<Action> GetPotentialActions(Piece[][] boardState, Action? lastPerformedAction, bool includeCastles)
         {
             // Cardinal direction movements only (i.e. N,S,E,W only)
             var actions = new List<Action>();

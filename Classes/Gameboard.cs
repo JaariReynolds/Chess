@@ -42,7 +42,8 @@ namespace Chess.Classes
         {
             Board.SetSquare(new King(TeamColour.White, "e1"));
             Board.SetSquare(new Rook(TeamColour.White, "h1"));
-            Board.SetSquare(new Bishop(TeamColour.Black, "b4"));
+            Board.SetSquare(new King(TeamColour.Black, "e8"));
+            Board.SetSquare(new Rook(TeamColour.Black, "h8"));
 
         }
 
@@ -89,7 +90,7 @@ namespace Chess.Classes
             var parsedCheckColour = (CheckStatus)Enum.Parse(typeof(CheckStatus), teamColour.ToString());
 
             var isKingInCheck = Board.IsKingInCheck(teamColour, lastPerformedAction);
-            var possibleActions = Board.GetAllPossibleActions(teamColour, lastPerformedAction);
+            var possibleActions = Board.GetAllPossibleActions(teamColour, lastPerformedAction, true);
             var legalActions = this.GetLegalActions(possibleActions);
 
             CheckedTeamColour = isKingInCheck ? parsedCheckColour : CheckStatus.None;

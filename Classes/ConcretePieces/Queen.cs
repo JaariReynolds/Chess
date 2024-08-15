@@ -24,7 +24,7 @@ namespace Chess.Classes.ConcretePieces
             Console.Write(TeamColour == TeamColour.White ? " Q " : " q ");
         }
 
-        public override List<Action> GetPotentialActions(Piece[][] boardState, Action? lastPerformedAction)
+        public override List<Action> GetPotentialActions(Piece[][] boardState, Action? lastPerformedAction, bool includeCastles)
         {
             // Cardinal and Intercardinal (Rook and Bishop combined)
             var actions = new List<Action>();

@@ -24,9 +24,18 @@ namespace Chess.Classes
             return IsWithinBounds(square) && boardState[square.X][square.Y] == null;
         }
 
-        public static bool IsEnemy(TeamColour teamColour, Square square, Piece[][] boardState)
+        public static bool IsEnemy(TeamColour friendlyTeamColour, Square square, Piece[][] boardState)
         {
-            return IsNotNull(square, boardState) && boardState[square.X][square.Y].TeamColour != teamColour;
+            return IsNotNull(square, boardState) && boardState[square.X][square.Y].TeamColour != friendlyTeamColour;
+        }
+
+        public static bool IsPawnPromoteAction(Action action)
+        {
+            return
+                action.ActionType == ActionType.PawnPromoteKnight ||
+                action.ActionType == ActionType.PawnPromoteBishop ||
+                action.ActionType == ActionType.PawnPromoteRook ||
+                action.ActionType == ActionType.PawnPromoteQueen;
         }
 
         public static bool EnPassant(TeamColour currentTeamColour, Square square, Action? lastPerformedAction)

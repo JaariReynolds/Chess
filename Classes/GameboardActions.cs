@@ -59,13 +59,19 @@ namespace Chess.Classes
             return isKingUnderAttack;
         }
 
-        public static bool IsSquareUnderAttack(this Piece[][] boardState, Square square, TeamColour opponentTeamColour, Action? previousAction)
+        public static bool IsSquareUnderAttack(this Piece[][] boardState, Square square, TeamColour attackingTeamColour, Action? previousAction)
         {
-            var opponentActions = boardState.GetAllPossibleActions(opponentTeamColour, previousAction, true);
+            var opponentActions = boardState.GetAllPossibleActions(attackingTeamColour, previousAction, true);
 
             foreach (var action in opponentActions)
+            {
+                // standard capture 
                 if (action.Square == square && action.ActionType == ActionType.Capture)
                     return true;
+                // capture as a secondary effect of a Pawn promotion
+                if (action.Square == square && ChessUtils.IsPawnPromoteAction(action) && action.PromoteCapturePoints != 0)
+                    return true;
+            }
 
             return false;
         }
@@ -91,6 +97,10 @@ namespace Chess.Classes
 
                 // if the King is "capturable" by a Piece, it is checking the King
                 if (action.Square == king.Square && action.ActionType == ActionType.Capture)
+                    checkingPieces.Add(action.Piece);
+
+                // if the King is capturable by a Pawn promotion capture 
+                if (action.Square == king.Square && ChessUtils.IsPawnPromoteAction(action) && action.PromoteCapturePoints == king.PieceValue)
                     checkingPieces.Add(action.Piece);
             }
 

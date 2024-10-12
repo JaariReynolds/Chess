@@ -104,7 +104,7 @@ namespace Chess.Classes
             if (action.Piece.TeamColour != CurrentTeamColour)
                 throw new ArgumentException("Unable to perform the provided action as it is not currently their turn.");
 
-            var originalAction = new Action(action); // copy of action to store the original Square of the piece 
+            var originalAction = new Action(action); // copy of action to store the original Square/HasMoved of the piece 
 
             switch (action.ActionType)
             {
@@ -139,8 +139,6 @@ namespace Chess.Classes
                 default:
                     throw new NotImplementedException($"{action.ActionType} not yet implemented");
             }
-
-            action.Piece.HasMoved = true;
             AddActionToHistory(originalAction);
 
             CheckedTeamColour = CheckStatus.None; // set to None as it will be recalculated on the opposing team's moves

@@ -58,6 +58,7 @@ namespace Chess.Classes
             var (x, y) = ChessUtils.CoordsFromAlgebraicNotation(square.ToString());
             Square.X = x;
             Square.Y = y;
+            HasMoved = true;
         }
 
         public override string ToString()

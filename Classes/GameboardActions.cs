@@ -257,10 +257,6 @@ namespace Chess.Classes
 
             gameboard.Move(new Action(action.Piece, $"g{rank}", ActionType.Move));
             gameboard.Move(new Action(kingsideRook!, $"f{rank}", ActionType.Move));
-
-            // Castles are the only actions where more than 1 piece is moved.
-            // Update rook.HasMoved here as it won't happen in Gameboard.PerformAction()
-            kingsideRook!.HasMoved = true;
         }
 
         public static void QueensideCastle(this Gameboard gameboard, Action action)
@@ -271,10 +267,6 @@ namespace Chess.Classes
 
             gameboard.Move(new Action(action.Piece, $"c{rank}", ActionType.Move));
             gameboard.Move(new Action(queensideRook!, $"d{rank}", ActionType.Move));
-
-            // Castles are the only actions where more than 1 piece is moved.
-            // Update rook.HasMoved here as it won't happen in Gameboard.PerformAction()
-            queensideRook!.HasMoved = true;
         }
     }
 }

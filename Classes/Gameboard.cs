@@ -91,7 +91,22 @@ namespace Chess.Classes
 
             var isKingInCheck = Board.IsKingInCheck(teamColour, lastPerformedAction);
             var possibleActions = Board.GetAllPossibleActions(teamColour, lastPerformedAction, true);
-            var legalActions = this.GetLegalActions(possibleActions);
+            var legalActions = this.GetLegalActionsDictionary(possibleActions);
+
+            CheckedTeamColour = isKingInCheck ? parsedCheckColour : CheckStatus.None;
+            CheckmateTeamColour = legalActions.Count == 0 ? parsedCheckColour : CheckStatus.None;
+
+            return legalActions;
+        }
+
+        public List<Action> CalculateTeamActionsList(TeamColour teamColour)
+        {
+            var lastPerformedAction = PreviousActions.Count == 0 ? null : PreviousActions[^1];
+            var parsedCheckColour = (CheckStatus)Enum.Parse(typeof(CheckStatus), teamColour.ToString());
+
+            var isKingInCheck = Board.IsKingInCheck(teamColour, lastPerformedAction);
+            var possibleActions = Board.GetAllPossibleActions(teamColour, lastPerformedAction, true);
+            var legalActions = this.GetLegalActionsList(possibleActions);
 
             CheckedTeamColour = isKingInCheck ? parsedCheckColour : CheckStatus.None;
             CheckmateTeamColour = legalActions.Count == 0 ? parsedCheckColour : CheckStatus.None;

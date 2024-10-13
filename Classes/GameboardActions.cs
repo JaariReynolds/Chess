@@ -130,10 +130,10 @@ namespace Chess.Classes
         }
 
         /// <summary>
-        /// Returns a list of legal actions that do not leave the King in a checked position. 
+        /// Returns a dictionary of legal actions that do not leave the King in a checked position. 
         /// Requires the whole gameboard object in order to simulate performing potential actions.
         /// </summary>
-        public static Dictionary<Piece, List<Action>> GetLegalActions(this Gameboard gameboard, List<Action> possibleActions)
+        public static Dictionary<Piece, List<Action>> GetLegalActionsDictionary(this Gameboard gameboard, List<Action> possibleActions)
         {
             // legal actions are ones that do not leave the King in a checked position
             var legalActions = new Dictionary<Piece, List<Action>>();
@@ -155,6 +155,30 @@ namespace Chess.Classes
                         legalActions[action.Piece].Add(action);
                     else
                         legalActions[action.Piece] = new List<Action> { action };
+            }
+
+            return legalActions;
+        }
+
+        public static List<Action> GetLegalActionsList(this Gameboard gameboard, List<Action> possibleActions)
+        {
+            // legal actions are ones that do not leave the King in a checked position
+            var legalActions = new List<Action>();
+            var previousAction = gameboard.PreviousActions.Count == 0 ? null : gameboard.PreviousActions[^1];
+
+            if (possibleActions.Count == 0)
+                return legalActions;
+
+            // foreach possible action, simulate performing the action and recalculate the enemy actions to see if checkingPieces == 0
+            foreach (var action in possibleActions)
+            {
+                var simulatedBoard = new Gameboard(gameboard);
+                var simulatedAction = new Action(action);
+                simulatedBoard.PerformAction(simulatedAction);
+
+                // if no checking pieces after the simulated action, means it counts as a legal action
+                if (GetCheckingPieces(simulatedBoard.Board, action.Piece.TeamColour, previousAction).Count == 0)
+                    legalActions.Add(action);
             }
 
             return legalActions;

@@ -27,8 +27,6 @@ namespace Chess.Classes
             bool hasMoved = root.GetProperty("hasMoved").GetBoolean();
             Square square = JsonSerializer.Deserialize<Square>(root.GetProperty("square").GetRawText(), options);
 
-            Console.WriteLine($"Deserializing piece: {name}");
-
             Piece piece = name switch
             {
                 "Pawn" => new Pawn(teamColour, square.ToString(), hasMoved),
@@ -45,8 +43,6 @@ namespace Chess.Classes
 
         public override void Write(Utf8JsonWriter writer, Piece value, JsonSerializerOptions options)
         {
-            Console.WriteLine($"Serializing piece: {value.Name}");
-
             writer.WriteStartObject();
             writer.WriteString("name", value.Name);
             writer.WritePropertyName("square");

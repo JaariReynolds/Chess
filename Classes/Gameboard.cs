@@ -6,7 +6,6 @@ namespace Chess.Classes
     public class Gameboard
     {
         public Piece[][] Board { get; set; }
-
         public TeamColour CurrentTeamColour { get; set; }
         public List<Action> PreviousActions { get; set; }
         public int WhitePoints { get; set; }
@@ -22,7 +21,7 @@ namespace Chess.Classes
         }
 
         /// <summary>
-        /// Create a copy of a Gameboard for simulation purposes
+        /// Create a (deep) copy of a Gameboard for simulation purposes
         /// </summary>
         public Gameboard(Gameboard existingGameboard)
         {
@@ -36,15 +35,6 @@ namespace Chess.Classes
             WhitePoints = existingGameboard.WhitePoints;
             BlackPoints = existingGameboard.BlackPoints;
             PreviousActions = new List<Action>(existingGameboard.PreviousActions);
-        }
-
-        public void InitialiseTestBoardState()
-        {
-            Board.SetSquare(new King(TeamColour.White, "e1"));
-            Board.SetSquare(new Rook(TeamColour.White, "h1"));
-            Board.SetSquare(new King(TeamColour.Black, "e8"));
-            Board.SetSquare(new Rook(TeamColour.Black, "h8"));
-
         }
 
         public void InitialiseStandardBoardState()
@@ -84,6 +74,10 @@ namespace Chess.Classes
             PreviousActions.Add(action);
         }
 
+        /// <summary>
+        /// Calculates and returns a dictionary of available actions for the provided team, while also setting on the gameboard if there is a check or mate.
+        /// </summary>
+
         public Dictionary<Piece, List<Action>> CalculateTeamActions(TeamColour teamColour)
         {
             var lastPerformedAction = PreviousActions.Count == 0 ? null : PreviousActions[^1];
@@ -99,6 +93,10 @@ namespace Chess.Classes
             return legalActions;
         }
 
+        /// <summary>
+        /// (For Chessbot use only)
+        /// Calculates and returns a list of available actions for the provided team, while also setting on the gameboard if there is a check or mate.
+        /// </summary>
         public List<Action> CalculateTeamActionsList(TeamColour teamColour)
         {
             var lastPerformedAction = PreviousActions.Count == 0 ? null : PreviousActions[^1];
@@ -216,6 +214,16 @@ namespace Chess.Classes
                 }
                 Console.WriteLine();
             }
+        }
+
+
+        // for console testing only 
+        public void InitialiseTestBoardState()
+        {
+            Board.SetSquare(new King(TeamColour.White, "e1"));
+            Board.SetSquare(new Rook(TeamColour.White, "h1"));
+            Board.SetSquare(new King(TeamColour.Black, "e8"));
+            Board.SetSquare(new Rook(TeamColour.Black, "h8"));
         }
     }
 }

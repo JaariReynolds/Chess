@@ -160,6 +160,10 @@ namespace Chess.Classes
             return legalActions;
         }
 
+        /// <summary>
+        /// (For Chessbot use only)
+        /// Returns a list of legal actions instead of a dictionary.
+        /// </summary>
         public static List<Action> GetLegalActionsList(this Gameboard gameboard, List<Action> possibleActions)
         {
             // legal actions are ones that do not leave the King in a checked position

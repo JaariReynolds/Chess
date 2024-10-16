@@ -82,6 +82,7 @@ namespace Chess.Classes.ConcretePieces
             if (oneSquareForward != null &&
                 twoSquaresForward != null &&
                 Square.X == startX &&
+                !HasMoved &&
                 ChessUtils.IsEmptySquare(oneSquareForward, boardState) &&
                 ChessUtils.IsEmptySquare(twoSquaresForward, boardState))
             {
@@ -128,13 +129,13 @@ namespace Chess.Classes.ConcretePieces
         {
             // can en passant capture if the previous action was a PawnDoubleMove
             if (diagonalLeft != null &&
-                ChessUtils.EnPassant(TeamColour, diagonalLeft, lastPerformedAction))
+                ChessUtils.CanEnPassant(TeamColour, diagonalLeft, lastPerformedAction))
             {
                 actions.Add(new Action(this, diagonalLeft, ActionType.PawnEnPassant));
             }
 
             if (diagonalRight != null &&
-                ChessUtils.EnPassant(TeamColour, diagonalRight, lastPerformedAction))
+                ChessUtils.CanEnPassant(TeamColour, diagonalRight, lastPerformedAction))
             {
                 actions.Add(new Action(this, diagonalRight, ActionType.PawnEnPassant));
             }

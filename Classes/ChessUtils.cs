@@ -38,29 +38,30 @@ namespace Chess.Classes
                 action.ActionType == ActionType.PawnPromoteQueen;
         }
 
-        public static bool EnPassant(TeamColour currentTeamColour, Square square, Action? lastPerformedAction)
+        public static bool CanEnPassant(TeamColour currentTeamColour, Square square, Action? lastPerformedAction)
         {
-            if (lastPerformedAction == null || lastPerformedAction.ActionType != ActionType.PawnDoubleMove)
-                return false;
+            bool canEnPassant = false;
 
-            bool enPassant = false;
+            // en passant captures only valid when the last performed move is a pawn double move
+            if (lastPerformedAction == null || lastPerformedAction.ActionType != ActionType.PawnDoubleMove)
+                return canEnPassant;
 
             switch (currentTeamColour)
             {
                 // White en passant can only be performed on row index 2
                 case TeamColour.White:
                     if (square.X == 2 && square.Y == lastPerformedAction.Square.Y)
-                        enPassant = true;
+                        canEnPassant = true;
                     break;
 
                 // Black en passant can only be performed on row index 5
                 case TeamColour.Black:
                     if (square.X == 5 && square.Y == lastPerformedAction.Square.Y)
-                        enPassant = true;
+                        canEnPassant = true;
                     break;
             }
 
-            return enPassant;
+            return canEnPassant;
         }
 
         public static bool DeterminePieceAction(Piece piece, List<Action> actions, Square square, Piece[][] boardState)

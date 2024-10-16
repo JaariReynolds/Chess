@@ -23,7 +23,7 @@ namespace Chess.Classes.ConcretePieces
 
         public override Piece Clone()
         {
-            return new Pawn(TeamColour, Square.ToString());
+            return new Pawn(TeamColour, Square.ToString(), HasMoved);
         }
 
         public override void Draw()

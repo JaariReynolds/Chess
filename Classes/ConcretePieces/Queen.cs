@@ -16,7 +16,7 @@ namespace Chess.Classes.ConcretePieces
 
         public override Piece Clone()
         {
-            return new Queen(TeamColour, Square.ToString());
+            return new Queen(TeamColour, Square.ToString(), HasMoved);
         }
 
         public override void Draw()

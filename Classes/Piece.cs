@@ -30,8 +30,6 @@ namespace Chess.Classes
             PieceValue = pieceValue;
         }
 
-
-
         // Deserialization only, properties will be overwritten
         public Piece()
         {
@@ -41,8 +39,6 @@ namespace Chess.Classes
             HasMoved = false;
             PieceValue = -1;
         }
-
-
 
         public Piece(string name, Square square, TeamColour teamColour, int pieceValue, bool hasMoved)
         {

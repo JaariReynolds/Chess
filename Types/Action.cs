@@ -22,6 +22,7 @@ public class Action
     public Square Square { get; set; }
     public ActionType ActionType { get; set; }
     public int? PromoteCapturePoints { get; set; } = 0; // to only be used on Pawn promote + capture actions
+    public string AlgebraicNotation { get; set; }
 
     // Deserialization only, properties will be overwritten
     public Action()
@@ -35,6 +36,7 @@ public class Action
     public Action(Piece piece, Square square, ActionType actionType, int? promoteCapturePoints)
     {
         Piece = piece;
+        AlgebraicNotation = ChessUtils.ToAlgebraicNotation(piece, square, ActionType, promoteCapturePoints ?? 0);
         Square = square;
         ActionType = actionType;
         PromoteCapturePoints = promoteCapturePoints ?? 0;
@@ -44,6 +46,7 @@ public class Action
     {
         Piece = piece;
         var (x, y) = ChessUtils.CoordsFromAlgebraicNotation(algebraicNotation);
+        AlgebraicNotation = ChessUtils.ToAlgebraicNotation(piece, new Square(x, y), actionType, promoteCapturePoints ?? 0);
         Square = new Square(x, y);
         ActionType = actionType;
         PromoteCapturePoints = promoteCapturePoints ?? 0;
@@ -56,6 +59,7 @@ public class Action
     public Action(Action existingAction)
     {
         Piece = existingAction.Piece.Clone();
+        AlgebraicNotation = existingAction.AlgebraicNotation;
         Square = existingAction.Square;
         ActionType = existingAction.ActionType;
         PromoteCapturePoints = existingAction.PromoteCapturePoints ?? 0;
@@ -63,7 +67,7 @@ public class Action
 
     public override string ToString()
     {
-        return $"{Piece} - {ActionType}: {Square}";
+        return AlgebraicNotation;
     }
 
     public override bool Equals(object? obj)

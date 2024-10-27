@@ -10,7 +10,7 @@ namespace Chess.Classes.ConcretePieces
 
         internal Pawn() : base() { }
 
-        public Pawn(TeamColour teamColour, string algebraicNotation, bool hasMoved) : base(teamColour, algebraicNotation, hasMoved, "Pawn", 1)
+        public Pawn(TeamColour teamColour, string algebraicNotation, bool hasMoved) : base(teamColour, algebraicNotation, hasMoved, PieceName.Pawn, 1)
         {
             startX = teamColour == TeamColour.White ? 6 : 1;
             lastRow = teamColour == TeamColour.White ? 0 : 7;
@@ -24,11 +24,6 @@ namespace Chess.Classes.ConcretePieces
         public override Piece Clone()
         {
             return new Pawn(TeamColour, Square.ToString(), HasMoved);
-        }
-
-        public override void Draw()
-        {
-            Console.Write(TeamColour == TeamColour.White ? " P " : " p ");
         }
 
         public override List<Action> GetPotentialActions(Piece[][] boardState, Action? lastPerformedAction, bool includeCastles)

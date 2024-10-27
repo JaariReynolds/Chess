@@ -115,5 +115,33 @@ namespace Chess.Classes
 
             return board;
         }
+
+        public static string GetPieceAbbreviation(PieceName pieceName, TeamColour teamColour)
+        {
+            string piece = "";
+            switch (pieceName)
+            {
+                case PieceName.Pawn:
+                    piece = "P";
+                    break;
+                case PieceName.Knight:
+                    piece = "N";
+                    break;
+                case PieceName.Rook:
+                    piece = "R";
+                    break;
+                case PieceName.Bishop:
+                    piece = "B";
+                    break;
+                case PieceName.King:
+                    piece = "K";
+                    break;
+                case PieceName.Queen:
+                    piece = "Q";
+                    break;
+            }
+
+            return teamColour == TeamColour.White ? piece : piece.ToLower();
+        }
     }
 }

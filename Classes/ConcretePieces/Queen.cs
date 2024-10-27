@@ -10,18 +10,13 @@ namespace Chess.Classes.ConcretePieces
             {-1, -1}, {-1, 1}, {1, -1}, {1, 1} // NW, NE, SW, SE
         };
 
-        public Queen(TeamColour teamColour, string algebraicNotation, bool hasMoved) : base(teamColour, algebraicNotation, hasMoved, "Queen", 9) { }
+        public Queen(TeamColour teamColour, string algebraicNotation, bool hasMoved) : base(teamColour, algebraicNotation, hasMoved, PieceName.Queen, 9) { }
 
         public Queen(TeamColour teamColour, string algebraicNotation) : this(teamColour, algebraicNotation, false) { }
 
         public override Piece Clone()
         {
             return new Queen(TeamColour, Square.ToString(), HasMoved);
-        }
-
-        public override void Draw()
-        {
-            Console.Write(TeamColour == TeamColour.White ? " Q " : " q ");
         }
 
         public override List<Action> GetPotentialActions(Piece[][] boardState, Action? lastPerformedAction, bool includeCastles)

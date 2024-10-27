@@ -4,12 +4,16 @@ namespace Chess.Classes
 {
     public abstract class Piece
     {
-        public string Name { get; set; }
+        public PieceName Name { get; set; }
+        public string PieceAbbreviation { get; set; }
         public Square Square { get; set; }
         public TeamColour TeamColour { get; set; }
         public int PieceValue { get; set; }
         public bool HasMoved { get; set; }
-        public abstract void Draw();
+        public void Draw()
+        {
+            Console.Write(" " + PieceAbbreviation + " ");
+        }
 
         /// <summary>
         /// Return a list of actions available for the provided piece.
@@ -20,9 +24,10 @@ namespace Chess.Classes
 
         public abstract Piece Clone();
 
-        public Piece(TeamColour teamColour, string algebraicNotation, bool hasMoved, string name, int pieceValue)
+        public Piece(TeamColour teamColour, string algebraicNotation, bool hasMoved, PieceName name, int pieceValue)
         {
             Name = name;
+            PieceAbbreviation = ChessUtils.GetPieceAbbreviation(name, teamColour);
             TeamColour = teamColour;
             var (x, y) = ChessUtils.CoordsFromAlgebraicNotation(algebraicNotation);
             Square = new Square(x, y);
@@ -33,16 +38,17 @@ namespace Chess.Classes
         // Deserialization only, properties will be overwritten
         public Piece()
         {
-            Name = "";
+            Name = PieceName.Pawn;
             TeamColour = TeamColour.White;
             Square = new Square(0, 0);
             HasMoved = false;
             PieceValue = -1;
         }
 
-        public Piece(string name, Square square, TeamColour teamColour, int pieceValue, bool hasMoved)
+        public Piece(PieceName name, Square square, TeamColour teamColour, int pieceValue, bool hasMoved)
         {
             Name = name;
+            PieceAbbreviation = ChessUtils.GetPieceAbbreviation(name, teamColour);
             Square = square;
             TeamColour = teamColour;
             PieceValue = pieceValue;

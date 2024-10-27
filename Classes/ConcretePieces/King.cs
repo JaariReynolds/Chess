@@ -12,7 +12,7 @@ namespace Chess.Classes.ConcretePieces
 
         private string rank;
 
-        public King(TeamColour teamColour, string algebraicNotation, bool hasMoved) : base(teamColour, algebraicNotation, hasMoved, "King", -1)
+        public King(TeamColour teamColour, string algebraicNotation, bool hasMoved) : base(teamColour, algebraicNotation, hasMoved, PieceName.King, -1)
         {
             rank = teamColour == TeamColour.White ? "1" : "8";
         }
@@ -21,11 +21,6 @@ namespace Chess.Classes.ConcretePieces
         public override Piece Clone()
         {
             return new King(TeamColour, Square.ToString(), HasMoved);
-        }
-
-        public override void Draw()
-        {
-            Console.Write(TeamColour == TeamColour.White ? " K " : " k ");
         }
 
         public override List<Action> GetPotentialActions(Piece[][] boardState, Action? lastPerformedAction, bool includeCastles)

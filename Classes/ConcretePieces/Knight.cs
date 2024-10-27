@@ -14,18 +14,13 @@ namespace Chess.Classes.ConcretePieces
 
         public Knight(TeamColour teamColour, string algebraicNotation) : this(teamColour, algebraicNotation, false) { }
 
-        public Knight(TeamColour teamColour, string algebraicNotation, bool hasMoved) : base(teamColour, algebraicNotation, hasMoved, "Knight", 3)
+        public Knight(TeamColour teamColour, string algebraicNotation, bool hasMoved) : base(teamColour, algebraicNotation, hasMoved, PieceName.Knight, 3)
         {
         }
 
         public override Piece Clone()
         {
             return new Knight(TeamColour, Square.ToString(), HasMoved);
-        }
-
-        public override void Draw()
-        {
-            Console.Write(TeamColour == TeamColour.White ? " N " : " n ");
         }
 
         public override List<Action> GetPotentialActions(Piece[][] boardState, Action? lastPerformedAction, bool includeCastles)

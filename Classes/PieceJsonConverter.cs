@@ -44,7 +44,7 @@ namespace Chess.Classes
         public override void Write(Utf8JsonWriter writer, Piece value, JsonSerializerOptions options)
         {
             writer.WriteStartObject();
-            writer.WriteString("name", value.Name);
+            writer.WriteString("name", value.Name.ToString());
             writer.WritePropertyName("square");
             JsonSerializer.Serialize(writer, value.Square, options);
             writer.WriteString("teamColour", value.TeamColour.ToString());

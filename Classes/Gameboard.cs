@@ -8,7 +8,8 @@ namespace Chess.Classes
     {
         public Piece[][] Board { get; set; }
         public TeamColour CurrentTeamColour { get; set; }
-        public List<Action> PreviousActions { get; set; }
+        public List<string> PreviousActions { get; set; }
+        public Action? LastPerformedAction { get; set; }
         public int WhitePoints { get; set; }
         public int BlackPoints { get; set; }
         public CheckStatus CheckedTeamColour { get; set; } = CheckStatus.None;
@@ -17,7 +18,7 @@ namespace Chess.Classes
         public Gameboard()
         {
             Board = ChessUtils.InitialiseBoard();
-            PreviousActions = new List<Action>();
+            PreviousActions = new List<string>();
             CurrentTeamColour = TeamColour.White;
         }
 
@@ -35,7 +36,7 @@ namespace Chess.Classes
             CurrentTeamColour = existingGameboard.CurrentTeamColour;
             WhitePoints = existingGameboard.WhitePoints;
             BlackPoints = existingGameboard.BlackPoints;
-            PreviousActions = new List<Action>(existingGameboard.PreviousActions);
+            PreviousActions = new List<string>(existingGameboard.PreviousActions);
         }
 
         public void InitialiseStandardBoardState()
@@ -73,7 +74,8 @@ namespace Chess.Classes
         public void AddActionToHistory(Action action)
         {
             GameStateManager.Instance.UpdateLastPerformedAction(action);
-            PreviousActions.Add(action);
+            LastPerformedAction = action;
+            PreviousActions.Add(action.AlgebraicNotation);
         }
 
         /// <summary>
@@ -100,7 +102,6 @@ namespace Chess.Classes
         /// </summary>
         public List<Action> CalculateTeamActionsList(TeamColour teamColour)
         {
-            var lastPerformedAction = PreviousActions.Count == 0 ? null : PreviousActions[^1];
             var parsedCheckColour = (CheckStatus)Enum.Parse(typeof(CheckStatus), teamColour.ToString());
 
             var isKingInCheck = Board.IsKingInCheck(teamColour);

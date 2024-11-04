@@ -47,7 +47,7 @@ namespace Chess.Classes
             return null;
         }
 
-        public static bool IsKingInCheck(this Piece[][] boardState, TeamColour teamColour, Action? previousAction)
+        public static bool IsKingInCheck(this Piece[][] boardState, TeamColour teamColour)
         {
             var king = boardState.FindKing(teamColour);
 
@@ -55,13 +55,13 @@ namespace Chess.Classes
             if (king is null)
                 return false;
 
-            var isKingUnderAttack = boardState.IsSquareUnderAttack(king.Square, teamColour.GetOppositeTeam(), previousAction);
+            var isKingUnderAttack = boardState.IsSquareUnderAttack(king.Square, teamColour.GetOppositeTeam());
             return isKingUnderAttack;
         }
 
-        public static bool IsSquareUnderAttack(this Piece[][] boardState, Square square, TeamColour attackingTeamColour, Action? previousAction)
+        public static bool IsSquareUnderAttack(this Piece[][] boardState, Square square, TeamColour attackingTeamColour)
         {
-            var opponentActions = boardState.GetAllPossibleActions(attackingTeamColour, previousAction, true);
+            var opponentActions = boardState.GetAllPossibleActions(attackingTeamColour, true);
 
             foreach (var action in opponentActions)
             {
@@ -79,11 +79,11 @@ namespace Chess.Classes
         /// <summary>
         /// Returns a list of pieces on the provided board that are currently checking the checkedTeamColour King.
         /// </summary>
-        public static List<Piece> GetCheckingPieces(this Piece[][] boardState, TeamColour checkedTeamColour, Action? previousAction)
+        public static List<Piece> GetCheckingPieces(this Piece[][] boardState, TeamColour checkedTeamColour)
         {
             var checkingPieces = new List<Piece>();
             var king = boardState.FindKing(checkedTeamColour);
-            var enemyActions = boardState.GetAllPossibleActions(checkedTeamColour.GetOppositeTeam(), previousAction, true);
+            var enemyActions = boardState.GetAllPossibleActions(checkedTeamColour.GetOppositeTeam(), true);
 
             // this should only happen in test situations where a King isn't placed on the board 
             if (king is null)
@@ -110,7 +110,7 @@ namespace Chess.Classes
         /// <summary>
         /// Returns a list of all possible Actions that pieces of the provided TeamColour can perform, including Actions that leave the King in a checked position.
         /// </summary>
-        public static List<Action> GetAllPossibleActions(this Piece[][] boardState, TeamColour teamColour, Action? previousAction, bool includeCastles)
+        public static List<Action> GetAllPossibleActions(this Piece[][] boardState, TeamColour teamColour, bool includeCastles)
         {
             var actions = new List<Action>();
 
@@ -122,7 +122,7 @@ namespace Chess.Classes
                     if (piece == null) continue;
                     if (piece.TeamColour != teamColour) continue;
 
-                    actions.AddRange(piece.GetPotentialActions(boardState, previousAction, includeCastles));
+                    actions.AddRange(piece.GetPotentialActions(boardState, includeCastles));
                 }
             }
 
@@ -137,7 +137,6 @@ namespace Chess.Classes
         {
             // legal actions are ones that do not leave the King in a checked position
             var legalActions = new Dictionary<Piece, List<Action>>();
-            var previousAction = gameboard.PreviousActions.Count == 0 ? null : gameboard.PreviousActions[^1];
 
             if (possibleActions.Count == 0)
                 return legalActions;
@@ -150,7 +149,7 @@ namespace Chess.Classes
                 simulatedBoard.PerformAction(simulatedAction);
 
                 // if no checking pieces after the simulated action, means it counts as a legal action
-                if (GetCheckingPieces(simulatedBoard.Board, action.Piece.TeamColour, previousAction).Count == 0)
+                if (GetCheckingPieces(simulatedBoard.Board, action.Piece.TeamColour).Count == 0)
                     if (legalActions.ContainsKey(action.Piece))
                         legalActions[action.Piece].Add(action);
                     else
@@ -168,7 +167,6 @@ namespace Chess.Classes
         {
             // legal actions are ones that do not leave the King in a checked position
             var legalActions = new List<Action>();
-            var previousAction = gameboard.PreviousActions.Count == 0 ? null : gameboard.PreviousActions[^1];
 
             if (possibleActions.Count == 0)
                 return legalActions;
@@ -181,7 +179,7 @@ namespace Chess.Classes
                 simulatedBoard.PerformAction(simulatedAction);
 
                 // if no checking pieces after the simulated action, means it counts as a legal action
-                if (GetCheckingPieces(simulatedBoard.Board, action.Piece.TeamColour, previousAction).Count == 0)
+                if (GetCheckingPieces(simulatedBoard.Board, action.Piece.TeamColour).Count == 0)
                     legalActions.Add(action);
             }
 

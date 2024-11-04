@@ -1,4 +1,5 @@
 ﻿using Chess.Types;
+using ChessLogic.Classes;
 
 namespace Chess.Classes.ConcretePieces
 {
@@ -26,7 +27,7 @@ namespace Chess.Classes.ConcretePieces
             return new Pawn(TeamColour, Square.ToString(), HasMoved);
         }
 
-        public override List<Action> GetPotentialActions(Piece[][] boardState, Action? lastPerformedAction, bool includeCastles)
+        public override List<Action> GetPotentialActions(Piece[][] boardState, bool includeCastles)
         {
             var actions = new List<Action>();
 
@@ -48,7 +49,7 @@ namespace Chess.Classes.ConcretePieces
 
             AddMoves(actions, boardState, oneSquareForward, twoSquaresForward);
             AddStandardCaptures(actions, boardState, diagonalLeft, diagonalRight);
-            AddEnPassantCaptures(actions, diagonalLeft, diagonalRight, lastPerformedAction);
+            AddEnPassantCaptures(actions, diagonalLeft, diagonalRight);
 
             return actions;
         }
@@ -120,17 +121,17 @@ namespace Chess.Classes.ConcretePieces
             }
         }
 
-        private void AddEnPassantCaptures(List<Action> actions, Square? diagonalLeft, Square? diagonalRight, Action? lastPerformedAction)
+        private void AddEnPassantCaptures(List<Action> actions, Square? diagonalLeft, Square? diagonalRight)
         {
             // can en passant capture if the previous action was a PawnDoubleMove
             if (diagonalLeft != null &&
-                ChessUtils.CanEnPassant(TeamColour, diagonalLeft, lastPerformedAction))
+                ChessUtils.CanEnPassant(TeamColour, diagonalLeft, GameStateManager.Instance.LastPerformedAction))
             {
                 actions.Add(new Action(this, diagonalLeft, ActionType.PawnEnPassant));
             }
 
             if (diagonalRight != null &&
-                ChessUtils.CanEnPassant(TeamColour, diagonalRight, lastPerformedAction))
+                ChessUtils.CanEnPassant(TeamColour, diagonalRight, GameStateManager.Instance.LastPerformedAction))
             {
                 actions.Add(new Action(this, diagonalRight, ActionType.PawnEnPassant));
             }

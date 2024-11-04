@@ -18,7 +18,7 @@ namespace Chess.Classes.ConcretePieces
             return new Rook(TeamColour, Square.ToString(), HasMoved);
         }
 
-        public override List<Action> GetPotentialActions(Piece[][] boardState, Action? lastPerformedAction, bool includeCastles)
+        public override List<Action> GetPotentialActions(Piece[][] boardState, bool includeCastles)
         {
             // Cardinal direction movements only (i.e. N,S,E,W only)
             var actions = new List<Action>();

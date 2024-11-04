@@ -17,7 +17,7 @@ namespace Chess.Classes.ConcretePieces
             return new Bishop(TeamColour, Square.ToString(), HasMoved);
         }
 
-        public override List<Action> GetPotentialActions(Piece[][] boardState, Action? lastPerformedAction, bool includeCastles)
+        public override List<Action> GetPotentialActions(Piece[][] boardState, bool includeCastles)
         {
             // Intercardinal directions only (i.e. diagonals only)
             var actions = new List<Action>();

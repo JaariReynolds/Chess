@@ -1,5 +1,6 @@
 ﻿using Chess.Classes.ConcretePieces;
 using Chess.Types;
+using ChessLogic.Classes;
 
 namespace Chess.Classes
 {
@@ -71,6 +72,7 @@ namespace Chess.Classes
 
         public void AddActionToHistory(Action action)
         {
+            GameStateManager.Instance.UpdateLastPerformedAction(action);
             PreviousActions.Add(action);
         }
 
@@ -80,11 +82,10 @@ namespace Chess.Classes
 
         public Dictionary<Piece, List<Action>> CalculateTeamActions(TeamColour teamColour)
         {
-            var lastPerformedAction = PreviousActions.Count == 0 ? null : PreviousActions[^1];
             var parsedCheckColour = (CheckStatus)Enum.Parse(typeof(CheckStatus), teamColour.ToString());
 
-            var isKingInCheck = Board.IsKingInCheck(teamColour, lastPerformedAction);
-            var possibleActions = Board.GetAllPossibleActions(teamColour, lastPerformedAction, true);
+            var isKingInCheck = Board.IsKingInCheck(teamColour);
+            var possibleActions = Board.GetAllPossibleActions(teamColour, true);
             var legalActions = this.GetLegalActionsDictionary(possibleActions);
 
             CheckedTeamColour = isKingInCheck ? parsedCheckColour : CheckStatus.None;
@@ -102,8 +103,8 @@ namespace Chess.Classes
             var lastPerformedAction = PreviousActions.Count == 0 ? null : PreviousActions[^1];
             var parsedCheckColour = (CheckStatus)Enum.Parse(typeof(CheckStatus), teamColour.ToString());
 
-            var isKingInCheck = Board.IsKingInCheck(teamColour, lastPerformedAction);
-            var possibleActions = Board.GetAllPossibleActions(teamColour, lastPerformedAction, true);
+            var isKingInCheck = Board.IsKingInCheck(teamColour);
+            var possibleActions = Board.GetAllPossibleActions(teamColour, true);
             var legalActions = this.GetLegalActionsList(possibleActions);
 
             CheckedTeamColour = isKingInCheck ? parsedCheckColour : CheckStatus.None;

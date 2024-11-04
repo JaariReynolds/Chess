@@ -1,4 +1,5 @@
 ﻿using Chess.Types;
+using ChessLogic.Classes;
 
 namespace Chess.Classes
 {
@@ -38,9 +39,11 @@ namespace Chess.Classes
                 action.ActionType == ActionType.PawnPromoteQueen;
         }
 
-        public static bool CanEnPassant(TeamColour currentTeamColour, Square square, Action? lastPerformedAction)
+        public static bool CanEnPassant(TeamColour currentTeamColour, Square square)
         {
             bool canEnPassant = false;
+
+            var lastPerformedAction = GameStateManager.Instance.LastPerformedAction;
 
             // en passant captures only valid when the last performed move is a pawn double move
             if (lastPerformedAction == null || lastPerformedAction.ActionType != ActionType.PawnDoubleMove)

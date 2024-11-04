@@ -1,5 +1,4 @@
 ﻿using Chess.Types;
-using ChessLogic.Classes;
 
 namespace Chess.Classes.ConcretePieces
 {
@@ -125,13 +124,13 @@ namespace Chess.Classes.ConcretePieces
         {
             // can en passant capture if the previous action was a PawnDoubleMove
             if (diagonalLeft != null &&
-                ChessUtils.CanEnPassant(TeamColour, diagonalLeft, GameStateManager.Instance.LastPerformedAction))
+                ChessUtils.CanEnPassant(TeamColour, diagonalLeft))
             {
                 actions.Add(new Action(this, diagonalLeft, ActionType.PawnEnPassant));
             }
 
             if (diagonalRight != null &&
-                ChessUtils.CanEnPassant(TeamColour, diagonalRight, GameStateManager.Instance.LastPerformedAction))
+                ChessUtils.CanEnPassant(TeamColour, diagonalRight))
             {
                 actions.Add(new Action(this, diagonalRight, ActionType.PawnEnPassant));
             }

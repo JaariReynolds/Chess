@@ -1,5 +1,6 @@
 ﻿using Chess.Classes.ConcretePieces;
 using Chess.Types;
+using ChessLogic.Classes;
 
 namespace Chess.Classes
 {
@@ -261,7 +262,7 @@ namespace Chess.Classes
         public static void EnPassant(this Gameboard gameboard, Action action)
         {
             // "capture" the Pawn that double moved (i.e. the piece that performed the last action)
-            var pawnPieceAction = gameboard.PreviousActions[^1];
+            var pawnPieceAction = GameStateManager.Instance.LastPerformedAction!;
 
             gameboard.Board.ClearSquare(pawnPieceAction.Square.ToString()); // remove the pawn that double moved 
 

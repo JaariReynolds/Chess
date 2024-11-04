@@ -106,52 +106,11 @@ namespace Chess.Classes
             return $"{file}{rank}";
         }
 
-        public static string ToAlgebraicNotation(Action action)
-        {
-            string pieceAbbreviation = action.Piece.PieceAbbreviation;
-
-            if (action.Piece.Name == PieceName.Pawn) pieceAbbreviation = "";
-
-            string moveNotation = action.ActionType switch
-            {
-                ActionType.Move or ActionType.PawnDoubleMove => $"{pieceAbbreviation}{action.Square}",
-                ActionType.Capture or ActionType.PawnEnPassant =>
-                    (action.Piece.Name == PieceName.Pawn)
-                        ? $"{action.Piece.Square.ToString()[0]}x{action.Square}"
-                        : $"{pieceAbbreviation}x{action.Square}",
-                ActionType.PawnPromoteKnight =>
-                    action.PromoteCapturePoints > 0
-                        ? $"{action.Piece.Square.ToString()[0]}x{action.Square}={GetPieceAbbreviation(PieceName.Knight, action.Piece.TeamColour)}"
-                        : $"{action.Square}={GetPieceAbbreviation(PieceName.Knight, action.Piece.TeamColour)}",
-                ActionType.PawnPromoteBishop =>
-                    action.PromoteCapturePoints > 0
-                        ? $"{action.Piece.Square.ToString()[0]}x{action.Square}={GetPieceAbbreviation(PieceName.Bishop, action.Piece.TeamColour)}"
-                        : $"{action.Square}={GetPieceAbbreviation(PieceName.Bishop, action.Piece.TeamColour)}",
-                ActionType.PawnPromoteRook =>
-                    action.PromoteCapturePoints > 0
-                        ? $"{action.Piece.Square.ToString()[0]}x{action.Square}={GetPieceAbbreviation(PieceName.Rook, action.Piece.TeamColour)}"
-                        : $"{action.Square}={GetPieceAbbreviation(PieceName.Rook, action.Piece.TeamColour)}",
-                ActionType.PawnPromoteQueen =>
-                    action.PromoteCapturePoints > 0
-                        ? $"{action.Piece.Square.ToString()[0]}x{action.Square}={GetPieceAbbreviation(PieceName.Queen, action.Piece.TeamColour)}"
-                        : $"{action.Square}={GetPieceAbbreviation(PieceName.Queen, action.Piece.TeamColour)}",
-                ActionType.KingsideCastle => "O-O",
-                ActionType.QueensideCastle => "O-O-O",
-            };
-
-            return moveNotation;
-        }
-
         public static string ToAlgebraicNotation(Piece piece, Square targetSquare, ActionType actionType, int promoteCapturePoints)
         {
             string pieceAbbreviation = piece.PieceAbbreviation;
 
             if (piece.Name == PieceName.Pawn) pieceAbbreviation = "";
-
-            if (actionType == ActionType.KingsideCastle)
-            {
-
-            }
 
             string moveNotation = actionType switch
             {
@@ -162,20 +121,20 @@ namespace Chess.Classes
                         : $"{pieceAbbreviation}x{targetSquare}",
                 ActionType.PawnPromoteKnight =>
                     promoteCapturePoints > 0
-                        ? $"{piece.Square.ToString()[0]}x{targetSquare}={GetPieceAbbreviation(PieceName.Knight, piece.TeamColour)}"
-                        : $"{targetSquare}={GetPieceAbbreviation(PieceName.Knight, piece.TeamColour)}",
+                        ? $"{piece.Square.ToString()[0]}x{targetSquare}={GetPieceAbbreviation(PieceName.Knight)}"
+                        : $"{targetSquare}={GetPieceAbbreviation(PieceName.Knight)}",
                 ActionType.PawnPromoteBishop =>
                     promoteCapturePoints > 0
-                        ? $"{piece.Square.ToString()[0]}x{targetSquare}={GetPieceAbbreviation(PieceName.Bishop, piece.TeamColour)}"
-                        : $"{targetSquare}={GetPieceAbbreviation(PieceName.Bishop, piece.TeamColour)}",
+                        ? $"{piece.Square.ToString()[0]}x{targetSquare}={GetPieceAbbreviation(PieceName.Bishop)}"
+                        : $"{targetSquare}={GetPieceAbbreviation(PieceName.Bishop)}",
                 ActionType.PawnPromoteRook =>
                     promoteCapturePoints > 0
-                        ? $"{piece.Square.ToString()[0]}x{targetSquare}={GetPieceAbbreviation(PieceName.Rook, piece.TeamColour)}"
-                        : $"{targetSquare}={GetPieceAbbreviation(PieceName.Rook, piece.TeamColour)}",
+                        ? $"{piece.Square.ToString()[0]}x{targetSquare}={GetPieceAbbreviation(PieceName.Rook)}"
+                        : $"{targetSquare}={GetPieceAbbreviation(PieceName.Rook)}",
                 ActionType.PawnPromoteQueen =>
                     promoteCapturePoints > 0
-                        ? $"{piece.Square.ToString()[0]}x{targetSquare}={GetPieceAbbreviation(PieceName.Queen, piece.TeamColour)}"
-                        : $"{targetSquare}={GetPieceAbbreviation(PieceName.Queen, piece.TeamColour)}",
+                        ? $"{piece.Square.ToString()[0]}x{targetSquare}={GetPieceAbbreviation(PieceName.Queen)}"
+                        : $"{targetSquare}={GetPieceAbbreviation(PieceName.Queen)}",
                 ActionType.KingsideCastle => "O-O",
                 ActionType.QueensideCastle => "O-O-O",
             };
@@ -193,32 +152,17 @@ namespace Chess.Classes
             return board;
         }
 
-        public static string GetPieceAbbreviation(PieceName pieceName, TeamColour teamColour)
+        public static string GetPieceAbbreviation(PieceName pieceName)
         {
-            string piece = "";
-            switch (pieceName)
+            return pieceName switch
             {
-                case PieceName.Pawn:
-                    piece = "P";
-                    break;
-                case PieceName.Knight:
-                    piece = "N";
-                    break;
-                case PieceName.Rook:
-                    piece = "R";
-                    break;
-                case PieceName.Bishop:
-                    piece = "B";
-                    break;
-                case PieceName.King:
-                    piece = "K";
-                    break;
-                case PieceName.Queen:
-                    piece = "Q";
-                    break;
-            }
-
-            return teamColour == TeamColour.White ? piece : piece.ToLower();
+                PieceName.Pawn => "P",
+                PieceName.Knight => "N",
+                PieceName.Rook => "R",
+                PieceName.Bishop => "B",
+                PieceName.King => "K",
+                PieceName.Queen => "Q"
+            };
         }
     }
 }

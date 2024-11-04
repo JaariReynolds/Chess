@@ -12,7 +12,7 @@ namespace Chess.Classes
         public bool HasMoved { get; set; }
         public void Draw()
         {
-            Console.Write(" " + PieceAbbreviation + " ");
+            Console.Write(" " + (TeamColour == TeamColour.Black ? PieceAbbreviation.ToLower() : PieceAbbreviation) + " ");
         }
 
         /// <summary>
@@ -27,7 +27,7 @@ namespace Chess.Classes
         public Piece(TeamColour teamColour, string algebraicNotation, bool hasMoved, PieceName name, int pieceValue)
         {
             Name = name;
-            PieceAbbreviation = ChessUtils.GetPieceAbbreviation(name, teamColour);
+            PieceAbbreviation = ChessUtils.GetPieceAbbreviation(name);
             TeamColour = teamColour;
             var (x, y) = ChessUtils.CoordsFromAlgebraicNotation(algebraicNotation);
             Square = new Square(x, y);
@@ -48,7 +48,7 @@ namespace Chess.Classes
         public Piece(PieceName name, Square square, TeamColour teamColour, int pieceValue, bool hasMoved)
         {
             Name = name;
-            PieceAbbreviation = ChessUtils.GetPieceAbbreviation(name, teamColour);
+            PieceAbbreviation = ChessUtils.GetPieceAbbreviation(name);
             Square = square;
             TeamColour = teamColour;
             PieceValue = pieceValue;

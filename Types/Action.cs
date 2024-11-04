@@ -36,7 +36,7 @@ public class Action
     public Action(Piece piece, Square square, ActionType actionType, int? promoteCapturePoints)
     {
         Piece = piece;
-        AlgebraicNotation = ChessUtils.ToAlgebraicNotation(piece, square, ActionType, promoteCapturePoints ?? 0);
+        AlgebraicNotation = ChessUtils.ToAlgebraicNotation(piece, square, actionType, promoteCapturePoints ?? 0);
         Square = square;
         ActionType = actionType;
         PromoteCapturePoints = promoteCapturePoints ?? 0;

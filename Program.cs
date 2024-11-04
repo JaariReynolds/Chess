@@ -9,7 +9,7 @@ namespace Chess
         static void Main(string[] args)
         {
             var gameboard = new Gameboard();
-            gameboard.InitialiseStandardBoardState();
+            gameboard.InitialiseTestBoardState();
 
             while (true)
             {

@@ -11,5 +11,10 @@
         {
             LastPerformedAction = action;
         }
+
+        public void Reset()
+        {
+            LastPerformedAction = null;
+        }
     }
 }

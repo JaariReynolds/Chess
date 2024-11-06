@@ -20,6 +20,7 @@ namespace Chess.Classes
             Board = ChessUtils.InitialiseBoard();
             PreviousActions = new List<string>();
             CurrentTeamColour = TeamColour.White;
+            GameStateManager.Instance.Reset();
         }
 
         /// <summary>
@@ -75,23 +76,16 @@ namespace Chess.Classes
         {
             GameStateManager.Instance.UpdateLastPerformedAction(action);
             LastPerformedAction = action;
-            PreviousActions.Add(action.AlgebraicNotation);
+            PreviousActions.Add(ChessUtils.AddAlgebraicNotationSuffix(action.AlgebraicNotation, CheckedTeamColour, CheckmateTeamColour));
         }
 
         /// <summary>
         /// Calculates and returns a dictionary of available actions for the provided team, while also setting on the gameboard if there is a check or mate.
         /// </summary>
-
         public Dictionary<Piece, List<Action>> CalculateTeamActions(TeamColour teamColour)
         {
-            var parsedCheckColour = (CheckStatus)Enum.Parse(typeof(CheckStatus), teamColour.ToString());
-
-            var isKingInCheck = Board.IsKingInCheck(teamColour);
             var possibleActions = Board.GetAllPossibleActions(teamColour, true);
             var legalActions = this.GetLegalActionsDictionary(possibleActions);
-
-            CheckedTeamColour = isKingInCheck ? parsedCheckColour : CheckStatus.None;
-            CheckmateTeamColour = legalActions.Count == 0 ? parsedCheckColour : CheckStatus.None;
 
             return legalActions;
         }
@@ -102,16 +96,20 @@ namespace Chess.Classes
         /// </summary>
         public List<Action> CalculateTeamActionsList(TeamColour teamColour)
         {
-            var parsedCheckColour = (CheckStatus)Enum.Parse(typeof(CheckStatus), teamColour.ToString());
-
-            var isKingInCheck = Board.IsKingInCheck(teamColour);
             var possibleActions = Board.GetAllPossibleActions(teamColour, true);
             var legalActions = this.GetLegalActionsList(possibleActions);
 
-            CheckedTeamColour = isKingInCheck ? parsedCheckColour : CheckStatus.None;
-            CheckmateTeamColour = legalActions.Count == 0 ? parsedCheckColour : CheckStatus.None;
-
             return legalActions;
+        }
+
+        public void ProcessTurn(Action action)
+        {
+            var originalAction = new Action(action);
+            var originalTeamColour = CurrentTeamColour;
+
+            PerformAction(action);
+            CalculateCheckmate(originalTeamColour.GetOppositeTeam());
+            FinaliseTurn(originalAction, originalTeamColour);
         }
 
         public void PerformAction(Action action)
@@ -119,7 +117,7 @@ namespace Chess.Classes
             if (action.Piece.TeamColour != CurrentTeamColour)
                 throw new ArgumentException("Unable to perform the provided action as it is not currently their turn.");
 
-            var originalAction = new Action(action); // copy of action to store the original Square/HasMoved of the piece 
+            var originalAction = new Action(action);
 
             switch (action.ActionType)
             {
@@ -154,11 +152,28 @@ namespace Chess.Classes
                 default:
                     throw new NotImplementedException($"{action.ActionType} not yet implemented");
             }
+
+            // SwapTurns required here in order for simulated actions to properly keep track of the current team
+            // SwapTurns appropriately called again in FinaliseTurn() in order to stay in line with the real game 
+            SwapTurns();
+        }
+
+        public void CalculateCheckmate(TeamColour teamColour)
+        {
+            var legalActions = CalculateTeamActions(teamColour);
+            var isKingInCheck = Board.IsKingInCheck(teamColour);
+            var parsedCheckColour = (CheckStatus)Enum.Parse(typeof(CheckStatus), teamColour.ToString());
+
+            CheckedTeamColour = isKingInCheck ? parsedCheckColour : CheckStatus.None;
+            CheckmateTeamColour = legalActions.Count == 0 ? parsedCheckColour : CheckStatus.None;
+        }
+
+        public void FinaliseTurn(Action originalAction, TeamColour originalTeamColour)
+        {
             AddActionToHistory(originalAction);
 
-            CheckedTeamColour = CheckStatus.None; // set to None as it will be recalculated on the opposing team's moves
-
-            SwapTurns();
+            if (originalTeamColour == CurrentTeamColour)
+                SwapTurns();
         }
 
         // console use only
@@ -222,10 +237,8 @@ namespace Chess.Classes
         // for console testing only 
         public void InitialiseTestBoardState()
         {
-            Board.SetSquare(new King(TeamColour.White, "e1"));
-            Board.SetSquare(new Rook(TeamColour.White, "h1"));
-            Board.SetSquare(new King(TeamColour.Black, "e8"));
-            Board.SetSquare(new Rook(TeamColour.Black, "h8"));
+            Board.SetSquare(new Pawn(TeamColour.White, "e5"));
+            Board.SetSquare(new Pawn(TeamColour.Black, "f5"));
         }
     }
 }

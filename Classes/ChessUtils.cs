@@ -167,5 +167,16 @@ namespace Chess.Classes
                 PieceName.Queen => "Q"
             };
         }
+
+        public static string AddAlgebraicNotationSuffix(string algebraicNotation, CheckStatus checkedTeamColour, CheckStatus checkmateTeamColour)
+        {
+            if (checkmateTeamColour != CheckStatus.None)
+                return algebraicNotation + "#";
+
+            else if (checkedTeamColour != CheckStatus.None)
+                return algebraicNotation + "+";
+
+            else return algebraicNotation;
+        }
     }
 }

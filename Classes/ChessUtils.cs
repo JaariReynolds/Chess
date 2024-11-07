@@ -168,12 +168,12 @@ namespace Chess.Classes
             };
         }
 
-        public static string AddAlgebraicNotationSuffix(string algebraicNotation, CheckStatus checkedTeamColour, CheckStatus checkmateTeamColour)
+        public static string AddAlgebraicNotationSuffix(string algebraicNotation, TeamColour? checkedTeamColour, TeamColour? checkmateTeamColour)
         {
-            if (checkmateTeamColour != CheckStatus.None)
+            if (checkmateTeamColour != null)
                 return algebraicNotation + "#";
 
-            else if (checkedTeamColour != CheckStatus.None)
+            else if (checkedTeamColour != null)
                 return algebraicNotation + "+";
 
             else return algebraicNotation;

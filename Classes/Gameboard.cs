@@ -12,8 +12,8 @@ namespace Chess.Classes
         public Action? LastPerformedAction { get; set; }
         public int WhitePoints { get; set; }
         public int BlackPoints { get; set; }
-        public CheckStatus CheckedTeamColour { get; set; } = CheckStatus.None;
-        public CheckStatus CheckmateTeamColour { get; set; } = CheckStatus.None;
+        public TeamColour? CheckedTeamColour { get; set; }
+        public TeamColour? CheckmateTeamColour { get; set; }
 
         public Gameboard()
         {
@@ -21,6 +21,8 @@ namespace Chess.Classes
             PreviousActions = new List<string>();
             CurrentTeamColour = TeamColour.White;
             GameStateManager.Instance.Reset();
+            CheckedTeamColour = null;
+            CheckmateTeamColour = null;
         }
 
         /// <summary>
@@ -162,10 +164,9 @@ namespace Chess.Classes
         {
             var legalActions = CalculateTeamActions(teamColour);
             var isKingInCheck = Board.IsKingInCheck(teamColour);
-            var parsedCheckColour = (CheckStatus)Enum.Parse(typeof(CheckStatus), teamColour.ToString());
 
-            CheckedTeamColour = isKingInCheck ? parsedCheckColour : CheckStatus.None;
-            CheckmateTeamColour = legalActions.Count == 0 ? parsedCheckColour : CheckStatus.None;
+            CheckedTeamColour = isKingInCheck ? teamColour : null;
+            CheckmateTeamColour = legalActions.Count == 0 ? teamColour : null;
         }
 
         public void FinaliseTurn(Action originalAction, TeamColour originalTeamColour)

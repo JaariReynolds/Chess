@@ -14,6 +14,8 @@ namespace Chess.Classes
         public int BlackPoints { get; set; }
         public TeamColour? CheckedTeamColour { get; set; }
         public TeamColour? CheckmateTeamColour { get; set; }
+        public bool IsStalemate { get; set; }
+        public bool IsGameOver { get; set; }
 
         public Gameboard()
         {
@@ -23,6 +25,8 @@ namespace Chess.Classes
             GameStateManager.Instance.Reset();
             CheckedTeamColour = null;
             CheckmateTeamColour = null;
+            IsStalemate = false;
+            IsGameOver = false;
         }
 
         /// <summary>
@@ -113,7 +117,7 @@ namespace Chess.Classes
             var originalTeamColour = CurrentTeamColour;
 
             PerformAction(action);
-            CalculateCheckmate(originalTeamColour.GetOppositeTeam());
+            CalculateGameStateStatus(originalTeamColour.GetOppositeTeam());
             FinaliseTurn(originalAction, originalTeamColour);
         }
 
@@ -163,13 +167,15 @@ namespace Chess.Classes
             SwapTurns();
         }
 
-        private void CalculateCheckmate(TeamColour teamColour)
+        private void CalculateGameStateStatus(TeamColour teamColour)
         {
             var legalActions = CalculateTeamActions(teamColour);
             var isKingInCheck = Board.IsKingInCheck(teamColour);
 
             CheckedTeamColour = isKingInCheck ? teamColour : null;
-            CheckmateTeamColour = legalActions.Count == 0 ? teamColour : null;
+            CheckmateTeamColour = (legalActions.Count == 0 && CheckmateTeamColour == teamColour) ? teamColour : null;
+            IsStalemate = legalActions.Count == 0 && CheckmateTeamColour == null;
+            IsGameOver = CheckmateTeamColour != null || IsStalemate;
         }
 
         private void FinaliseTurn(Action originalAction, TeamColour originalTeamColour)

@@ -170,7 +170,7 @@ namespace Chess.Classes
 
         public static string AddAlgebraicNotationSuffix(string algebraicNotation, TeamColour? checkedTeamColour, TeamColour? checkmateTeamColour)
         {
-            if (checkmateTeamColour != null)
+            if (checkmateTeamColour != null && checkedTeamColour != null && checkmateTeamColour == checkedTeamColour)
                 return algebraicNotation + "#";
 
             else if (checkedTeamColour != null)

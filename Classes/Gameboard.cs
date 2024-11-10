@@ -173,8 +173,8 @@ namespace Chess.Classes
             var isKingInCheck = Board.IsKingInCheck(teamColour);
 
             CheckTeamColour = isKingInCheck ? teamColour : null;
-            CheckmateTeamColour = (legalActions.Count == 0 && CheckmateTeamColour == teamColour) ? teamColour : null;
-            IsStalemate = legalActions.Count == 0 && CheckmateTeamColour == null;
+            CheckmateTeamColour = (legalActions.Count == 0 && CheckTeamColour == teamColour) ? teamColour : null;
+            IsStalemate = legalActions.Count == 0 && CheckTeamColour == null;
             IsGameOver = CheckmateTeamColour != null || IsStalemate;
         }
 

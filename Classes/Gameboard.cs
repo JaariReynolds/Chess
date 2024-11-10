@@ -12,7 +12,7 @@ namespace Chess.Classes
         public Action? LastPerformedAction { get; set; }
         public int WhitePoints { get; set; }
         public int BlackPoints { get; set; }
-        public TeamColour? CheckedTeamColour { get; set; }
+        public TeamColour? CheckTeamColour { get; set; }
         public TeamColour? CheckmateTeamColour { get; set; }
         public bool IsStalemate { get; set; }
         public bool IsGameOver { get; set; }
@@ -23,7 +23,7 @@ namespace Chess.Classes
             PreviousActions = new List<string>();
             CurrentTeamColour = TeamColour.White;
             GameStateManager.Instance.Reset();
-            CheckedTeamColour = null;
+            CheckTeamColour = null;
             CheckmateTeamColour = null;
             IsStalemate = false;
             IsGameOver = false;
@@ -81,7 +81,7 @@ namespace Chess.Classes
         public void AddActionToHistory(Action action)
         {
             // update algebraic notation with check/mate symbol;
-            action.AlgebraicNotation = ChessUtils.AddAlgebraicNotationSuffix(action.AlgebraicNotation, CheckedTeamColour, CheckmateTeamColour);
+            action.AlgebraicNotation = ChessUtils.AddAlgebraicNotationSuffix(action.AlgebraicNotation, CheckTeamColour, CheckmateTeamColour);
 
             GameStateManager.Instance.UpdateLastPerformedAction(action);
             LastPerformedAction = action;
@@ -172,7 +172,7 @@ namespace Chess.Classes
             var legalActions = CalculateTeamActions(teamColour);
             var isKingInCheck = Board.IsKingInCheck(teamColour);
 
-            CheckedTeamColour = isKingInCheck ? teamColour : null;
+            CheckTeamColour = isKingInCheck ? teamColour : null;
             CheckmateTeamColour = (legalActions.Count == 0 && CheckmateTeamColour == teamColour) ? teamColour : null;
             IsStalemate = legalActions.Count == 0 && CheckmateTeamColour == null;
             IsGameOver = CheckmateTeamColour != null || IsStalemate;

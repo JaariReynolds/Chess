@@ -76,9 +76,12 @@ namespace Chess.Classes
 
         public void AddActionToHistory(Action action)
         {
+            // update algebraic notation with check/mate symbol;
+            action.AlgebraicNotation = ChessUtils.AddAlgebraicNotationSuffix(action.AlgebraicNotation, CheckedTeamColour, CheckmateTeamColour);
+
             GameStateManager.Instance.UpdateLastPerformedAction(action);
             LastPerformedAction = action;
-            PreviousActions.Add(ChessUtils.AddAlgebraicNotationSuffix(action.AlgebraicNotation, CheckedTeamColour, CheckmateTeamColour));
+            PreviousActions.Add(action.AlgebraicNotation);
         }
 
         /// <summary>
@@ -160,7 +163,7 @@ namespace Chess.Classes
             SwapTurns();
         }
 
-        public void CalculateCheckmate(TeamColour teamColour)
+        private void CalculateCheckmate(TeamColour teamColour)
         {
             var legalActions = CalculateTeamActions(teamColour);
             var isKingInCheck = Board.IsKingInCheck(teamColour);
@@ -169,7 +172,7 @@ namespace Chess.Classes
             CheckmateTeamColour = legalActions.Count == 0 ? teamColour : null;
         }
 
-        public void FinaliseTurn(Action originalAction, TeamColour originalTeamColour)
+        private void FinaliseTurn(Action originalAction, TeamColour originalTeamColour)
         {
             AddActionToHistory(originalAction);
 

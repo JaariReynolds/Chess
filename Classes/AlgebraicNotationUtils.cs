@@ -60,6 +60,7 @@ namespace ChessLogic.Classes
                         : $"{targetSquare}={GetPieceAbbreviation(PieceName.Queen)}",
                 ActionType.KingsideCastle => "O-O",
                 ActionType.QueensideCastle => "O-O-O",
+                _ => throw new NotImplementedException($"{actionType} not yet implemented.")
             };
 
             return moveNotation;
@@ -74,7 +75,8 @@ namespace ChessLogic.Classes
                 PieceName.Rook => "R",
                 PieceName.Bishop => "B",
                 PieceName.King => "K",
-                PieceName.Queen => "Q"
+                PieceName.Queen => "Q",
+                _ => throw new NotImplementedException()
             };
         }
 
@@ -87,6 +89,65 @@ namespace ChessLogic.Classes
                 return algebraicNotation + "+";
 
             else return algebraicNotation;
+        }
+
+        public static void AlgebraicNotationAmbiguityResolution(List<Action> actions)
+        {
+            // dictionary to sort actions with same algebraic notation
+            var actionDictionary = new Dictionary<string, List<Action>>();
+            foreach (var action in actions)
+            {
+                if (!actionDictionary.ContainsKey(action.AlgebraicNotation))
+                    actionDictionary[action.AlgebraicNotation] = new List<Action>();
+
+                actionDictionary[action.AlgebraicNotation].Add(action);
+            }
+
+            foreach (var kvp in actionDictionary)
+            {
+                if (kvp.Value.Count > 1)
+                    AmbiguityResolution(kvp.Value);
+            }
+        }
+
+        // Currently only considers if there are only 2 ambiguous actions, rare cases of 3 or more are unhandled with this implementation
+        private static void AmbiguityResolution(List<Action> ambiguousActions)
+        {
+            var initialFile = ambiguousActions[0].Piece.ToString()[0];
+            var initialRank = ambiguousActions[0].Piece.ToString()[1];
+
+            // 3 or more ambiguousActions will not resolve these lines accurately
+            bool sameFile = ambiguousActions.All(action => action.Piece.ToString()[0] == initialFile);
+            bool sameRank = ambiguousActions.All(action => action.Piece.ToString()[1] == initialRank);
+
+            if (!sameFile && !sameRank) // no ambiguity
+                return;
+            else if (!sameFile) // only files are different, can use to disambiguate
+                FileResolution(ambiguousActions);
+            else if (!sameRank) // only ranks are different, can use to disambiguate
+                RankResolution(ambiguousActions);
+            else // files AND ranks are the same (individually), so use both to disambiguate
+                FileRankResolution(ambiguousActions);
+        }
+
+        private static void FileResolution(List<Action> ambiguousActions)
+        {
+            //Square[0] = file;
+            foreach (var ambiguousAction in ambiguousActions)
+                ambiguousAction.AlgebraicNotation = ambiguousAction.AlgebraicNotation.Insert(1, ambiguousAction.Piece.Square.ToString()[0].ToString());
+        }
+
+        private static void RankResolution(List<Action> ambiguousActions)
+        {
+            //Square[1] = rank;
+            foreach (var ambiguousAction in ambiguousActions)
+                ambiguousAction.AlgebraicNotation = ambiguousAction.AlgebraicNotation.Insert(1, ambiguousAction.Piece.Square.ToString()[1].ToString());
+        }
+
+        private static void FileRankResolution(List<Action> ambiguousActions)
+        {
+            foreach (var ambiguousAction in ambiguousActions)
+                ambiguousAction.AlgebraicNotation = ambiguousAction.AlgebraicNotation.Insert(1, ambiguousAction.Piece.Square.ToString().ToString());
         }
     }
 }

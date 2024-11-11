@@ -1,4 +1,5 @@
 ﻿using Chess.Types;
+using ChessLogic.Classes;
 
 namespace Chess.Classes.ConcretePieces
 {
@@ -19,7 +20,7 @@ namespace Chess.Classes.ConcretePieces
 
         public Pawn(TeamColour teamColour, string algebraicNotation) : this(teamColour, algebraicNotation, false) { }
 
-        public Pawn(TeamColour teamColour, int x, int y) : this(teamColour, ChessUtils.ToAlgebraicNotation(new Square(x, y))) { }
+        public Pawn(TeamColour teamColour, int x, int y) : this(teamColour, AlgebraicNotationUtils.ToAlgebraicNotation(new Square(x, y))) { }
 
         public override Piece Clone()
         {

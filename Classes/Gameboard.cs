@@ -81,7 +81,7 @@ namespace Chess.Classes
         public void AddActionToHistory(Action action)
         {
             // update algebraic notation with check/mate symbol;
-            action.AlgebraicNotation = ChessUtils.AddAlgebraicNotationSuffix(action.AlgebraicNotation, CheckTeamColour, CheckmateTeamColour);
+            action.AlgebraicNotation = AlgebraicNotationUtils.AddAlgebraicNotationSuffix(action.AlgebraicNotation, CheckTeamColour, CheckmateTeamColour);
 
             GameStateManager.Instance.UpdateLastPerformedAction(action);
             LastPerformedAction = action;

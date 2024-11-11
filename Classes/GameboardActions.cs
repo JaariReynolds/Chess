@@ -12,7 +12,7 @@ namespace Chess.Classes
 
         public static Piece? GetPieceAt(this Piece[][] boardState, string algebraicNotation)
         {
-            var (x, y) = ChessUtils.CoordsFromAlgebraicNotation(algebraicNotation);
+            var (x, y) = AlgebraicNotationUtils.CoordsFromAlgebraicNotation(algebraicNotation);
             return boardState[x][y];
         }
 
@@ -21,7 +21,7 @@ namespace Chess.Classes
         /// </summary>
         public static void ClearSquare(this Piece[][] boardState, string algebraicNotation)
         {
-            var (x, y) = ChessUtils.CoordsFromAlgebraicNotation(algebraicNotation);
+            var (x, y) = AlgebraicNotationUtils.CoordsFromAlgebraicNotation(algebraicNotation);
             boardState[x][y] = null!; // passing a null piece is legal, will just mean setting that coord to empty
         }
 

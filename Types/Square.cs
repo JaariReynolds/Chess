@@ -1,4 +1,5 @@
 ﻿using Chess.Classes;
+using ChessLogic.Classes;
 
 namespace Chess.Types
 {
@@ -31,7 +32,7 @@ namespace Chess.Types
 
         public override string ToString()
         {
-            return ChessUtils.ToAlgebraicNotation(this);
+            return AlgebraicNotationUtils.ToAlgebraicNotation(this);
         }
 
         // Squares are considered equal if their X and Y coordinates are the same.

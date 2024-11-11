@@ -1,6 +1,7 @@
 ﻿using Chess.Classes;
 using Chess.Classes.ConcretePieces;
 using Chess.Types;
+using ChessLogic.Classes;
 
 public enum ActionType
 {
@@ -36,7 +37,7 @@ public class Action
     public Action(Piece piece, Square square, ActionType actionType, int? promoteCapturePoints)
     {
         Piece = piece;
-        AlgebraicNotation = ChessUtils.ToAlgebraicNotation(piece, square, actionType, promoteCapturePoints ?? 0);
+        AlgebraicNotation = AlgebraicNotationUtils.ToAlgebraicNotation(piece, square, actionType, promoteCapturePoints ?? 0);
         Square = square;
         ActionType = actionType;
         PromoteCapturePoints = promoteCapturePoints ?? 0;
@@ -45,8 +46,8 @@ public class Action
     public Action(Piece piece, string algebraicNotation, ActionType actionType, int? promoteCapturePoints)
     {
         Piece = piece;
-        var (x, y) = ChessUtils.CoordsFromAlgebraicNotation(algebraicNotation);
-        AlgebraicNotation = ChessUtils.ToAlgebraicNotation(piece, new Square(x, y), actionType, promoteCapturePoints ?? 0);
+        var (x, y) = AlgebraicNotationUtils.CoordsFromAlgebraicNotation(algebraicNotation);
+        AlgebraicNotation = AlgebraicNotationUtils.ToAlgebraicNotation(piece, new Square(x, y), actionType, promoteCapturePoints ?? 0);
         Square = new Square(x, y);
         ActionType = actionType;
         PromoteCapturePoints = promoteCapturePoints ?? 0;

@@ -1,4 +1,5 @@
 ﻿using Chess.Types;
+using ChessLogic.Classes;
 
 namespace Chess.Classes
 {
@@ -27,9 +28,9 @@ namespace Chess.Classes
         public Piece(TeamColour teamColour, string algebraicNotation, bool hasMoved, PieceName name, int pieceValue)
         {
             Name = name;
-            PieceAbbreviation = ChessUtils.GetPieceAbbreviation(name);
+            PieceAbbreviation = AlgebraicNotationUtils.GetPieceAbbreviation(name);
             TeamColour = teamColour;
-            var (x, y) = ChessUtils.CoordsFromAlgebraicNotation(algebraicNotation);
+            var (x, y) = AlgebraicNotationUtils.CoordsFromAlgebraicNotation(algebraicNotation);
             Square = new Square(x, y);
             HasMoved = hasMoved;
             PieceValue = pieceValue;
@@ -48,7 +49,7 @@ namespace Chess.Classes
         public Piece(PieceName name, Square square, TeamColour teamColour, int pieceValue, bool hasMoved)
         {
             Name = name;
-            PieceAbbreviation = ChessUtils.GetPieceAbbreviation(name);
+            PieceAbbreviation = AlgebraicNotationUtils.GetPieceAbbreviation(name);
             Square = square;
             TeamColour = teamColour;
             PieceValue = pieceValue;
@@ -57,7 +58,7 @@ namespace Chess.Classes
 
         public void MovePiece(Square square)
         {
-            var (x, y) = ChessUtils.CoordsFromAlgebraicNotation(square.ToString());
+            var (x, y) = AlgebraicNotationUtils.CoordsFromAlgebraicNotation(square.ToString());
             Square.X = x;
             Square.Y = y;
             HasMoved = true;

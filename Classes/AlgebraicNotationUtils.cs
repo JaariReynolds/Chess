@@ -113,16 +113,14 @@ namespace ChessLogic.Classes
         // Currently only considers if there are only 2 ambiguous actions, rare cases of 3 or more are unhandled with this implementation
         private static void AmbiguityResolution(List<Action> ambiguousActions)
         {
-            var initialFile = ambiguousActions[0].Piece.ToString()[0];
-            var initialRank = ambiguousActions[0].Piece.ToString()[1];
+            var initialFile = ambiguousActions[0].Piece.Square.ToString()[0];
+            var initialRank = ambiguousActions[0].Piece.Square.ToString()[1];
 
             // 3 or more ambiguousActions will not resolve these lines accurately
-            bool sameFile = ambiguousActions.All(action => action.Piece.ToString()[0] == initialFile);
-            bool sameRank = ambiguousActions.All(action => action.Piece.ToString()[1] == initialRank);
+            bool sameFile = ambiguousActions.All(action => action.Piece.Square.ToString()[0] == initialFile);
+            bool sameRank = ambiguousActions.All(action => action.Piece.Square.ToString()[1] == initialRank);
 
-            if (!sameFile && !sameRank) // no ambiguity
-                return;
-            else if (!sameFile) // only files are different, can use to disambiguate
+            if (!sameFile) // only files are different, can use to disambiguate
                 FileResolution(ambiguousActions);
             else if (!sameRank) // only ranks are different, can use to disambiguate
                 RankResolution(ambiguousActions);

@@ -110,15 +110,25 @@ namespace ChessLogic.Classes
             }
         }
 
-        // Currently only considers if there are only 2 ambiguous actions, rare cases of 3 or more are unhandled with this implementation
         private static void AmbiguityResolution(List<Action> ambiguousActions)
         {
-            var initialFile = ambiguousActions[0].Piece.Square.ToString()[0];
-            var initialRank = ambiguousActions[0].Piece.Square.ToString()[1];
+            bool sameFile = false;
+            bool sameRank = false;
 
-            // 3 or more ambiguousActions will not resolve these lines accurately
-            bool sameFile = ambiguousActions.All(action => action.Piece.Square.ToString()[0] == initialFile);
-            bool sameRank = ambiguousActions.All(action => action.Piece.Square.ToString()[1] == initialRank);
+            if (ambiguousActions.Count < 3)
+            {
+                sameFile = ambiguousActions.All(action => action.Piece.Square.ToString()[0] == ambiguousActions[0].Piece.Square.ToString()[0]);
+                sameRank = ambiguousActions.All(action => action.Piece.Square.ToString()[1] == ambiguousActions[0].Piece.Square.ToString()[1]);
+            }
+            else
+            {
+                // foreach duplicate action, check if there is at least one other piece on the same file or rank  
+                foreach (var ambiguousAction in ambiguousActions)
+                {
+                    sameFile |= ambiguousActions.Some(action => action.Piece.Square.ToString()[0] == ambiguousAction.Piece.Square.ToString()[0], 2);
+                    sameRank |= ambiguousActions.Some(action => action.Piece.Square.ToString()[1] == ambiguousAction.Piece.Square.ToString()[1], 2);
+                }
+            }
 
             if (!sameFile) // only files are different, can use to disambiguate
                 FileResolution(ambiguousActions);

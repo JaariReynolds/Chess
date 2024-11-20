@@ -89,24 +89,29 @@ namespace Chess.Classes
         }
 
         /// <summary>
-        /// Calculates and returns a dictionary of available actions for the provided team, while also setting on the gameboard if there is a check or mate.
+        /// Calculates and returns a list of available actions for the provided team
         /// </summary>
         public Dictionary<Piece, List<Action>> CalculateTeamActions(TeamColour teamColour)
         {
             var possibleActions = Board.GetAllPossibleActions(teamColour, true);
-            var legalActions = this.GetLegalActionsDictionary(possibleActions);
+            var legalActionsList = this.GetLegalActionsList(possibleActions);
+
+            AlgebraicNotationUtils.AlgebraicNotationAmbiguityResolution(legalActionsList);
+
+            var legalActions = legalActionsList.ToDictionary();
 
             return legalActions;
         }
 
         /// <summary>
         /// (For Chessbot use only)
-        /// Calculates and returns a list of available actions for the provided team, while also setting on the gameboard if there is a check or mate.
-        /// </summary>
+        /// Calculates and returns a list of available actions for the provided team
         public List<Action> CalculateTeamActionsList(TeamColour teamColour)
         {
             var possibleActions = Board.GetAllPossibleActions(teamColour, true);
             var legalActions = this.GetLegalActionsList(possibleActions);
+
+            AlgebraicNotationUtils.AlgebraicNotationAmbiguityResolution(legalActions);
 
             return legalActions;
         }
@@ -125,8 +130,6 @@ namespace Chess.Classes
         {
             if (action.Piece.TeamColour != CurrentTeamColour)
                 throw new ArgumentException("Unable to perform the provided action as it is not currently their turn.");
-
-            var originalAction = new Action(action);
 
             switch (action.ActionType)
             {
@@ -247,8 +250,8 @@ namespace Chess.Classes
         // for console testing only 
         public void InitialiseTestBoardState()
         {
-            Board.SetSquare(new Pawn(TeamColour.White, "e5"));
-            Board.SetSquare(new Pawn(TeamColour.Black, "f5"));
+            Board.SetSquare(new Rook(TeamColour.White, "a8"));
+            Board.SetSquare(new Rook(TeamColour.White, "g8"));
         }
     }
 }

@@ -91,26 +91,10 @@ namespace Chess.Classes
         /// <summary>
         /// Calculates and returns a list of available actions for the provided team
         /// </summary>
-        public Dictionary<Piece, List<Action>> CalculateTeamActions(TeamColour teamColour)
+        public List<Action> CalculateTeamActions(TeamColour teamColour)
         {
             var possibleActions = Board.GetAllPossibleActions(teamColour, true);
-            var legalActionsList = this.GetLegalActionsList(possibleActions);
-
-            AlgebraicNotationUtils.AlgebraicNotationAmbiguityResolution(legalActionsList);
-
-            var legalActions = legalActionsList.ToDictionary();
-
-            return legalActions;
-        }
-
-        /// <summary>
-        /// (For Chessbot use only)
-        /// Calculates and returns a list of available actions for the provided team
-        public List<Action> CalculateTeamActionsList(TeamColour teamColour)
-        {
-            var possibleActions = Board.GetAllPossibleActions(teamColour, true);
-            var legalActions = this.GetLegalActionsList(possibleActions);
-
+            var legalActions = this.GetLegalActions(possibleActions);
             AlgebraicNotationUtils.AlgebraicNotationAmbiguityResolution(legalActions);
 
             return legalActions;

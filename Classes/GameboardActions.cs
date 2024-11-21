@@ -98,7 +98,7 @@ namespace Chess.Classes
             return actions;
         }
 
-        public static List<Action> GetLegalActionsList(this Gameboard gameboard, List<Action> possibleActions)
+        public static List<Action> GetLegalActions(this Gameboard gameboard, List<Action> possibleActions)
         {
             // legal actions are ones that do not leave the King in a checked position
             var legalActions = new List<Action>();

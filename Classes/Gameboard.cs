@@ -174,21 +174,18 @@ namespace Chess.Classes
         }
 
         // console use only
-        public static void ShowActions(Dictionary<Piece, List<Action>> actions)
+        public static void ShowActions(List<Action> actions)
         {
             var index = 0;
-            foreach (var kvp in actions)
+            foreach (var action in actions)
             {
-                foreach (var action in kvp.Value)
-                {
-                    Console.WriteLine($"   {index}. {action}");
-                    index++;
-                }
+                Console.WriteLine($"   {index}. {action}");
+                index++;
             }
         }
 
         // console use only
-        public Action SelectAction(Dictionary<Piece, List<Action>> actions)
+        public Action SelectAction(List<Action> actions)
         {
             int selectedActionIndex;
             bool validSelection;
@@ -196,13 +193,11 @@ namespace Chess.Classes
             Console.WriteLine("Select action:");
             ShowActions(actions);
 
-            var listedActions = actions.SelectMany(kvp => kvp.Value).ToList();
-
             do
-                validSelection = int.TryParse(Console.ReadLine(), out selectedActionIndex) && selectedActionIndex < listedActions.Count;
+                validSelection = int.TryParse(Console.ReadLine(), out selectedActionIndex) && selectedActionIndex < actions.Count;
             while (!validSelection);
 
-            return actions.SelectMany(kvp => kvp.Value).ElementAt(selectedActionIndex);
+            return actions[selectedActionIndex];
         }
 
         // console use only

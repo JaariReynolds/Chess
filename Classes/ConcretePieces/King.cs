@@ -23,7 +23,7 @@ namespace Chess.Classes.ConcretePieces
             return new King(TeamColour, Square.ToString(), HasMoved);
         }
 
-        public override List<Action> GetPotentialActions(Piece[][] boardState, bool includeCastles)
+        public override List<Action> GetPotentialActions(Piece[][] boardState, bool includeCastles, Action? previousAction)
         {
             // 8 surrounding squares 
             var actions = new List<Action>();

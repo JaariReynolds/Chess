@@ -19,7 +19,7 @@ namespace Chess.Classes.ConcretePieces
             return new Queen(TeamColour, Square.ToString(), HasMoved);
         }
 
-        public override List<Action> GetPotentialActions(Piece[][] boardState, bool includeCastles)
+        public override List<Action> GetPotentialActions(Piece[][] boardState, bool includeCastles, Action? previousAction)
         {
             // Cardinal and Intercardinal (Rook and Bishop combined)
             var actions = new List<Action>();

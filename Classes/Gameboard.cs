@@ -22,7 +22,7 @@ namespace Chess.Classes
             Board = ChessUtils.InitialiseBoard();
             PreviousActions = new List<string>();
             CurrentTeamColour = TeamColour.White;
-            GameStateManager.Instance.Reset();
+
             CheckTeamColour = null;
             CheckmateTeamColour = null;
             IsStalemate = false;
@@ -44,6 +44,7 @@ namespace Chess.Classes
             WhitePoints = existingGameboard.WhitePoints;
             BlackPoints = existingGameboard.BlackPoints;
             PreviousActions = new List<string>(existingGameboard.PreviousActions);
+            LastPerformedAction = existingGameboard.LastPerformedAction;
         }
 
         public void InitialiseStandardBoardState()
@@ -83,7 +84,6 @@ namespace Chess.Classes
             // update algebraic notation with check/mate symbol;
             action.AlgebraicNotation = AlgebraicNotationUtils.AddAlgebraicNotationSuffix(action.AlgebraicNotation, CheckTeamColour, CheckmateTeamColour);
 
-            GameStateManager.Instance.UpdateLastPerformedAction(action);
             LastPerformedAction = action;
             PreviousActions.Add(action.AlgebraicNotation);
         }
@@ -93,7 +93,7 @@ namespace Chess.Classes
         /// </summary>
         public List<Action> CalculateTeamActions(TeamColour teamColour)
         {
-            var possibleActions = Board.GetAllPossibleActions(teamColour, true);
+            var possibleActions = Board.GetAllPossibleActions(teamColour, true, LastPerformedAction);
             var legalActions = this.GetLegalActions(possibleActions);
             AlgebraicNotationUtils.AlgebraicNotationAmbiguityResolution(legalActions);
 

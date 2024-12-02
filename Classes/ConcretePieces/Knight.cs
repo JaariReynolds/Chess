@@ -23,7 +23,7 @@ namespace Chess.Classes.ConcretePieces
             return new Knight(TeamColour, Square.ToString(), HasMoved);
         }
 
-        public override List<Action> GetPotentialActions(Piece[][] boardState, bool includeCastles)
+        public override List<Action> GetPotentialActions(Piece[][] boardState, bool includeCastles, Action? previousAction)
         {
             // A knight can move 2 vertically and 1 horizontally, or 1 vertically and 2 horizontally
             var actions = new List<Action>();

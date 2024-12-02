@@ -27,7 +27,7 @@ namespace Chess.Classes.ConcretePieces
             return new Pawn(TeamColour, Square.ToString(), HasMoved);
         }
 
-        public override List<Action> GetPotentialActions(Piece[][] boardState, bool includeCastles)
+        public override List<Action> GetPotentialActions(Piece[][] boardState, bool includeCastles, Action? previousAction)
         {
             var actions = new List<Action>();
 
@@ -49,7 +49,7 @@ namespace Chess.Classes.ConcretePieces
 
             AddMoves(actions, boardState, oneSquareForward, twoSquaresForward);
             AddStandardCaptures(actions, boardState, diagonalLeft, diagonalRight);
-            AddEnPassantCaptures(actions, diagonalLeft, diagonalRight);
+            AddEnPassantCaptures(actions, diagonalLeft, diagonalRight, previousAction);
 
             return actions;
         }
@@ -121,17 +121,17 @@ namespace Chess.Classes.ConcretePieces
             }
         }
 
-        private void AddEnPassantCaptures(List<Action> actions, Square? diagonalLeft, Square? diagonalRight)
+        private void AddEnPassantCaptures(List<Action> actions, Square? diagonalLeft, Square? diagonalRight, Action? previousAction)
         {
             // can en passant capture if the previous action was a PawnDoubleMove
             if (diagonalLeft != null &&
-                ChessUtils.CanEnPassant(TeamColour, diagonalLeft))
+                ChessUtils.CanEnPassant(TeamColour, diagonalLeft, previousAction))
             {
                 actions.Add(new Action(this, diagonalLeft, ActionType.PawnEnPassant));
             }
 
             if (diagonalRight != null &&
-                ChessUtils.CanEnPassant(TeamColour, diagonalRight))
+                ChessUtils.CanEnPassant(TeamColour, diagonalRight, previousAction))
             {
                 actions.Add(new Action(this, diagonalRight, ActionType.PawnEnPassant));
             }

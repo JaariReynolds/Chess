@@ -21,7 +21,7 @@ namespace Chess.Classes
         /// </summary>
         /// <param name="lastPerformedAction">Only relevant for Pawn en passant.</param>
         /// <param name="includeCastles">Only relevant to exclude castles when calling this method from a King's castle method.</param>
-        public abstract List<Action> GetPotentialActions(Piece[][] boardState, bool includeCastles);
+        public abstract List<Action> GetPotentialActions(Piece[][] boardState, bool includeCastles, Action? previousAction);
 
         public abstract Piece Clone();
 

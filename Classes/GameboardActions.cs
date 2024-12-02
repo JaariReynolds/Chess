@@ -79,7 +79,7 @@ namespace Chess.Classes
         /// <summary>
         /// Returns a list of all possible Actions that pieces of the provided TeamColour can perform, including Actions that leave the King in a checked position.
         /// </summary>
-        public static List<Action> GetAllPossibleActions(this Piece[][] boardState, TeamColour teamColour, bool includeCastles)
+        public static List<Action> GetAllPossibleActions(this Piece[][] boardState, TeamColour teamColour, bool includeCastles, Action? previousAction = null)
         {
             var actions = new List<Action>();
 
@@ -91,7 +91,7 @@ namespace Chess.Classes
                     if (piece == null) continue;
                     if (piece.TeamColour != teamColour) continue;
 
-                    actions.AddRange(piece.GetPotentialActions(boardState, includeCastles));
+                    actions.AddRange(piece.GetPotentialActions(boardState, includeCastles, previousAction));
                 }
             }
 
@@ -196,7 +196,7 @@ namespace Chess.Classes
         public static void EnPassant(this Gameboard gameboard, Action action)
         {
             // "capture" the Pawn that double moved (i.e. the piece that performed the last action)
-            var pawnPieceAction = GameStateManager.Instance.LastPerformedAction!;
+            var pawnPieceAction = gameboard.LastPerformedAction!;
 
             gameboard.Board.ClearSquare(pawnPieceAction.Square.ToString()); // remove the pawn that double moved 
 

@@ -63,7 +63,7 @@ namespace Chess.Classes.ConcretePieces
 
             // 1. Rook cannot have moved
             var whiteRook = boardState.GetPieceAt($"h{rank}");
-            if (whiteRook == null || whiteRook!.HasMoved || whiteRook.Square.ToString() != $"h{rank}") return false;
+            if (whiteRook == null || whiteRook.Name != PieceName.Rook || whiteRook!.HasMoved || whiteRook.Square.ToString() != $"h{rank}") return false;
 
             // 2. Empty squares between King and Rook (f1/8, g1/8)
             if (boardState.GetPieceAt($"f{rank}") != null ||
@@ -89,7 +89,7 @@ namespace Chess.Classes.ConcretePieces
 
             // 1. Rook cannot have moved
             var whiteRook = boardState.GetPieceAt($"a{rank}");
-            if (whiteRook == null || whiteRook!.HasMoved) return false;
+            if (whiteRook == null || whiteRook.Name != PieceName.Rook || whiteRook!.HasMoved || whiteRook.Square.ToString() != $"a{rank}") return false;
 
             // 2. Empty squares between King and Rook (b1/8, c1/8, d1/8)
             if (boardState.GetPieceAt($"b{rank}") != null ||

@@ -43,7 +43,7 @@ namespace Chess.Classes
             bool canEnPassant = false;
 
             // en passant captures only valid when the last performed move is a pawn double move
-            if (previousAction == null || previousAction.ActionType != ActionType.PawnDoubleMove)
+            if (previousAction == null || previousAction.ActionType != ActionType.PawnDoubleMove || previousAction.Piece.TeamColour == currentTeamColour)
                 return canEnPassant;
 
             switch (currentTeamColour)

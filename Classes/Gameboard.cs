@@ -106,6 +106,7 @@ namespace Chess.Classes
             var originalTeamColour = CurrentTeamColour;
 
             PerformAction(action);
+            AddActionToHistory(originalAction);
             CalculateGameStateStatus(originalTeamColour.GetOppositeTeam());
             FinaliseTurn(originalAction, originalTeamColour);
         }
@@ -167,8 +168,6 @@ namespace Chess.Classes
 
         private void FinaliseTurn(Action originalAction, TeamColour originalTeamColour)
         {
-            AddActionToHistory(originalAction);
-
             if (originalTeamColour == CurrentTeamColour)
                 SwapTurns();
         }
@@ -229,8 +228,8 @@ namespace Chess.Classes
         // for console testing only 
         public void InitialiseTestBoardState()
         {
-            Board.SetSquare(new Rook(TeamColour.White, "a8"));
-            Board.SetSquare(new Rook(TeamColour.White, "g8"));
+            Board.SetSquare(new Pawn(TeamColour.White, "a7"));
+            Board.SetSquare(new Pawn(TeamColour.Black, "a2"));
         }
     }
 }

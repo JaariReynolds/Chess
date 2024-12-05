@@ -102,17 +102,17 @@ namespace Chess.Classes
 
         public void ProcessTurn(Action action)
         {
-            var originalAction = new Action(action);
             var originalTeamColour = CurrentTeamColour;
 
             PerformAction(action);
-            AddActionToHistory(originalAction);
             CalculateGameStateStatus(originalTeamColour.GetOppositeTeam());
-            FinaliseTurn(originalAction, originalTeamColour);
+            FinaliseTurn(originalTeamColour);
         }
 
         public void PerformAction(Action action)
         {
+            var originalAction = new Action(action);
+
             if (action.Piece.TeamColour != CurrentTeamColour)
                 throw new ArgumentException("Unable to perform the provided action as it is not currently their turn.");
 
@@ -153,6 +153,8 @@ namespace Chess.Classes
             // SwapTurns required here in order for simulated actions to properly keep track of the current team
             // SwapTurns appropriately called again in FinaliseTurn() in order to stay in line with the real game 
             SwapTurns();
+            AddActionToHistory(originalAction);
+
         }
 
         private void CalculateGameStateStatus(TeamColour teamColour)
@@ -166,7 +168,7 @@ namespace Chess.Classes
             IsGameOver = CheckmateTeamColour != null || IsStalemate;
         }
 
-        private void FinaliseTurn(Action originalAction, TeamColour originalTeamColour)
+        private void FinaliseTurn(TeamColour originalTeamColour)
         {
             if (originalTeamColour == CurrentTeamColour)
                 SwapTurns();

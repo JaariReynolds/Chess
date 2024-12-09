@@ -44,7 +44,7 @@ namespace Chess.Classes
             WhitePoints = existingGameboard.WhitePoints;
             BlackPoints = existingGameboard.BlackPoints;
             PreviousActions = new List<string>(existingGameboard.PreviousActions);
-            LastPerformedAction = existingGameboard.LastPerformedAction;
+            LastPerformedAction = existingGameboard.LastPerformedAction == null ? null : new Action(existingGameboard.LastPerformedAction);
         }
 
         public void InitialiseStandardBoardState()

@@ -1,4 +1,6 @@
 ﻿using Chess.Classes;
+using Chess.Classes.ConcretePieces;
+using Chess.Types;
 
 namespace ChessLogic.Classes
 {
@@ -15,10 +17,24 @@ namespace ChessLogic.Classes
 
         public static Gameboard ParseFEN(string fen)
         {
+            var result = ValidateFEN(fen);
+
+            if (!result.IsValid)
+                throw new ArgumentException(result.ErrorReason);
+
+            var gameboard = new Gameboard();
+
+            string[] parts = fen.Split(" ");
+
+            gameboard.Board = ParseBoard(parts[0]);
+            gameboard.CurrentTeamColour = ParseTeamColour(parts[1]);
+            ParseCastlingAvailability(parts[2], gameboard.Board); // updating board by reference
+
+
+
             throw new NotImplementedException();
         }
 
-        // ensure there are no invalid characters or mismatched rows
         public static ValidationResult ValidateFEN(string fen)
         {
             if (string.IsNullOrEmpty(fen))
@@ -188,6 +204,125 @@ namespace ChessLogic.Classes
                 return ValidationResult.Fail($"Square `{algebraicNotation}` is invalid: the rank `{rank}` must be a number between '1' and '8'.");
 
             return ValidationResult.Success();
+        }
+
+        private static Piece[][] ParseBoard(string piecePlacement)
+        {
+            var board = ChessUtils.InitialiseBoard();
+            string[] ranks = piecePlacement.Split("/");
+
+            // foreach rank/row
+            for (int x = 0; x < ranks.Length; x++)
+            {
+
+                // foreach file/column
+                for (int y = 0; y < ranks[x].Length;)
+                {
+                    // skip squares equal to the number in the FEN string
+                    if (char.IsDigit(ranks[x][y]))
+                    {
+                        int skipCount = int.Parse(ranks[x][y].ToString());
+                        y += skipCount;
+                    }
+
+                    // initialise board square with corresponding piece
+                    else
+                    {
+                        var squareString = AlgebraicNotationUtils.ToAlgebraicNotation(new Square(x, y));
+
+                        switch (ranks[x][y])
+                        {
+                            case 'P':
+                                board[x][y] = new Pawn(TeamColour.White, squareString);
+                                break;
+                            case 'p':
+                                board[x][y] = new Pawn(TeamColour.Black, squareString);
+                                break;
+                            case 'N':
+                                board[x][y] = new Knight(TeamColour.White, squareString);
+                                break;
+                            case 'n':
+                                board[x][y] = new Knight(TeamColour.Black, squareString);
+                                break;
+                            case 'B':
+                                board[x][y] = new Bishop(TeamColour.White, squareString);
+                                break;
+                            case 'b':
+                                board[x][y] = new Bishop(TeamColour.Black, squareString);
+                                break;
+                            case 'R':
+                                board[x][y] = new Rook(TeamColour.White, squareString);
+                                break;
+                            case 'r':
+                                board[x][y] = new Rook(TeamColour.Black, squareString);
+                                break;
+                            case 'Q':
+                                board[x][y] = new Queen(TeamColour.White, squareString);
+                                break;
+                            case 'q':
+                                board[x][y] = new Queen(TeamColour.Black, squareString);
+                                break;
+                            case 'K':
+                                board[x][y] = new King(TeamColour.White, squareString);
+                                break;
+                            case 'k':
+                                board[x][y] = new King(TeamColour.Black, squareString);
+                                break;
+                            default:
+                                throw new ArgumentException($"Unable to parse piece type: '{ranks[x][y]}'.");
+                        }
+                        y++;
+                    }
+                }
+            }
+
+            return board;
+        }
+
+        private static TeamColour ParseTeamColour(string activeColour)
+        {
+            string colour = activeColour.ToLower();
+
+            switch (colour)
+            {
+                case "w": return TeamColour.White;
+                case "b": return TeamColour.Black;
+                default: throw new ArgumentException($"Unable to parse active colour: '{colour}'.");
+            }
+        }
+
+        private static void ParseCastlingAvailability(string castlingAvailability, Piece[][] board)
+        {
+            // disable certain castling availability by setting the corresponding Rook.Hasmoved to true
+
+            if (!castlingAvailability.Contains("K"))
+            {
+                // check rook on white kingside
+                var piece = board.GetPieceAt("h1");
+                if (piece != null && piece.Name == PieceName.Rook)
+                    piece.HasMoved = true;
+            }
+            if (!castlingAvailability.Contains("Q"))
+            {
+                // check rook on white queenside
+                var piece = board.GetPieceAt("a1");
+                if (piece != null && piece.Name == PieceName.Rook)
+                    piece.HasMoved = true;
+            }
+            if (!castlingAvailability.Contains("k"))
+            {
+                // check rook on black queenside
+                var piece = board.GetPieceAt("h8");
+                if (piece != null && piece.Name == PieceName.Rook)
+                    piece.HasMoved = true;
+            }
+            if (!castlingAvailability.Contains("q"))
+            {
+                // check rook on black queenside
+                var piece = board.GetPieceAt("a8");
+                if (piece != null && piece.Name == PieceName.Rook)
+                    piece.HasMoved = true;
+            }
         }
     }
 }

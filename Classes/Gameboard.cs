@@ -16,7 +16,7 @@ namespace Chess.Classes
         public TeamColour? CheckmateTeamColour { get; set; }
         public bool IsStalemate { get; set; }
         public bool IsGameOver { get; set; }
-        public int HalfMovesClock { get; set; }
+        public int HalfMoveCounter { get; set; }
         public int FullMoveCounter { get; set; }
 
         public Gameboard()
@@ -24,7 +24,7 @@ namespace Chess.Classes
             Board = ChessUtils.InitialiseBoard();
             PreviousActions = new List<string>();
             CurrentTeamColour = TeamColour.White;
-            HalfMovesClock = 0;
+            HalfMoveCounter = 0;
             FullMoveCounter = 1;
             CheckTeamColour = null;
             CheckmateTeamColour = null;
@@ -178,9 +178,9 @@ namespace Chess.Classes
                 SwapTurns();
 
             if (originalAction.Piece.Name == PieceName.Pawn || originalAction.ActionType == ActionType.Capture)
-                HalfMovesClock = 0;
+                HalfMoveCounter = 0;
             else
-                HalfMovesClock++;
+                HalfMoveCounter++;
 
             FullMoveCounter += PreviousActions.Count / 2;
         }

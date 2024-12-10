@@ -26,13 +26,15 @@ namespace ChessLogic.Classes
 
             string[] parts = fen.Split(" ");
 
+            // all 'parts' assumed to be non-empty, valid FEN strings (but not necessarily valid 
             gameboard.Board = ParseBoard(parts[0]);
             gameboard.CurrentTeamColour = ParseTeamColour(parts[1]);
             ParseCastlingAvailability(parts[2], gameboard.Board); // updating board by reference
+            gameboard.LastPerformedAction = ParseEnpassantTarget(parts[3], gameboard.Board);
+            gameboard.HalfMoveCounter = ParseHalfMoveCounter(parts[4]);
+            gameboard.FullMoveCounter = ParseFullMoveCounter(parts[5]);
 
-
-
-            throw new NotImplementedException();
+            return gameboard;
         }
 
         public static ValidationResult ValidateFEN(string fen)
@@ -59,7 +61,7 @@ namespace ChessLogic.Classes
             result = ValidateEnpassantTarget(parts[3]);
             if (!result.IsValid) return result;
 
-            result = ValidateHalfMoveClock(parts[4]);
+            result = ValidateHalfMoveCounter(parts[4]);
             if (!result.IsValid) return result;
 
             result = ValidateFullMoveCounter(parts[5]);
@@ -151,24 +153,27 @@ namespace ChessLogic.Classes
             if (enpassantTarget.Length != 2)
                 return ValidationResult.Fail($"Invalid en passant square: '{enpassantTarget}'.");
 
+            if (enpassantTarget[1] != '3' && enpassantTarget[1] != '6')
+                return ValidationResult.Fail($"En passant targets can only occur on ranks 3 or 6: '{enpassantTarget}'.");
+
             // ensure the target is a valid square
             return ValidateAlgebraicNotation(enpassantTarget);
         }
 
-        private static ValidationResult ValidateHalfMoveClock(string halfMoveClock)
+        private static ValidationResult ValidateHalfMoveCounter(string halfMoveCounter)
         {
             try
             {
-                int number = int.Parse(halfMoveClock);
+                int number = int.Parse(halfMoveCounter);
 
                 if (number < 0)
-                    return ValidationResult.Fail($"The half-move clock value needs to be a non-negative integer: '{number}'.");
+                    return ValidationResult.Fail($"The half-move counter needs to be a non-negative integer: '{number}'.");
 
                 return ValidationResult.Success();
             }
             catch (Exception)
             {
-                return ValidationResult.Fail($"The half-move clock value is not a valid integer: '{halfMoveClock}'.");
+                return ValidationResult.Fail($"The half-move counter is not a valid integer: '{halfMoveCounter}'.");
             }
         }
 
@@ -324,5 +329,54 @@ namespace ChessLogic.Classes
                     piece.HasMoved = true;
             }
         }
+
+        private static Action? ParseEnpassantTarget(string enpassantTarget, Piece[][] board)
+        {
+            if (enpassantTarget == "-")
+                return null;
+
+            char file = enpassantTarget[0];
+            char rank = enpassantTarget[1];
+
+            // en passant target on rank 3, so pawn should be TeamColour.Black on rank 4 of same file
+            if (rank == '3')
+            {
+                string squareNotation = $"{file}4";
+                var piece = board.GetPieceAt(squareNotation);
+                if (piece != null && piece.Name == PieceName.Pawn && piece.TeamColour == TeamColour.Black)
+                {
+                    var initialPiece = new Pawn(TeamColour.Black, $"{file}2");
+                    var enpassantAction = new Action(initialPiece, $"{file}4", ActionType.PawnDoubleMove);
+                    return enpassantAction;
+                }
+            }
+            // en passant target on rank 6, so pawn should be TeamColour.White on rank 5 of same file
+            else if (rank == 6)
+            {
+                string squareNotation = $"{enpassantTarget[0]}5";
+                var piece = board.GetPieceAt(squareNotation);
+                if (piece != null && piece.Name == PieceName.Pawn && piece.TeamColour == TeamColour.White)
+                {
+                    var initialPiece = new Pawn(TeamColour.White, $"{file}7");
+                    var enpassantAction = new Action(initialPiece, $"{file}5", ActionType.PawnDoubleMove);
+                    return enpassantAction;
+                }
+            }
+
+            return null;
+        }
+
+        private static int ParseHalfMoveCounter(string halfMoveCounter)
+        {
+            return int.Parse(halfMoveCounter);
+
+        }
+
+        private static int ParseFullMoveCounter(string fullMoveCounter)
+        {
+            return int.Parse(fullMoveCounter);
+        }
+
+
     }
 }

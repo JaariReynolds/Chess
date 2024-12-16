@@ -134,11 +134,11 @@ namespace ChessLogic.Classes
                 return ValidationResult.Fail($"Invalid character in castling availability string: '{castlingAvailability}'.");
 
             // 3. ensure that, if a dash is included, the rest of the characters are still valid
-            if (castlingAvailability.Contains("-"))
+            if (castlingAvailability.Contains('-'))
             {
                 if (castlingAvailability == "-")
                     return ValidationResult.Success();
-                else if (castlingAvailability.Any(c => c != '-' && !char.IsLetter(c)))
+                if (castlingAvailability.Any(c => c != '-' && !char.IsLetter(c)))
                     return ValidationResult.Fail("If '-' is included, it should only replace a missing castling right.");
             }
 
@@ -164,12 +164,11 @@ namespace ChessLogic.Classes
         {
             try
             {
-                int number = int.Parse(halfMoveCounter);
+                var number = int.Parse(halfMoveCounter);
 
-                if (number < 0)
-                    return ValidationResult.Fail($"The half-move counter needs to be a non-negative integer: '{number}'.");
-
-                return ValidationResult.Success();
+                return number < 0 
+                    ? ValidationResult.Fail($"The half-move counter needs to be a non-negative integer: '{number}'.") 
+                    : ValidationResult.Success();
             }
             catch (Exception)
             {
@@ -214,12 +213,11 @@ namespace ChessLogic.Classes
         private static Piece[][] ParseBoard(string piecePlacement)
         {
             var board = ChessUtils.InitialiseBoard();
-            string[] ranks = piecePlacement.Split("/");
+            var ranks = piecePlacement.Split("/");
 
             // foreach rank/row
             for (int x = 0; x < ranks.Length; x++)
             {
-
                 // foreach file/column
                 for (int y = 0; y < ranks[x].Length;)
                 {
@@ -235,47 +233,22 @@ namespace ChessLogic.Classes
                     {
                         var squareString = AlgebraicNotationUtils.ToAlgebraicNotation(new Square(x, y));
 
-                        switch (ranks[x][y])
+                        board[x][y] = ranks[x][y] switch
                         {
-                            case 'P':
-                                board[x][y] = new Pawn(TeamColour.White, squareString);
-                                break;
-                            case 'p':
-                                board[x][y] = new Pawn(TeamColour.Black, squareString);
-                                break;
-                            case 'N':
-                                board[x][y] = new Knight(TeamColour.White, squareString);
-                                break;
-                            case 'n':
-                                board[x][y] = new Knight(TeamColour.Black, squareString);
-                                break;
-                            case 'B':
-                                board[x][y] = new Bishop(TeamColour.White, squareString);
-                                break;
-                            case 'b':
-                                board[x][y] = new Bishop(TeamColour.Black, squareString);
-                                break;
-                            case 'R':
-                                board[x][y] = new Rook(TeamColour.White, squareString);
-                                break;
-                            case 'r':
-                                board[x][y] = new Rook(TeamColour.Black, squareString);
-                                break;
-                            case 'Q':
-                                board[x][y] = new Queen(TeamColour.White, squareString);
-                                break;
-                            case 'q':
-                                board[x][y] = new Queen(TeamColour.Black, squareString);
-                                break;
-                            case 'K':
-                                board[x][y] = new King(TeamColour.White, squareString);
-                                break;
-                            case 'k':
-                                board[x][y] = new King(TeamColour.Black, squareString);
-                                break;
-                            default:
-                                throw new ArgumentException($"Unable to parse piece type: '{ranks[x][y]}'.");
-                        }
+                            'P' => new Pawn(TeamColour.White, squareString),
+                            'p' => new Pawn(TeamColour.Black, squareString),
+                            'N' => new Knight(TeamColour.White, squareString),
+                            'n' => new Knight(TeamColour.Black, squareString),
+                            'B' => new Bishop(TeamColour.White, squareString),
+                            'b' => new Bishop(TeamColour.Black, squareString),
+                            'R' => new Rook(TeamColour.White, squareString),
+                            'r' => new Rook(TeamColour.Black, squareString),
+                            'Q' => new Queen(TeamColour.White, squareString),
+                            'q' => new Queen(TeamColour.Black, squareString),
+                            'K' => new King(TeamColour.White, squareString),
+                            'k' => new King(TeamColour.Black, squareString),
+                            _ => throw new ArgumentException($"Unable to parse piece type: '{ranks[x][y]}'.")
+                        };
                         y++;
                     }
                 }
@@ -286,46 +259,46 @@ namespace ChessLogic.Classes
 
         private static TeamColour ParseTeamColour(string activeColour)
         {
-            string colour = activeColour.ToLower();
+            var colour = activeColour.ToLower();
 
-            switch (colour)
+            return colour switch
             {
-                case "w": return TeamColour.White;
-                case "b": return TeamColour.Black;
-                default: throw new ArgumentException($"Unable to parse active colour: '{colour}'.");
-            }
+                "w" => TeamColour.White,
+                "b" => TeamColour.Black,
+                _ => throw new ArgumentException($"Unable to parse active colour: '{colour}'.")
+            };
         }
 
         private static void ParseCastlingAvailability(string castlingAvailability, Piece[][] board)
         {
             // disable certain castling availability by setting the corresponding Rook.Hasmoved to true
 
-            if (!castlingAvailability.Contains("K"))
+            if (!castlingAvailability.Contains('K'))
             {
                 // check rook on white kingside
                 var piece = board.GetPieceAt("h1");
-                if (piece != null && piece.Name == PieceName.Rook)
+                if (piece is { Name: PieceName.Rook })
                     piece.HasMoved = true;
             }
-            if (!castlingAvailability.Contains("Q"))
+            if (!castlingAvailability.Contains('Q'))
             {
                 // check rook on white queenside
                 var piece = board.GetPieceAt("a1");
-                if (piece != null && piece.Name == PieceName.Rook)
+                if (piece is { Name: PieceName.Rook })
                     piece.HasMoved = true;
             }
-            if (!castlingAvailability.Contains("k"))
+            if (!castlingAvailability.Contains('k'))
             {
                 // check rook on black queenside
                 var piece = board.GetPieceAt("h8");
-                if (piece != null && piece.Name == PieceName.Rook)
+                if (piece is { Name: PieceName.Rook })
                     piece.HasMoved = true;
             }
-            if (!castlingAvailability.Contains("q"))
+            if (!castlingAvailability.Contains('q'))
             {
                 // check rook on black queenside
                 var piece = board.GetPieceAt("a8");
-                if (piece != null && piece.Name == PieceName.Rook)
+                if (piece is { Name: PieceName.Rook })
                     piece.HasMoved = true;
             }
         }
@@ -335,32 +308,32 @@ namespace ChessLogic.Classes
             if (enpassantTarget == "-")
                 return null;
 
-            char file = enpassantTarget[0];
-            char rank = enpassantTarget[1];
+            var file = enpassantTarget[0];
+            var rank = enpassantTarget[1];
 
             // en passant target on rank 3, so pawn should be TeamColour.Black on rank 4 of same file
             if (rank == '3')
             {
-                string squareNotation = $"{file}4";
+                var squareNotation = $"{file}4";
                 var piece = board.GetPieceAt(squareNotation);
-                if (piece != null && piece.Name == PieceName.Pawn && piece.TeamColour == TeamColour.Black)
-                {
-                    var initialPiece = new Pawn(TeamColour.Black, $"{file}2");
-                    var enpassantAction = new Action(initialPiece, $"{file}4", ActionType.PawnDoubleMove);
-                    return enpassantAction;
-                }
+                if (piece is not { Name: PieceName.Pawn, TeamColour: TeamColour.Black })
+                    return null;
+                
+                var initialPiece = new Pawn(TeamColour.Black, $"{file}2");
+                var enpassantAction = new Action(initialPiece, $"{file}4", ActionType.PawnDoubleMove);
+                return enpassantAction;
             }
             // en passant target on rank 6, so pawn should be TeamColour.White on rank 5 of same file
-            else if (rank == 6)
+            if (rank == 6)
             {
-                string squareNotation = $"{enpassantTarget[0]}5";
+                var squareNotation = $"{enpassantTarget[0]}5";
                 var piece = board.GetPieceAt(squareNotation);
-                if (piece != null && piece.Name == PieceName.Pawn && piece.TeamColour == TeamColour.White)
-                {
-                    var initialPiece = new Pawn(TeamColour.White, $"{file}7");
-                    var enpassantAction = new Action(initialPiece, $"{file}5", ActionType.PawnDoubleMove);
-                    return enpassantAction;
-                }
+                if (piece is not { Name: PieceName.Pawn, TeamColour: TeamColour.White }) 
+                    return null;
+                
+                var initialPiece = new Pawn(TeamColour.White, $"{file}7");
+                var enpassantAction = new Action(initialPiece, $"{file}5", ActionType.PawnDoubleMove);
+                return enpassantAction;
             }
 
             return null;
@@ -369,14 +342,11 @@ namespace ChessLogic.Classes
         private static int ParseHalfMoveCounter(string halfMoveCounter)
         {
             return int.Parse(halfMoveCounter);
-
         }
 
         private static int ParseFullMoveCounter(string fullMoveCounter)
         {
             return int.Parse(fullMoveCounter);
         }
-
-
     }
 }

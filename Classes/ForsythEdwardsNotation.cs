@@ -10,14 +10,14 @@ namespace ChessLogic.Classes
         private static string validCharacters = "kKQqRrBbNnPp";
         private static string validCastles = "KkQq-";
 
-        public static string GenerateFEN(Gameboard gameboard)
+        public static string GenerateFen(Gameboard gameboard)
         {
             throw new NotImplementedException();
         }
 
-        public static Gameboard ParseFEN(string fen)
+        public static Gameboard ParseFen(string fen)
         {
-            var result = ValidateFEN(fen);
+            var result = ValidateFen(fen);
 
             if (!result.IsValid)
                 throw new ArgumentException(result.ErrorReason);
@@ -37,7 +37,7 @@ namespace ChessLogic.Classes
             return gameboard;
         }
 
-        public static ValidationResult ValidateFEN(string fen)
+        public static ValidationResult ValidateFen(string fen)
         {
             if (string.IsNullOrEmpty(fen))
                 return ValidationResult.Fail("FEN string is null or empty.");
@@ -70,12 +70,12 @@ namespace ChessLogic.Classes
             return ValidationResult.Success();
         }
 
-        private static bool isFENValidForGameboard(Gameboard gameboard, string fen)
+        private static bool isFenValidForGameboard(Gameboard gameboard, string fen)
         {
             throw new NotImplementedException();
         }
 
-        public static bool IsEqualFEN(string fen1, string fen2)
+        public static bool IsEqualFen(string fen1, string fen2)
         {
             throw new NotImplementedException();
         }

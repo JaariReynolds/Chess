@@ -218,22 +218,23 @@ namespace ChessLogic.Classes
             // foreach rank/row
             for (int x = 0; x < ranks.Length; x++)
             {
+                int column = 0;
                 // foreach file/column
-                for (int y = 0; y < ranks[x].Length;)
+                for (int y = 0; y < ranks[x].Length; y++)
                 {
                     // skip squares equal to the number in the FEN string
                     if (char.IsDigit(ranks[x][y]))
                     {
                         int skipCount = int.Parse(ranks[x][y].ToString());
-                        y += skipCount;
+                        column += skipCount;
                     }
 
                     // initialise board square with corresponding piece
                     else
                     {
-                        var squareString = AlgebraicNotationUtils.ToAlgebraicNotation(new Square(x, y));
+                        var squareString = AlgebraicNotationUtils.ToAlgebraicNotation(new Square(x, column));
 
-                        board[x][y] = ranks[x][y] switch
+                        board[x][column] = ranks[x][y] switch
                         {
                             'P' => new Pawn(TeamColour.White, squareString),
                             'p' => new Pawn(TeamColour.Black, squareString),
@@ -249,7 +250,7 @@ namespace ChessLogic.Classes
                             'k' => new King(TeamColour.Black, squareString),
                             _ => throw new ArgumentException($"Unable to parse piece type: '{ranks[x][y]}'.")
                         };
-                        y++;
+                        column++;
                     }
                 }
             }

@@ -182,7 +182,7 @@ namespace Chess.Classes
             else
                 HalfMoveCounter++;
 
-            FullMoveCounter += PreviousActions.Count / 2;
+            FullMoveCounter = PreviousActions.Count / 2;
         }
 
         // console use only

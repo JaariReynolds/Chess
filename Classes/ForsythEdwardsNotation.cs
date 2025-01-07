@@ -12,7 +12,17 @@ namespace ChessLogic.Classes
 
         public static string GenerateFen(Gameboard gameboard)
         {
-            throw new NotImplementedException();
+            string[] fenSections = new string[6];
+
+            fenSections[0] = GenerateBoard(gameboard.Board);
+            fenSections[1] = GenerateActiveColour(gameboard.CurrentTeamColour);
+            fenSections[2] = GenerateCastlingAvailability(gameboard.Board);
+            fenSections[3] = GenerateEnpassantTarget(gameboard.LastPerformedAction);
+            fenSections[4] = GenerateHalfMoveCounter(gameboard.HalfMoveCounter);
+            fenSections[5] = GenerateFullMoveCounter(gameboard.FullMoveCounter);
+
+            string fenString = string.Join(" ", fenSections);
+            return fenString;
         }
 
         public static Gameboard ParseFen(string fen)
@@ -166,8 +176,8 @@ namespace ChessLogic.Classes
             {
                 var number = int.Parse(halfMoveCounter);
 
-                return number < 0 
-                    ? ValidationResult.Fail($"The half-move counter needs to be a non-negative integer: '{number}'.") 
+                return number < 0
+                    ? ValidationResult.Fail($"The half-move counter needs to be a non-negative integer: '{number}'.")
                     : ValidationResult.Success();
             }
             catch (Exception)
@@ -319,7 +329,7 @@ namespace ChessLogic.Classes
                 var piece = board.GetPieceAt(squareNotation);
                 if (piece is not { Name: PieceName.Pawn, TeamColour: TeamColour.Black })
                     return null;
-                
+
                 var initialPiece = new Pawn(TeamColour.Black, $"{file}2");
                 var enpassantAction = new Action(initialPiece, $"{file}4", ActionType.PawnDoubleMove);
                 return enpassantAction;
@@ -329,9 +339,9 @@ namespace ChessLogic.Classes
             {
                 var squareNotation = $"{enpassantTarget[0]}5";
                 var piece = board.GetPieceAt(squareNotation);
-                if (piece is not { Name: PieceName.Pawn, TeamColour: TeamColour.White }) 
+                if (piece is not { Name: PieceName.Pawn, TeamColour: TeamColour.White })
                     return null;
-                
+
                 var initialPiece = new Pawn(TeamColour.White, $"{file}7");
                 var enpassantAction = new Action(initialPiece, $"{file}5", ActionType.PawnDoubleMove);
                 return enpassantAction;
@@ -348,6 +358,105 @@ namespace ChessLogic.Classes
         private static int ParseFullMoveCounter(string fullMoveCounter)
         {
             return int.Parse(fullMoveCounter);
+        }
+
+        private static string GenerateBoard(Piece[][] board)
+        {
+            string[] boardRows = new string[8];
+            int emptySquareCounter;
+
+            for (int x = 0; x < board.Length; x++)
+            {
+                emptySquareCounter = 0;
+
+                for (int y = 0; y < board[x].Length; y++)
+                {
+                    if (board[x][y] == null)
+                    {
+                        emptySquareCounter++;
+                        continue;
+                    }
+                    else
+                    {
+                        if (emptySquareCounter > 0)
+                        {
+                            boardRows[x] += emptySquareCounter.ToString();
+                            emptySquareCounter = 0;
+                        }
+
+                        var pieceAbbreviation = board[x][y].TeamColour == TeamColour.White ? board[x][y].PieceAbbreviation : board[x][y].PieceAbbreviation.ToLower();
+                        boardRows[x] += pieceAbbreviation;
+                    }
+                }
+            }
+
+            string boardFen = string.Join("/", boardRows);
+            return boardFen;
+        }
+
+        private static string GenerateActiveColour(TeamColour teamColour)
+        {
+            return teamColour == TeamColour.White ? "w" : "b";
+        }
+
+        private static string GenerateCastlingAvailability(Piece[][] board)
+        {
+            string whiteCastling = "";
+            string blackCastling = "";
+
+            for (int x = 0; x < board.Length; x++)
+            {
+                for (int y = 0; y < board[x].Length; y++)
+                {
+                    var piece = board[x][y];
+                    if (piece is not King) continue;
+
+                    var king = (King)piece;
+
+                    if (king.TeamColour == TeamColour.White)
+                    {
+                        if (king.CanKingsideCastle(board)) whiteCastling += "K";
+                        if (king.CanQueensideCastle(board)) whiteCastling += "Q";
+                    }
+                    else if (king.TeamColour == TeamColour.Black)
+                    {
+                        if (king.CanKingsideCastle(board)) blackCastling += "k";
+                        if (king.CanQueensideCastle(board)) blackCastling += "q";
+                    }
+                }
+            }
+
+            string castlingAvailabilityString = whiteCastling + blackCastling;
+            return string.IsNullOrEmpty(castlingAvailabilityString) ? "-" : castlingAvailabilityString;
+        }
+
+        private static string GenerateEnpassantTarget(Action? lastPerformedAction)
+        {
+            if (lastPerformedAction == null) return "-";
+            if (lastPerformedAction.ActionType != ActionType.PawnDoubleMove) return "-";
+
+            var file = lastPerformedAction.Square.ToString()[0];
+            var rank = lastPerformedAction.Square.ToString()[1];
+
+            // White en passant target is 1 rank below the Square
+            if (lastPerformedAction.Piece.TeamColour == TeamColour.White)
+                return $"{file}{(char)(rank - 1)}";
+            // Black en passant target is 1 rank above the Square
+            else if (lastPerformedAction.Piece.TeamColour == TeamColour.Black)
+                return $"{file}{(char)(rank + 1)}";
+
+            return "-";
+        }
+
+
+        private static string GenerateHalfMoveCounter(int halfMoveCounter)
+        {
+            return halfMoveCounter.ToString();
+        }
+
+        private static string GenerateFullMoveCounter(int fullMoveCounter)
+        {
+            return fullMoveCounter.ToString();
         }
     }
 }

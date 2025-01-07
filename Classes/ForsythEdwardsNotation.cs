@@ -388,6 +388,11 @@ namespace ChessLogic.Classes
                         boardRows[x] += pieceAbbreviation;
                     }
                 }
+
+                if (emptySquareCounter > 0)
+                {
+                    boardRows[x] += emptySquareCounter.ToString();
+                }
             }
 
             string boardFen = string.Join("/", boardRows);

@@ -182,7 +182,8 @@ namespace Chess.Classes
             else
                 HalfMoveCounter++;
 
-            FullMoveCounter = PreviousActions.Count / 2;
+            if (originalTeamColour == TeamColour.Black)
+                FullMoveCounter += 1;
         }
 
         // console use only

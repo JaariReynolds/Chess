@@ -44,6 +44,8 @@ namespace ChessLogic.Classes
             gameboard.HalfMoveCounter = ParseHalfMoveCounter(parts[4]);
             gameboard.FullMoveCounter = ParseFullMoveCounter(parts[5]);
 
+            gameboard.CalculateGameStateStatus(gameboard.CurrentTeamColour);
+
             return gameboard;
         }
 

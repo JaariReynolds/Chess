@@ -161,7 +161,7 @@ namespace Chess.Classes
 
         }
 
-        private void CalculateGameStateStatus(TeamColour teamColour)
+        public void CalculateGameStateStatus(TeamColour teamColour)
         {
             var legalActions = CalculateTeamActions(teamColour);
             var isKingInCheck = Board.IsKingInCheck(teamColour);
